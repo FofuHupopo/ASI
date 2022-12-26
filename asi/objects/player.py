@@ -21,8 +21,6 @@ class PlayerObject(BaseObject):
             [self.start_coords, self.additional_coords],
             1
         )
-        
-        return self.start_coords, self.additional_coords, self.color
 
     def events_handler(self, event: pygame.event.Event):
         if event.type == pygame.MOUSEBUTTONDOWN:

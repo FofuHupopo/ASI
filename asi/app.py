@@ -1,6 +1,7 @@
 import pygame
+import sys
 
-from engine.core import update, EventHandler
+from engine.core import update, EventHandler, EngineSettings
 from .objects import load_objects
 from . import settings
 
@@ -27,6 +28,9 @@ class App:
         fps = settings.FPS
 
         running = True
+        
+        EngineSettings.load_file(settings)
+        print(EngineSettings.get_all_vars())
 
         while running:
             for event in pygame.event.get():
@@ -42,5 +46,7 @@ class App:
 
             pygame.display.flip()
             clock.tick(fps)
-
+        
+    def terminate():
         pygame.quit()
+        sys.exit()

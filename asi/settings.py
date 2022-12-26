@@ -4,4 +4,3 @@ WINDOW_NAME = "ASI"
 BACKGROUND_COLOR = "black"
 
 FPS = 60
-
