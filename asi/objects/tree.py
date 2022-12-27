@@ -25,19 +25,20 @@ class TreeSprite(BaseSprite):
 
             if self.is_small:
                 self.scale_image((100, 100))
-                
+
                 self.is_small = False
             else:
                 self.scale_image((30, 30))
-                
+
                 self.is_small = True
-        
+
         if event.type == pygame.KEYDOWN:
             print(event.__dict__)
-                
+
     def key_pressed_handler(self, pressed: Sequence[bool]):
         if pressed[pygame.K_RIGHT]:
             self.scale_image((self.rect.width + 5, self.rect.height + 5))
-        
+
         if pressed[pygame.K_LEFT]:
             self.scale_image((self.rect.width - 5, self.rect.height - 5))
+
