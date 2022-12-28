@@ -3,31 +3,25 @@ import random
 
 from typing import Sequence
 
-from engine.objects import BaseObject
+from engine.objects import BaseSprite
 
 
-class PlayerObject(BaseObject):
+class PlayerObject(BaseSprite):
     def init(self):
-        self.color = pygame.Color("orange")
-        self.coords = [500, 250]
-        self.wh = (50, 100)
+        self.load_image("player/creature.png")
+        self.rect.x = 500
+        self.rect.y = 250
         self.speed_x = 0
         self.speed_y = 0
         self.time_y = 0
         self.fly = False
 
-    def render(self, surface: pygame.Surface) -> pygame.Surface:
-
-        self.coords[0] -= self.speed_x
+    def update(self):
+        self.rect.x -= self.speed_x
         if self.fly:
-            self.coords[1] -= self.speed_y
+            self.rect.y -= self.speed_y
             self.speed_y -= self.time_y
-            self.time_y += 10 * 0.001
-        pygame.draw.rect(
-            surface, pygame.Color(self.color),
-            [self.coords, self.wh],
-            0
-        )
+            self.time_y += 10 * 0.0003
 
     def events_handler(self, event: pygame.event.Event):
         keys = pygame.key.get_pressed()
