@@ -1,52 +1,19 @@
-import pygame
-import sys
+from engine.core import EngineSettings, Game
+from .objects.mainscene import MainScene
 
-from engine.core import update, EventHandler, EngineSettings
-from .objects import load_objects
 from . import settings
 
 
 class App:
     def run(self):
-        self.run_game()
+        self.__run_game()
 
-    def run_game(self):
-        pygame.init()
-
-        size = settings.SIZE
-
-        screen = pygame.display.set_mode(size)
-        screen.fill(pygame.Color("black"))
-
-        pygame.display.set_caption(settings.WINDOW_NAME)
-        pygame.display.flip()
-        
-        event_handler = EventHandler()
-        load_objects()
-
-        clock = pygame.time.Clock()
-        fps = settings.FPS
-
-        running = True
-        
+    def __run_game(self):
         EngineSettings.load_file(settings)
-        print(EngineSettings.get_all_vars())
 
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
+        game = Game({
+            "main": MainScene()
+        })
 
-                event_handler.event(event)
-                
-            pressed = pygame.key.get_pressed()
-            event_handler.key_pressed(pressed)
-
-            update(screen, settings.BACKGROUND_COLOR)
-
-            pygame.display.flip()
-            clock.tick(fps)
-        
-    def terminate():
-        pygame.quit()
-        sys.exit()
+        game.run_scene("main")
+        game.close()

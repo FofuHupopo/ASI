@@ -6,8 +6,9 @@ from engine.core import GameStack
 
 
 class BaseObject:
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, scene, **kwargs) -> None:
         GameStack.append_stack(self)
+        self.__scene = scene
 
         self.init(**kwargs)
 

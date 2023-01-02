@@ -28,3 +28,17 @@ class GameStack:
     @staticmethod
     def pop_stack_group(sprite):
         GameStack.sprite_group.remove(sprite)
+        
+
+class SceneGameStack:
+    def __init__(self) -> None:
+        self.__object_stack = []
+        self.__sprite_group = pygame.sprite.Group()
+    
+    @property
+    def object_stack(self):
+        return self.__object_stack
+    
+    @property
+    def sprite_group(self):
+        return self.__sprite_group
