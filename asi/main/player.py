@@ -4,7 +4,7 @@ import random
 from typing import Sequence
 
 from engine.objects import BaseSprite
-from asi.objects.throwing_arms import Arms
+from .throwing_arms import Arms
 
 
 class PlayerObject(BaseSprite):

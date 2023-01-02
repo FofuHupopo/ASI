@@ -43,9 +43,18 @@ class BaseSprite(pygame.sprite.Sprite):
         """
 
         self.__image_path = path
-        fullname = os.path.join('asi/resources/', path)
+        resources_dirs = []
 
-        if not os.path.isfile(fullname):
+        for rootdir, dirs, files in os.walk(os.getcwd()):
+            if "resources" in dirs:
+                resources_dirs.append(rootdir + "/resources")
+
+        for resources_dir in resources_dirs:
+            fullname = os.path.join(resources_dir, path)
+
+            if os.path.isfile(fullname):
+                break
+        else:
             raise FileNotFoundError(f"Файл с изображением '{fullname}' не найден")
 
         self.image = pygame.image.load(fullname)

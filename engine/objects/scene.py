@@ -9,11 +9,12 @@ from engine.core.settings import EngineSettings
 class BaseScene:
     def __init__(self) -> None:
         self.__running = True
-        self.__game_stack = SceneGameStack()
+        self.__frozen = True
 
+        self.__game_stack = SceneGameStack()        
         self.__event_handler = SceneEventHandler(self.__game_stack)
+        
         self.__load_pygame_vars()
-
         self.init()
 
     def init(self) -> None: ...
@@ -46,6 +47,7 @@ class BaseScene:
         """Методы паузы сцены.
         """
         self.__running = False
+        self.__frozen = True
 
     def load_object(self, object):
         self.__game_stack.object_stack.append(object(scene=self))
