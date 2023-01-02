@@ -106,16 +106,13 @@ class BaseSprite(pygame.sprite.Sprite):
             if sprite.get_type() != type_:
                 continue
             
-            print(pygame.Rect.colliderect(self.rect, sprite.rect))
-            
             if pygame.Rect.colliderect(self.rect, sprite.rect):
-                print(sprite)
                 sprites.append(sprite)
 
         return sprites
     
-    def load_sprite(self, sprite, kwargs):
-        self.__scene.load_sprite(sprite, kwargs)
+    def load_sprite(self, sprite, **kwargs):
+        self.__scene.load_sprite(sprite, **kwargs)
     
     def __reload_image(self, save_rect=False):
         self.load_image(self.__image_path)

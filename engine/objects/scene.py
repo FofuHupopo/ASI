@@ -75,7 +75,7 @@ class BaseScene:
 
             self.__event_handler.event(event)
             self.events_handler(event)
-    
+
     def __pressed_handler(self):
         pressed = pygame.key.get_pressed()
         

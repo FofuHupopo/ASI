@@ -1,3 +1,5 @@
+from time import sleep
+
 from engine.core import EngineSettings, Game
 from .objects.mainscene import MainScene
 
