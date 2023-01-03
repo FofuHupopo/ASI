@@ -4,6 +4,7 @@ import random
 from typing import Sequence
 
 from engine.objects import BaseSprite
+from engine.objects.sprite import SpriteTypes
 
 
 class Arms(BaseSprite):
