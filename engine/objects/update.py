@@ -51,8 +51,6 @@ def scene_update(
         pygame.Surface: Обновленный кадр.
     """
     
-    surface.fill(base_color)
-    
     for object in scene_stack.object_stack:
         object: BaseObject
 

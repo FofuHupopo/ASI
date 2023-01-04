@@ -1,6 +1,7 @@
 from time import sleep
 
 from engine.core import EngineSettings, Game
+from .start.scene import StartScene
 from .main.scene import MainScene
 
 from . import settings
@@ -14,8 +15,10 @@ class App:
         EngineSettings.load_file(settings)
 
         game = Game({
-            "main": MainScene()
+            "start": StartScene
         })
 
-        game.run_scene("main")
+        game.set_start_scene("start")
+        game.run()
+
         game.close()

@@ -4,7 +4,7 @@ import os
 from dataclasses import dataclass
 from typing import Sequence, Tuple
 
-from engine.core import GameStack
+from engine.core import GameStack, Resources
 
 
 @dataclass
@@ -42,20 +42,8 @@ class BaseSprite(pygame.sprite.Sprite):
             FileNotFoundError: Файл не найден.
         """
 
+        fullname = Resources.get(path)
         self.__image_path = path
-        resources_dirs = []
-
-        for rootdir, dirs, files in os.walk(os.getcwd()):
-            if "resources" in dirs:
-                resources_dirs.append(rootdir + "/resources")
-
-        for resources_dir in resources_dirs:
-            fullname = os.path.join(resources_dir, path)
-
-            if os.path.isfile(fullname):
-                break
-        else:
-            raise FileNotFoundError(f"Файл с изображением '{fullname}' не найден")
 
         self.image = pygame.image.load(fullname)
         self.rect = self.image.get_rect()
@@ -84,7 +72,7 @@ class BaseSprite(pygame.sprite.Sprite):
         """
 
         self.__angel = (self.__angel + angel) % 360
-        self.__reload_image()
+        self.__reload_image(False)
         
     def set_type(self, type_: SpriteTypes):
         """Метод для указания типа спрайта.
@@ -124,13 +112,14 @@ class BaseSprite(pygame.sprite.Sprite):
         self.__scene.load_sprite(sprite, **kwargs)
     
     def __reload_image(self, save_rect=False):
+        old_center = self.rect.center
+
         self.load_image(self.__image_path)
 
-        self.image = pygame.transform.scale(self.image, self.__size)
         self.image = pygame.transform.rotate(self.image, self.__angel)
+        # self.image = pygame.transform.scale(self.image, self.__size)
 
-        if not save_rect:
-            old_center = self.rect.center
+        if save_rect:
             self.rect = self.image.get_rect()
             self.rect.center = old_center
             self.rect.x, self.rect.y = self.__coords[0], self.__coords[1]
@@ -164,5 +153,3 @@ class BaseSprite(pygame.sprite.Sprite):
 
     def _key_pressed_handler(self, pressed: Sequence[bool]):
         self.key_pressed_handler(pressed)
-
-
