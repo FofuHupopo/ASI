@@ -5,7 +5,7 @@ from typing import Sequence
 
 from engine.objects import BaseSprite
 from .throwing_arms import Arms
-from .Obstacle import Obstacle
+from .obstacle import Obstacle
 from engine.objects.sprite import SpriteTypes
 
 
@@ -14,6 +14,7 @@ class PlayerObject(BaseSprite):
         self.load_image("player/creature.png")
         self.set_type(SpriteTypes.PLAYER)
         self.weidht = self.image.get_width()
+        self.load_sprite(Obstacle, coords = [250, 250])
         self.rect.x = 500
         self.rect.y = 250
         self.speed_y = 0

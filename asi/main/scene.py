@@ -12,11 +12,4 @@ class MainScene(BaseScene):
         self.load_sprite(PlayerObject)
 
     def update(self) -> None:
-        if random.randint(0, 10000) == 10000:
-            self.stop()
-            print("сцена закончила свою работу")
-
         pressed = pygame.key.get_pressed()
-
-        if pressed[pygame.K_f]:
-            self.stop()

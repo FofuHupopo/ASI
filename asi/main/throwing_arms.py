@@ -22,10 +22,10 @@ class Arms(BaseSprite):
 
     def update(self):
         self.time_fly += 1
-        self.rect.x += 6 * self.direction
-        if self.time_fly > 50:
-            self.rect.y += (self.time_fly - 50) * 0.02 * 10
+        self.rect.x += 10 * self.direction
+        if self.time_fly > 25:
+            self.rect.y += (self.time_fly - 25) * 0.05 * 10
             self.damadge = max(0, self.damadge - 2)
-        if self.time_fly == 80:
+        if self.time_fly == 40:
             self.scale_image((10, 10))
             self.damadge = 0
