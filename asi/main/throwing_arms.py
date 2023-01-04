@@ -10,6 +10,7 @@ from engine.objects.sprite import SpriteTypes
 class Arms(BaseSprite):
     def init(self, coords, direction):
         self.load_image("player/shuriken.png")
+        self.set_type(SpriteTypes.THROWING_WEAPON)
         self.direction = direction
         self.scale_image((50, 50))
         if self.direction == -1:
