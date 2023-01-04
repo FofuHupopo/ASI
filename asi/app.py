@@ -15,10 +15,10 @@ class App:
         EngineSettings.load_file(settings)
 
         game = Game({
-            "start": StartScene
+            "main": MainScene
         })
 
-        game.set_start_scene("start")
+        game.set_start_scene("main")
         game.run()
 
         game.close()
