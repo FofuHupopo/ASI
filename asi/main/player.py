@@ -24,9 +24,9 @@ class PlayerObject(BaseSprite):
         self.rect.x = 500
         self.rect.y = 220
         self.speed_y = 0
-        self.fly = True
         self.time_y = 0
         self.direction = 1
+        self.health = 100
 
     def is_fly(self):
         self.rect.y += 1
@@ -59,6 +59,8 @@ class PlayerObject(BaseSprite):
                     for i in self.checking_touch_by_type(SpriteTypes.OBSTACLE):
                         self.rect.y = min(self.rect.y, i.rect.y - self.height)
                     self.time_y = 0
+                    self.health -= max(0, (-25 - self.speed_y) * 4)
+                    print(self.health)
                 self.speed_y = 0
             else:
                 self.speed_y -= self.time_y
