@@ -11,22 +11,39 @@ from engine.objects.sprite import SpriteTypes
 
 class PlayerObject(BaseSprite):
     def init(self):
-        self.load_image("player/creature.png")
+
+        self.tile_image = {
+            "wall": self.load_image("player/creature.png")
+        }
+
+        self.create_map(self.load_level("map.txt"))
         self.set_type(SpriteTypes.PLAYER)
         self.width = self.image.get_width()
         self.height = self.image.get_height()
-        self.load_sprite(Obstacle, coords=[600, 300])
-        self.load_sprite(Obstacle, coords=[500, 50])
-        self.load_sprite(Obstacle, coords=[275, 260])
-        self.load_sprite(Obstacle, coords=[275, 260])
-        self.load_sprite(Obstacle, coords=[500, 340])
-        self.load_sprite(Obstacle, coords=[450, 340])
         self.rect.x = 500
         self.rect.y = 220
         self.speed_y = 0
         self.fly = True
         self.time_y = 0
         self.direction = 1
+        self.level_sprites = []
+
+    def create_map(self, level_map):
+        for y in range(len(level_map)):
+            row_sprite = []
+            for x in range(len(level_map[y])):
+                if level_map[y][x] == "#":
+                    row_sprite.append(self.load_sprite(Obstacle, coords=[50 * x, 50 * y]))
+            # self.level_sprites.append(row_sprite) - кусок хуйни, которого не видят
+
+    @staticmethod
+    def load_level(filename):  # загрузка уровня
+        filename = r"asi/main/resources/map/" + filename
+        with open(filename, "r") as mapFile:
+            level_map = [line.strip() for line in mapFile]
+        max_width = max(map(len, level_map))
+
+        return list(map(lambda x: list(x.ljust(max_width, ".")), level_map))  # возвращаем список списков карты
 
     def is_fly(self):
         self.rect.y += 1
