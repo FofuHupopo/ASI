@@ -9,6 +9,7 @@ from .obstacle import Obstacle
 from .storage import Storage
 from .trader import Trader
 from engine.objects.sprite import SpriteTypes
+from .map import Map
 
 
 class PlayerObject(BaseSprite):
@@ -18,7 +19,6 @@ class PlayerObject(BaseSprite):
             "wall": self.load_image("player/creature.png")
         }
 
-        self.create_map(self.load_level("map.txt"))
         self.set_type(SpriteTypes.PLAYER)
         self.width = self.image.get_width()
         self.height = self.image.get_height()
@@ -29,6 +29,8 @@ class PlayerObject(BaseSprite):
         self.direction = 1
         self.health = 100
         self.level_sprites = []
+    # ----------
+        self.create_map(self.load_level("map.txt"))
 
     def create_map(self, level_map):
         for y in range(len(level_map)):
@@ -50,6 +52,7 @@ class PlayerObject(BaseSprite):
         max_width = max(map(len, level_map))
 
         return list(map(lambda x: list(x.ljust(max_width, ".")), level_map))  # возвращаем список списков карты
+    # -----------
 
     def is_fly(self):
         self.rect.y += 1
