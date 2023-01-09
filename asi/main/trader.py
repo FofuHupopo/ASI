@@ -10,6 +10,7 @@ from engine.objects.sprite import SpriteTypes
 class Trader(BaseSprite):
     def init(self, coords):
         self.load_image("npc/trader.png")
+        self.scale_image((80, 100))
         self.set_type(SpriteTypes.NPC)
         self.coords = coords
         self.rect.x = coords[0]

@@ -2,7 +2,7 @@ from time import sleep
 
 from engine.core import EngineSettings, Game
 from .start.scene import StartScene, PauseScene
-from .main.scene import MainScene
+from .main.scene import MainScene, ArtifactsScene
 
 from . import settings
 
@@ -17,7 +17,8 @@ class App:
         game = Game({
             "main": MainScene,
             "pause": PauseScene,
-            "start": StartScene
+            "start": StartScene,
+            "artifacts": ArtifactsScene
         })
 
         game.set_start_scene("start")

@@ -108,6 +108,7 @@ class BaseScene:
             scene_update(self._surface, self._game_stack, self.__background_color)
             
             self.post_update()
+            self.__events.clear_events()
 
             pygame.display.flip()
             self.__clock.tick(self.__fps)

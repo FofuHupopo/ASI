@@ -40,7 +40,10 @@ class EngineEvents:
 
     def add_event(self, event):
         self.events.add(event)
-        
+    
+    def clear_events(self):
+        self.events.clear()
+
 
 if __name__ == "__main__":
     event = EngineEvent("Тип", "Название", {"data": "some data"})

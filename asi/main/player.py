@@ -2,13 +2,26 @@ import pygame
 import random
 
 from typing import Sequence
-
+from dataclasses import dataclass
 from engine.objects import BaseSprite
+from engine.core import EngineEvent, EventTypes
+from engine.objects.sprite import SpriteTypes
+
 from .throwing_arms import Arms
 from .obstacle import Obstacle
 from .storage import Storage
 from .trader import Trader
-from engine.objects.sprite import SpriteTypes
+
+
+@dataclass
+class PlayerСharacteristics:
+    health = 100
+    stamina = 100
+    damage = 10
+    stamina_boost = 2
+    
+    max_health = 100
+    max_stamina = 100
 
 
 class PlayerSprite(BaseSprite):
@@ -28,8 +41,17 @@ class PlayerSprite(BaseSprite):
         self.speed_y = 0
         self.time_y = 0
         self.direction = 1
-        self.health = 100
         self.level_sprites = []
+
+        self.__shift_pressed = False
+        self.__artefacts = {
+            "head": None,
+            "necklace": None,
+            "armor": None,
+            "weapon": None,
+            "bracelet": None,
+            "boots": None,
+        }
     # ----------
         # self.create_map(self.load_level("map.txt"))
 
@@ -117,32 +139,73 @@ class PlayerSprite(BaseSprite):
                     for i in self.checking_touch_by_type(SpriteTypes.NPC):
                         self.rect.y = min(self.rect.y, i.rect.y - self.height)
                     self.time_y = 0
-                    self.health -= max(0, (-25 - self.speed_y) * 4)
-                    print(self.health)
+
+                    self.__change_health(-max(0, (-25 - self.speed_y) * 4))
+
                 self.speed_y = 0
             else:
                 self.speed_y -= self.time_y
                 self.time_y += 10 * 0.002
+                
+        if self.__shift_pressed:
+            self.__change_stamina(-0.8)
+        else:
+            if self.stamina < PlayerСharacteristics.max_stamina:
+                self.__change_stamina(0.2)
 
     def events_handler(self, event: pygame.event.Event):
         keys = pygame.key.get_pressed()
         if event.type == pygame.KEYDOWN and keys[pygame.K_SPACE]:
             if not self.is_fly():
                 self.speed_y = 10
+                
+        if event.type == pygame.KEYDOWN and keys[pygame.K_l]:
+            self.__change_health(-10)
 
         if event.type == pygame.KEYDOWN and keys[pygame.K_r]:
             self.load_sprite(Arms, coords=[self.rect.x + max(0, self.width * self.direction), self.rect.y],
                              direction=self.direction)
+            
+    def __change_health(self, value):
+        PlayerСharacteristics.health = max(0, min(self.health + value, PlayerСharacteristics.max_health))
+
+        self.add_event(EngineEvent(
+            "info", "hp", {"value": self.health}
+        ))
+
+    def __change_stamina(self, value):
+        PlayerСharacteristics.stamina = max(0, min(self.stamina + value, PlayerСharacteristics.max_stamina))
+
+        self.add_event(EngineEvent(
+            "info", "stamina", {"value": self.stamina}
+        ))
+
+    @property
+    def health(self):
+        return PlayerСharacteristics.health
+
+    @property
+    def stamina(self):
+        return PlayerСharacteristics.stamina
+    
+    @property
+    def stamina_boost(self):
+        return PlayerСharacteristics.stamina_boost
 
     def key_pressed_handler(self, pressed: Sequence[bool]):
+        additional_speed = self.stamina_boost * self.__shift_pressed * bool(self.stamina)
+        
         if pressed[pygame.K_a]:
             self.direction = -1
-            self.speed_x = 5 * self.direction
+            self.speed_x = 5 * self.direction + additional_speed * self.direction
         elif pressed[pygame.K_d]:
             self.direction = 1
-            self.speed_x = 5 * self.direction
+            self.speed_x = 5 * self.direction + additional_speed * self.direction
         else:
             self.speed_x = 0
+
         if pressed[pygame.K_e]:
             if self.check(SpriteTypes.STORAGE):
                 self.check(SpriteTypes.STORAGE).open()
+        
+        self.__shift_pressed = pressed[pygame.K_LSHIFT]

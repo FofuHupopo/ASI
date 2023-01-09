@@ -14,6 +14,12 @@ class BaseObject:
 
     def init(self, **kwargs): ...
     
+    def add_event(self, event):
+        self.__scene.add_event(event)
+    
+    def get_events(self):
+        return self.__scene.get_events()
+    
     def render(self, surface: pygame.Surface): ...
     
     def _render(self, surface: pygame.Surface):

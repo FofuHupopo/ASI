@@ -116,10 +116,10 @@ class BaseSprite(pygame.sprite.Sprite):
         return self.__scene.load_sprite(sprite, **kwargs)
     
     def add_event(self, event):
-        self.__scene.__events.add_event(event)
+        self.__scene.add_event(event)
     
     def get_events(self):
-        return self.__scene.__events.get_events()
+        return self.__scene.get_events()
     
     def __reload_image(self):
         old_rect = self.rect

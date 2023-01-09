@@ -51,14 +51,14 @@ def scene_update(
         pygame.Surface: Обновленный кадр.
     """
     
-    for object in scene_stack.object_stack:
-        object: BaseObject
-
-        if object._update():
-            object._render(surface)
-
     # scene_stack.sprite_group.update()
     for sprite in scene_stack.sprite_group.sprites():
         sprite._update(True)
 
     scene_stack.sprite_group.draw(surface)
+
+    for object in scene_stack.object_stack:
+        object: BaseObject
+
+        if object._update():
+            object._render(surface)
