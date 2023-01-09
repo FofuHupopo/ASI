@@ -9,11 +9,10 @@ from .obstacle import Obstacle
 from .storage import Storage
 from .trader import Trader
 from engine.objects.sprite import SpriteTypes
-from .map import Map
 
 
-class PlayerObject(BaseSprite):
-    def init(self):
+class PlayerSprite(BaseSprite):
+    def init(self, coords=(500, 220)):
 
         self.tile_image = {
             "wall": self.load_image("player/creature.png")
@@ -22,15 +21,17 @@ class PlayerObject(BaseSprite):
         self.set_type(SpriteTypes.PLAYER)
         self.width = self.image.get_width()
         self.height = self.image.get_height()
-        self.rect.x = 500
-        self.rect.y = 220
+        self.rect.x, self.rect.y = coords        
+        # self.rect.x = 500
+        # self.rect.y = 220
+
         self.speed_y = 0
         self.time_y = 0
         self.direction = 1
         self.health = 100
         self.level_sprites = []
     # ----------
-        self.create_map(self.load_level("map.txt"))
+        # self.create_map(self.load_level("map.txt"))
 
     def create_map(self, level_map):
         for y in range(len(level_map)):

@@ -4,6 +4,7 @@ from typing import Sequence
 
 from engine.objects.update import scene_update
 from engine.core.event_handler import  SceneEventHandler
+from engine.core.events import EngineEvents
 from engine.core.stack import SceneGameStack
 from engine.core.settings import EngineSettings
 
@@ -17,8 +18,9 @@ class BaseScene:
         self.__game = game
         self.__scene_name = scene_name
         
-        self.__game_stack = SceneGameStack()        
-        self.__event_handler = SceneEventHandler(self.__game_stack)
+        self._game_stack = SceneGameStack()        
+        self.__event_handler = SceneEventHandler(self._game_stack)
+        self.__events = EngineEvents()
         
         self.__load_pygame_vars()
         self.init()
@@ -26,6 +28,8 @@ class BaseScene:
     def init(self) -> None: ...
     
     def update(self) -> None: ...
+    
+    def post_update(self) -> None: ...
     
     def __update(self):
         self.update()
@@ -36,11 +40,17 @@ class BaseScene:
         self.__fps = EngineSettings.get_var("FPS")
         self.__background_color = pygame.Color(EngineSettings.get_var("BACKGROUND_COLOR"))
 
-        self.__surface = pygame.display.set_mode(self.__size)
-        self.__surface.fill(self.__background_color)
+        self._surface = pygame.display.set_mode(self.__size)
+        self._surface.fill(self.__background_color)
         
         pygame.display.flip()
         
+    def add_event(self, event):
+        self.__events.add_event(event)
+    
+    def get_events(self):
+        return self.__events.get_events()
+
     def run(self):
         self.__frozen = False
         self.__mainloop()
@@ -64,31 +74,46 @@ class BaseScene:
         self.__next_scene = next_scene
 
     def load_object(self, object):
-        self.__game_stack.object_stack.append(object(scene=self))
+        self._game_stack.object_stack.append(object(scene=self))
 
     def load_sprite(self, sprite_class, **kwargs):
-        self.__game_stack.sprite_group.add(sprite_class(scene=self, **kwargs))
+        sprite = sprite_class(scene=self, scene_update=True, **kwargs)
+        self._game_stack.sprite_group.add(sprite)
+
+        return sprite
     
+    def move_all_sprites(self, coords):
+        for sprite in self._game_stack.sprite_group.sprites():
+            sprite.rect.x += coords[0]
+            sprite.rect.y += coords[1]
+            
+    def write(self, text: str, color="white", coords=(0, 0), font_size=48):
+        font = pygame.font.SysFont('serif', font_size)
+        text_surface = font.render(text, False, color)
+        self._surface.blit(text_surface, coords)
+
     @property
     def sprite_group(self):
-        return self.__game_stack.sprite_group
+        return self._game_stack.sprite_group
 
     def __mainloop(self):
         while self.__running and not self.__frozen:
             self.__events_handler()
             self.__pressed_handler()
 
+            self._surface.fill("black")
             self.__update()
 
-            self.__surface.fill("black")
             self.__render()
-            scene_update(self.__surface, self.__game_stack, self.__background_color)
+            scene_update(self._surface, self._game_stack, self.__background_color)
+            
+            self.post_update()
 
             pygame.display.flip()
             self.__clock.tick(self.__fps)
     
     def __render(self):
-        self.render(self.__surface)
+        self.render(self._surface)
 
     def __events_handler(self):
         for event in pygame.event.get():

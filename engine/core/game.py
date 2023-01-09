@@ -31,8 +31,12 @@ class Game:
     
     def del_scene(self, scene_name: str):
         if scene_name in self.__scenes:
+            scene = self.__scenes[scene_name]
             del self.__scenes[scene_name]
+            
+            self.__scenes[scene_name] = scene.__class__
             self.__current_scene_name = None
+            
             
     def set_start_scene(self, scene_name):
         self.__next_scene = scene_name

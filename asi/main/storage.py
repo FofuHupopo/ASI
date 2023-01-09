@@ -18,10 +18,14 @@ class Storage(BaseSprite):
         self.height = self.image.get_height()
         self.flag = False
 
-
     def open(self):
         if not self.flag:
             self.flag = True
             self.load_image("storage/open_chest.jpg")
             self.rect.x = self.coords[0]
             self.rect.y = self.coords[1]
+            
+    def update(self) -> None:
+        if self.checking_touch_by_type(SpriteTypes.PLAYER):
+            pressed = pygame.key.get_pressed()
+            print(pressed)

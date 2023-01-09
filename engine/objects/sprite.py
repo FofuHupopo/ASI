@@ -19,15 +19,15 @@ class SpriteTypes:
 
 
 class BaseSprite(pygame.sprite.Sprite):
-    def __init__(self, scene=None, **kwargs) -> None:
+    def __init__(self, scene=None, scene_update=False, **kwargs) -> None:
         super().__init__(GameStack.get_sprite_group())
 
         self.__angel = 0.0
         self.__size: Tuple[int, int] = (100, 100)
-        self.__coords: Tuple[int, int] = (0, 0)
         self.__image_path = ""
         self.__type = None
-        
+
+        self.__scene_update=scene_update
         self.__scene = scene
 
         self.init(**kwargs)
@@ -48,7 +48,7 @@ class BaseSprite(pygame.sprite.Sprite):
         self.image = pygame.image.load(fullname)
         self.rect = self.image.get_rect()
         
-    def scale_image(self, new_size: Tuple[int, int], save_rect: bool = False, coords: Tuple[int, int] = None) -> None:
+    def scale_image(self, new_size: Tuple[int, int]) -> None:
         """Изменения размеров спрайта.
 
         Args:
@@ -58,11 +58,7 @@ class BaseSprite(pygame.sprite.Sprite):
         """
     
         self.__size = tuple(map(lambda value: max(value, 0), new_size))
-
-        if coords:
-            self.__coords = coords
-
-        self.__reload_image(save_rect)
+        self.__reload_image()
 
     def rotate_image(self, angel: float):
         """Метод поворота спрайта.
@@ -72,8 +68,8 @@ class BaseSprite(pygame.sprite.Sprite):
         """
 
         self.__angel = (self.__angel + angel) % 360
-        self.__reload_image(False)
-        
+        self.__reload_image()
+
     def set_type(self, type_: SpriteTypes):
         """Метод для указания типа спрайта.
         Используйте 'engine.objects.sprite.SpriteTypes'
@@ -94,6 +90,14 @@ class BaseSprite(pygame.sprite.Sprite):
         return self.__type
 
     def checking_touch_by_type(self, type_: SpriteTypes):
+        """Возвращает список объектов по типу, с которыми пересекается этот спрайт
+
+        Args:
+            type_ (SpriteTypes): Тип спрайтов
+
+        Returns:
+            _type_: _description_
+        """
         # if type(type_) not in SpriteTypes:
         #     raise ValueError("Параметр 'type_' должен принадлежать классу 'SpriteTypes'")
         
@@ -109,21 +113,29 @@ class BaseSprite(pygame.sprite.Sprite):
         return sprites
     
     def load_sprite(self, sprite, **kwargs):
-        self.__scene.load_sprite(sprite, **kwargs)
+        return self.__scene.load_sprite(sprite, **kwargs)
     
-    def __reload_image(self, save_rect=False):
-        old_center = self.rect.center
+    def add_event(self, event):
+        self.__scene.__events.add_event(event)
+    
+    def get_events(self):
+        return self.__scene.__events.get_events()
+    
+    def __reload_image(self):
+        old_rect = self.rect
 
         self.load_image(self.__image_path)
-
+        
         self.image = pygame.transform.rotate(self.image, self.__angel)
-        # self.image = pygame.transform.scale(self.image, self.__size)
-
-        if save_rect:
-            self.rect = self.image.get_rect()
-            self.rect.center = old_center
-            self.rect.x, self.rect.y = self.__coords[0], self.__coords[1]
-
+        self.image = pygame.transform.scale(self.image, self.__size)
+        
+        # print(new_image.get_rect(), self.image.get_rect())
+        
+        self.rect = self.image.get_rect(
+            x=old_rect.x,
+            y=old_rect.y,
+            center=old_rect.center
+        )
     
     def reset_rotation_angel(self):
         """Обнуление угла поворота спрайта.
@@ -141,8 +153,9 @@ class BaseSprite(pygame.sprite.Sprite):
 
     def update(self) -> None: ...
     
-    def _update(self):
-        self.update()
+    def _update(self, scene_update=False):
+        if self.__scene_update and scene_update: 
+            self.update()
 
     def events_handler(self, event: pygame.event.Event): ...
     

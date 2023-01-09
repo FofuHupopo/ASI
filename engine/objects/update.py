@@ -57,5 +57,8 @@ def scene_update(
         if object._update():
             object._render(surface)
 
-    scene_stack.sprite_group.update()
+    # scene_stack.sprite_group.update()
+    for sprite in scene_stack.sprite_group.sprites():
+        sprite._update(True)
+
     scene_stack.sprite_group.draw(surface)
