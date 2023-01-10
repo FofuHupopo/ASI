@@ -18,7 +18,7 @@ class PlayerСharacteristics:
     health = 100
     stamina = 100
     damage = 10
-    stamina_boost = 2
+    stamina_boost = 3
     
     max_health = 100
     max_stamina = 100

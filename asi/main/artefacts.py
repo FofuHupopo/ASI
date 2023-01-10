@@ -3,4 +3,5 @@ from engine.objects import BaseSprite
 
 class BaseArtefact:
     def __init__(self) -> None:
-        pass
+        self.additional_hp = 0
+        

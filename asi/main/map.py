@@ -69,9 +69,9 @@ class Map:
         self.__scene._game_stack.sprite_group.add(sprite)
     
     def render(self, player_coords):
-        self.__move_map(player_coords)
+        self.__move_map_for_player(player_coords)
 
-    def __move_map(self, player_coords):
+    def __move_map_for_player(self, player_coords):
         if (
             settings.WIDTH * 20 / 100 >= player_coords[0] or
             player_coords[0] >= settings.WIDTH * 80 / 100 or
@@ -91,8 +91,12 @@ class Map:
             elif player_coords[1] >= settings.HEIGHT * 80 / 100:
                 y = settings.HEIGHT * 80 / 100 - player_coords[1]
             
-            self.__scene.move_all_sprites((x, y))
+            self.move_map((x, y))
 
-            self.__sprite_group.update()
-            self.__sprite_group.draw(self.__scene._surface)
+    def move_map(self, coords):
+        x, y = coords
 
+        self.__scene.move_all_sprites((x, y))
+
+        self.__sprite_group.update()
+        self.__sprite_group.draw(self.__scene._surface)

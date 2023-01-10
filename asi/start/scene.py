@@ -28,6 +28,9 @@ class StartScene(BaseScene):
         if event.type == pygame.KEYDOWN and pressed[pygame.K_SPACE]:
             self.stop("main")
 
+    def key_pressed_handler(self, pressed):
+        ...
+
 
 class PauseScene(BaseScene):
     def init(self) -> None:

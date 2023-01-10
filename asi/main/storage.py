@@ -32,7 +32,7 @@ class Storage(BaseSprite):
 
             self.rect.x, self.rect.y = old_coords
 
-            
+
     def update(self) -> None:
         if self.checking_touch_by_type(SpriteTypes.PLAYER):
             pressed = pygame.key.get_pressed()
