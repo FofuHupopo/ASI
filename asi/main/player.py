@@ -34,12 +34,13 @@ class PlayerSprite(BaseSprite):
         self.set_type(SpriteTypes.PLAYER)
         self.width = self.image.get_width()
         self.height = self.image.get_height()
-        self.rect.x, self.rect.y = coords        
+        self.rect.x, self.rect.y = coords
         # self.rect.x = 500
         # self.rect.y = 220
 
         self.speed_y = 0
         self.time_y = 0
+        self.time_x = 0
         self.direction = 1
         self.level_sprites = []
 
@@ -90,14 +91,20 @@ class PlayerSprite(BaseSprite):
     def check(self, type):
         self.rect.x += 50
         if self.checking_touch_by_type(type):
-            return self.checking_touch_by_type(type)[0]
+            object = self.checking_touch_by_type(type)[0]
+            self.rect.x -= 50
+            return object
         self.rect.x -= 100
         if self.checking_touch_by_type(type):
-            return self.checking_touch_by_type(type)[0]
+            object = self.checking_touch_by_type(type)[0]
+            self.rect.x += 50
+            return object
         self.rect.x += 50
         self.rect.y -= 50
         if self.checking_touch_by_type(type):
-            return self.checking_touch_by_type(type)[0]
+            object = self.checking_touch_by_type(type)[0]
+            self.rect.y += 50
+            return object
         self.rect.y += 50
         return None
 
@@ -198,11 +205,17 @@ class PlayerSprite(BaseSprite):
         if pressed[pygame.K_a]:
             self.direction = -1
             self.speed_x = 5 * self.direction + additional_speed * self.direction
+            self.time_x = 8
         elif pressed[pygame.K_d]:
             self.direction = 1
             self.speed_x = 5 * self.direction + additional_speed * self.direction
+            self.time_x  = 8
         else:
-            self.speed_x = 0
+            if self.time_x == 0:
+                self.speed_x = 0
+            else:
+                self.speed_x = self.time_x * self.direction + additional_speed * self.direction
+                self.time_x -= 1
 
         if pressed[pygame.K_e]:
             if self.check(SpriteTypes.STORAGE):
