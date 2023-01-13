@@ -8,6 +8,7 @@ from .player import PlayerSprite
 from .obstacle import Obstacle
 from .storage import Storage
 from .trader import Trader
+from .kamikaze import Kamikaze
 
 
 def load_level(filename):  # загрузка уровня
@@ -26,7 +27,8 @@ class Map:
         "#": Obstacle,
         "-": Obstacle,
         "$": Storage,
-        "t": Trader
+        "t": Trader,
+        "k": Kamikaze
     }
 
     def __init__(self, scene):
