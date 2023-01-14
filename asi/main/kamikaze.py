@@ -21,6 +21,8 @@ class Kamikaze(BaseSprite):
         self.height = self.image.get_height()
         self.flag_zone = False
         self.zone_x1 = self.rect.x
+        self.zone_x2 = self.rect.x + self.width
+        self.zone_y = 5
 
     def find_zone(self):
         self.flag_zone = True
@@ -29,6 +31,14 @@ class Kamikaze(BaseSprite):
             if self.checking_touch_by_type(SpriteTypes.OBSTACLE):
                 self.zone_x1 += 1
                 self.rect.x -= 50
+                self.rect.y -= 50
+                for j in range(5):
+                    self.rect.y += 50
+                    if self.checking_touch_by_type(SpriteTypes.OBSTACLE):
+                        self.zone_y = min(self.zone_y, j)
+                        break
+                self.rect.y += (self.zone_y + 1) * 50
+                self.rect.y += 50
             else:
                 self.rect.y -= 50
                 self.rect.x += 50 * self.zone_x1
