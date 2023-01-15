@@ -36,6 +36,7 @@ class Kamikaze(BaseSprite):
                 break
 
     def update(self):
+        print(123)
         if not self.flag_zone:
             self.find_zone()
             print(self.zone_x1)

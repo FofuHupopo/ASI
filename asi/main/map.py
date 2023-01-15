@@ -23,16 +23,19 @@ def load_level(filename):  # загрузка уровня
 
 
 class Map:
-    SYMBOL_DECODER = {
-        "#": Obstacle,
-        "-": Obstacle,
+    ENTITY_SYMBOL_DECODER = {
         "$": Storage,
         "t": Trader,
         "k": Kamikaze
     }
+    ENVIRONMENT_SYMBOL_DECODER = {
+        "#": Obstacle,
+        "-": Obstacle,
+    }
 
     def __init__(self, scene):
-        self.__sprite_group = pygame.sprite.Group()
+        self.__entity_sprite_group = pygame.sprite.Group()
+        self.__env_sprite_group = pygame.sprite.Group()
         self.__scene = scene
 
         self.block_size = 50
@@ -48,9 +51,15 @@ class Map:
             for x in range(len(level_map[y])):
                 symbol = level_map[y][x]
                 
-                if symbol in Map.SYMBOL_DECODER:
-                    self.add_game_object(
-                        Map.SYMBOL_DECODER[symbol],
+                if symbol in Map.ENVIRONMENT_SYMBOL_DECODER:
+                    self.add_env_sprite(
+                        Map.ENVIRONMENT_SYMBOL_DECODER[symbol],
+                        [self.block_size * (x - offset[0]), self.block_size * (y - offset[1])]
+                    )
+                    
+                if symbol in Map.ENTITY_SYMBOL_DECODER:
+                    self.add_entity_sprite(
+                        Map.ENTITY_SYMBOL_DECODER[symbol],
                         [self.block_size * (x - offset[0]), self.block_size * (y - offset[1])]
                     )
                     
@@ -65,13 +74,21 @@ class Map:
 
         raise ValueError("Игрок не обнаружен на карте")
         
-    def add_game_object(self, sprite_class, coords):
+    def add_env_sprite(self, sprite_class, coords):
         sprite = sprite_class(self.__scene, coords=coords)
-        self.__sprite_group.add(sprite)
+        self.__env_sprite_group.add(sprite)
+        self.__scene._game_stack.sprite_group.add(sprite)
+        
+    def add_entity_sprite(self, sprite_class, coords):
+        sprite = sprite_class(self.__scene, coords=coords)
+        self.__entity_sprite_group.add(sprite)
         self.__scene._game_stack.sprite_group.add(sprite)
     
     def render(self, player_coords):
         self.__move_map_for_player(player_coords)
+        
+        self.__entity_sprite_group.update()
+        self.__entity_sprite_group.draw(self.__scene._surface)
 
     def __move_map_for_player(self, player_coords):
         if (
@@ -100,5 +117,5 @@ class Map:
 
         self.__scene.move_all_sprites((x, y))
 
-        self.__sprite_group.update()
-        self.__sprite_group.draw(self.__scene._surface)
+        self.__env_sprite_group.update()
+        self.__env_sprite_group.draw(self.__scene._surface)

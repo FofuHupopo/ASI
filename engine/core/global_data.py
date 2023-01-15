@@ -21,3 +21,7 @@ class Resources:
             raise FileNotFoundError(f"Файл по пути '{path}' не найден")
 
         return fullname
+
+
+def hello():
+    print("hi")

@@ -86,9 +86,9 @@ class Game:
 
         self.__terminate()
 
-    def __pygame_init(self):
+    def __pygame_init(self):        
         pygame.init()
-
+        
         pygame.display.set_caption(EngineSettings.get_var("WINDOW_NAME"))
 
     def __terminate(self):
