@@ -121,6 +121,9 @@ class BaseSprite(pygame.sprite.Sprite):
     def get_events(self):
         return self.__scene.get_events()
     
+    def find_sprites(self, sprite_type):
+        return self.__scene.find_sprites(sprite_type)
+    
     def __reload_image(self):
         old_rect = self.rect
 

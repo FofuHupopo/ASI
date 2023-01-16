@@ -92,6 +92,15 @@ class BaseScene:
         text_surface = font.render(text, False, color)
         self._surface.blit(text_surface, coords)
 
+    def find_sprites(self, sprite_type):
+        sprites = []
+
+        for sprite in self._game_stack.sprite_group.sprites():
+            if sprite.get_type() == sprite_type:
+                sprites.append(sprite)
+        
+        return sprites
+    
     @property
     def sprite_group(self):
         return self._game_stack.sprite_group
