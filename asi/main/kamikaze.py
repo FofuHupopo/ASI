@@ -18,6 +18,7 @@ class Kamikaze(BaseSprite):
 
         self.main_coordsx = coords[0]
         self.main_coordsy = coords[1]
+        self.relacetion_x = 0
 
         self.rect.x = coords[0]
         self.rect.y = coords[1]
@@ -29,6 +30,10 @@ class Kamikaze(BaseSprite):
         self.zone_x1 = self.rect.x
         self.zone_x2 = self.rect.x
         self.zone_y = self.rect.y - 250
+        self.direction = 1
+
+    def agra(self):
+        return None
 
     def find_zone(self):
         self.flag_zone = True
@@ -64,7 +69,39 @@ class Kamikaze(BaseSprite):
                 break
         self.rect.y = self.main_coordsy
         self.rect.x = self.main_coordsx
+        self.zone_x1 = self.zone_x1 - self.rect.x
+        self.zone_x2 = self.zone_x2 - self.rect.x
+        self.zone_y = self.rect.y - self.zone_y
+
+    def attack(self):
+        self.kill()
 
     def update(self):
+        self.coords_player = self.find_sprites(SpriteTypes.PLAYER)[0].rect
         if not self.flag_zone:
             self.find_zone()
+        if self.coords_player.x >= self.zone_x1 + self.rect.x - self.relacetion_x and \
+                self.coords_player.x <= self.zone_x2 + self.rect.x - self.relacetion_x \
+                and self.coords_player.y >= - self.zone_y + self.rect.y and self.coords_player.y <= self.rect.y:
+            if abs(self.coords_player.x - self.rect.x) < 100:
+                self.attack()
+            if self.coords_player.x > self.rect.x:
+                self.rect.x += 5
+                self.relacetion_x += 5
+                self.direction = 1
+            else:
+                self.rect.x -= 5
+                self.relacetion_x -= 5
+                self.direction = -1
+        elif self.direction == 1:
+            if self.relacetion_x < self.zone_x2 - self.width:
+                self.rect.x += 3
+                self.relacetion_x += 3
+            else:
+                self.direction = -1
+        else:
+            if self.relacetion_x > self.zone_x1 + self.width:
+                self.rect.x -= 3
+                self.relacetion_x -= 3
+            else:
+                self.direction = 1
