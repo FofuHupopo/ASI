@@ -110,40 +110,27 @@ class PlayerSprite(BaseSprite):
 
     def update(self):
         self.rect.x += self.speed_x
+        contact = self.checking_touch_by_type(SpriteTypes.OBSTACLE) + self.checking_touch_by_type(SpriteTypes.STORAGE) \
+                  + self.checking_touch_by_type(SpriteTypes.NPC)
         if self.direction == 1:
-            for i in self.checking_touch_by_type(SpriteTypes.OBSTACLE):
-                self.rect.x = min(self.rect.x, i.rect.x - self.width)
-            for i in self.checking_touch_by_type(SpriteTypes.STORAGE):
-                self.rect.x = min(self.rect.x, i.rect.x - self.width)
-            for i in self.checking_touch_by_type(SpriteTypes.NPC):
+            for i in contact:
                 self.rect.x = min(self.rect.x, i.rect.x - self.width)
         else:
-            for i in self.checking_touch_by_type(SpriteTypes.OBSTACLE):
-                self.rect.x = max(self.rect.x, i.rect.x + i.width)
-            for i in self.checking_touch_by_type(SpriteTypes.STORAGE):
-                self.rect.x = max(self.rect.x, i.rect.x + i.width)
-            for i in self.checking_touch_by_type(SpriteTypes.NPC):
+            for i in contact:
                 self.rect.x = max(self.rect.x, i.rect.x + i.width)
         if self.is_fly() or self.speed_y != 0:
             if self.speed_y == 0:
                 self.time_y = 0.5
             self.rect.y -= self.speed_y
-            if self.checking_touch_by_type(SpriteTypes.OBSTACLE) or self.checking_touch_by_type(SpriteTypes.STORAGE) \
-                    or self.checking_touch_by_type(SpriteTypes.NPC):
+            contact = self.checking_touch_by_type(SpriteTypes.OBSTACLE) + self.checking_touch_by_type(SpriteTypes.STORAGE) \
+                      + self.checking_touch_by_type(SpriteTypes.NPC)
+            if contact:
                 if self.speed_y > 0:
-                    for i in self.checking_touch_by_type(SpriteTypes.OBSTACLE):
-                        self.rect.y = max(self.rect.y, i.rect.y + i.height)
-                    for i in self.checking_touch_by_type(SpriteTypes.STORAGE):
-                        self.rect.y = max(self.rect.y, i.rect.y + i.height)
-                    for i in self.checking_touch_by_type(SpriteTypes.NPC):
+                    for i in contact:
                         self.rect.y = max(self.rect.y, i.rect.y + i.height)
                     self.time_y = 0.5
                 else:
-                    for i in self.checking_touch_by_type(SpriteTypes.OBSTACLE):
-                        self.rect.y = min(self.rect.y, i.rect.y - self.height)
-                    for i in self.checking_touch_by_type(SpriteTypes.STORAGE):
-                        self.rect.y = min(self.rect.y, i.rect.y - self.height)
-                    for i in self.checking_touch_by_type(SpriteTypes.NPC):
+                    for i in contact:
                         self.rect.y = min(self.rect.y, i.rect.y - self.height)
                     self.time_y = 0
 

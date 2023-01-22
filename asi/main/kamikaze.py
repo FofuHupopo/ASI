@@ -83,7 +83,7 @@ class Kamikaze(BaseSprite):
         if self.coords_player.x >= self.zone_x1 + self.rect.x - self.relacetion_x and \
                 self.coords_player.x <= self.zone_x2 + self.rect.x - self.relacetion_x \
                 and self.coords_player.y >= - self.zone_y + self.rect.y and self.coords_player.y <= self.rect.y:
-            if abs(self.coords_player.x - self.rect.x) < 100:
+            if abs(self.coords_player.x - self.rect.x) < 100 and abs(self.coords_player.y - self.rect.y < 100):
                 self.attack()
             if self.coords_player.x > self.rect.x:
                 self.rect.x += 5

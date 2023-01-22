@@ -30,27 +30,19 @@ class Arms(BaseSprite):
         self.time_fall = 0
 
     def contact_x(self):
+        contact = self.checking_touch_by_type(SpriteTypes.OBSTACLE) + self.checking_touch_by_type(SpriteTypes.STORAGE) \
+                  + self.checking_touch_by_type(SpriteTypes.NPC)
         if self.direction == 1:
-            for i in self.checking_touch_by_type(SpriteTypes.OBSTACLE):
-                self.rect.x = min(self.rect.x, i.rect.x - self.width)
-            for i in self.checking_touch_by_type(SpriteTypes.STORAGE):
-                self.rect.x = min(self.rect.x, i.rect.x - self.width)
-            for i in self.checking_touch_by_type(SpriteTypes.NPC):
+            for i in contact:
                 self.rect.x = min(self.rect.x, i.rect.x - self.width)
         else:
-            for i in self.checking_touch_by_type(SpriteTypes.OBSTACLE):
-                self.rect.x = max(self.rect.x, i.rect.x + i.width)
-            for i in self.checking_touch_by_type(SpriteTypes.STORAGE):
-                self.rect.x = max(self.rect.x, i.rect.x + i.width)
-            for i in self.checking_touch_by_type(SpriteTypes.NPC):
+            for i in contact:
                 self.rect.x = max(self.rect.x, i.rect.x + i.width)
 
     def contact_y(self):
-        for i in self.checking_touch_by_type(SpriteTypes.OBSTACLE):
-            self.rect.y = min(self.rect.y, i.rect.y - self.height)
-        for i in self.checking_touch_by_type(SpriteTypes.STORAGE):
-            self.rect.y = min(self.rect.y, i.rect.y - self.height)
-        for i in self.checking_touch_by_type(SpriteTypes.NPC):
+        contact = self.checking_touch_by_type(SpriteTypes.OBSTACLE) + self.checking_touch_by_type(SpriteTypes.STORAGE) \
+                  + self.checking_touch_by_type(SpriteTypes.NPC)
+        for i in contact:
             self.rect.y = min(self.rect.y, i.rect.y - self.height)
 
     def update(self):
