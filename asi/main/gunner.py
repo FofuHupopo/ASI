@@ -7,11 +7,10 @@ from engine.objects import BaseSprite
 from engine.core import EngineEvent, EventTypes
 from engine.objects.sprite import SpriteTypes
 from engine.objects.enemy import BaseEnemy
+from .projectile_enemy import Projectlie
 
-from .obstacle import Obstacle
 
-
-class Kamikaze(BaseEnemy):
+class Gunner(BaseEnemy):
     def init(self, coords):
         self.load_image("enemy/kamikadze.jpg")
         self.scale_image((100, 100))
@@ -32,15 +31,18 @@ class Kamikaze(BaseEnemy):
         self.zone_y = self.rect.y - 250
         self.direction = 1
 
-        self.attack_radius_x = 100
-        self.attack_radius_y = 100
+        self.attack_radius_x = 400
+        self.attack_radius_y = 400
 
         self.speed = 3
-        self.speed_agra = 5
+        self.speed_agra = 4
+        self.time_attack = 50
         self.time = 0
-        self.time_attack = 0
 
     def attack(self):
-        self.kill()
-
-
+        if self.find_sprites(SpriteTypes.PLAYER)[0].rect.x > self.rect.x:
+            self.load_sprite(Projectlie, coords=(self.rect.x + self.width, self.rect.y),
+                             coords_player=self.find_sprites(SpriteTypes.PLAYER)[0].rect.x)
+        else:
+            self.load_sprite(Projectlie, coords=self.rect,
+                             coords_player=self.find_sprites(SpriteTypes.PLAYER)[0].rect.x)

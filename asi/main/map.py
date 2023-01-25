@@ -9,6 +9,7 @@ from .obstacle import Obstacle
 from .storage import Storage
 from .trader import Trader
 from .kamikaze import Kamikaze
+from .gunner import Gunner
 
 
 def load_level(filename):  # загрузка уровня
@@ -26,7 +27,8 @@ class Map:
     ENTITY_SYMBOL_DECODER = {
         "$": Storage,
         "t": Trader,
-        "k": Kamikaze
+        "k": Kamikaze,
+        "g": Gunner
     }
     ENVIRONMENT_SYMBOL_DECODER = {
         "#": Obstacle,

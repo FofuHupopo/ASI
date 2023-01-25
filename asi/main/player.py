@@ -19,7 +19,7 @@ class PlayerСharacteristics:
     stamina = 100
     damage = 10
     stamina_boost = 3
-    
+
     max_health = 100
     max_stamina = 100
 
@@ -53,8 +53,9 @@ class PlayerSprite(BaseSprite):
             "bracelet": None,
             "boots": None,
         }
+
     # ----------
-        # self.create_map(self.load_level("map.txt"))
+    # self.create_map(self.load_level("map.txt"))
 
     def create_map(self, level_map):
         for y in range(len(level_map)):
@@ -76,6 +77,7 @@ class PlayerSprite(BaseSprite):
         max_width = max(map(len, level_map))
 
         return list(map(lambda x: list(x.ljust(max_width, ".")), level_map))  # возвращаем список списков карты
+
     # -----------
 
     def is_fly(self):
@@ -122,7 +124,8 @@ class PlayerSprite(BaseSprite):
             if self.speed_y == 0:
                 self.time_y = 0.5
             self.rect.y -= self.speed_y
-            contact = self.checking_touch_by_type(SpriteTypes.OBSTACLE) + self.checking_touch_by_type(SpriteTypes.STORAGE) \
+            contact = self.checking_touch_by_type(SpriteTypes.OBSTACLE) + self.checking_touch_by_type(
+                SpriteTypes.STORAGE) \
                       + self.checking_touch_by_type(SpriteTypes.NPC)
             if contact:
                 if self.speed_y > 0:
@@ -140,7 +143,7 @@ class PlayerSprite(BaseSprite):
             else:
                 self.speed_y -= self.time_y
                 self.time_y += 10 * 0.002
-                
+
         if self.__shift_pressed:
             self.__change_stamina(-0.8)
         else:
@@ -152,14 +155,14 @@ class PlayerSprite(BaseSprite):
         if event.type == pygame.KEYDOWN and keys[pygame.K_SPACE]:
             if not self.is_fly():
                 self.speed_y = 10
-                
+
         if event.type == pygame.KEYDOWN and keys[pygame.K_l]:
             self.__change_health(-10)
 
         if event.type == pygame.KEYDOWN and keys[pygame.K_r]:
             self.load_sprite(Arms, coords=[self.rect.x + max(0, self.width * self.direction), self.rect.y],
                              direction=self.direction)
-            
+
     def __change_health(self, value):
         PlayerСharacteristics.health = max(0, min(self.health + value, PlayerСharacteristics.max_health))
 
@@ -181,14 +184,14 @@ class PlayerSprite(BaseSprite):
     @property
     def stamina(self):
         return PlayerСharacteristics.stamina
-    
+
     @property
     def stamina_boost(self):
         return PlayerСharacteristics.stamina_boost
 
     def key_pressed_handler(self, pressed: Sequence[bool]):
         additional_speed = self.stamina_boost * self.__shift_pressed * bool(self.stamina)
-        
+
         if pressed[pygame.K_a]:
             self.direction = -1
             self.speed_x = 5 * self.direction + additional_speed * self.direction
@@ -196,7 +199,7 @@ class PlayerSprite(BaseSprite):
         elif pressed[pygame.K_d]:
             self.direction = 1
             self.speed_x = 5 * self.direction + additional_speed * self.direction
-            self.time_x  = 8
+            self.time_x = 8
         else:
             if self.time_x == 0:
                 self.speed_x = 0
@@ -207,5 +210,5 @@ class PlayerSprite(BaseSprite):
         if pressed[pygame.K_e]:
             if self.check(SpriteTypes.STORAGE):
                 self.check(SpriteTypes.STORAGE).open()
-        
+
         self.__shift_pressed = pressed[pygame.K_LSHIFT]
