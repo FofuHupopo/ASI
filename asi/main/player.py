@@ -111,6 +111,7 @@ class PlayerSprite(BaseSprite):
         return None
 
     def update(self):
+
         self.rect.x += self.speed_x
         contact = self.checking_touch_by_type(SpriteTypes.OBSTACLE) + self.checking_touch_by_type(SpriteTypes.STORAGE) \
                   + self.checking_touch_by_type(SpriteTypes.NPC)
@@ -162,6 +163,10 @@ class PlayerSprite(BaseSprite):
         if event.type == pygame.KEYDOWN and keys[pygame.K_r]:
             self.load_sprite(Arms, coords=[self.rect.x + max(0, self.width * self.direction), self.rect.y],
                              direction=self.direction)
+        for localevent in self.get_events():
+            if localevent["type"] == "info" and localevent["name"] == "minus_hp":
+                print(-localevent["data"]["value"])
+                self.__change_health(-localevent["data"]["value"])
 
     def __change_health(self, value):
         PlayerСharacteristics.health = max(0, min(self.health + value, PlayerСharacteristics.max_health))

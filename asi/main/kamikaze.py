@@ -41,6 +41,9 @@ class Kamikaze(BaseEnemy):
         self.time_attack = 0
 
     def attack(self):
+        self.add_event(EngineEvent(
+            "info", "minus_hp", {"value": 50}
+        ))
         self.kill()
 
 
