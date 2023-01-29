@@ -33,6 +33,7 @@ class Gunner(BaseEnemy):
 
         self.chance_heal = 2
         self.health = 250
+        self.max_prize = 4
 
         self.attack_radius_x = 400
         self.attack_radius_y = 400

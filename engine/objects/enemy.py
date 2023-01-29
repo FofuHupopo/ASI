@@ -7,6 +7,7 @@ from engine.objects import BaseSprite
 from engine.core import EngineEvent, EventTypes
 from engine.objects.sprite import SpriteTypes
 from asi.main.HEAL import Heal
+from asi.main.money import Money
 
 
 class BaseEnemy(BaseSprite):
@@ -63,14 +64,23 @@ class BaseEnemy(BaseSprite):
         self.zone_x2 = self.zone_x2 - self.rect.x
         self.zone_y = self.rect.y - self.zone_y
 
+    def dead(self):
+        if random.randint(1, 10) <= self.chance_heal:
+            self.load_sprite(Heal, coords=(random.randint(self.rect.x - 20, self.rect.x + self.width),
+                                           random.randint(self.rect.y - 20, self.rect.y + self.height - 50)),
+                             view="little")
+        else:
+            for i in range(random.randint(self.max_prize // 2, self.max_prize)):
+                self.load_sprite(Money, coords=(random.randint(self.rect.x - 20, self.rect.x + self.width),
+                                                random.randint(self.rect.y - 20, self.rect.y + self.height - 25)))
+        self.kill()
+
     def update(self):
         if self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON):
             self.health -= self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON)[0].damadge
             self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON)[0].kill()
         if self.health <= 0:
-            if random.randint(1, 10) <= self.chance_heal:
-                self.load_sprite(Heal, coords = (self.rect.x, self.rect.y + self.height - 50), view = "little")
-            self.kill()
+            self.dead()
         self.coords_player = self.find_sprites(SpriteTypes.PLAYER)[0].rect
         self.time = min(self.time + 1, self.time_attack)
         if not self.flag_zone:

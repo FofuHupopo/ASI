@@ -34,6 +34,7 @@ class Kamikaze(BaseEnemy):
 
         self.chance_heal = 5
         self.health = 200
+        self.max_prize = 6
 
         self.attack_radius_x = 100
         self.attack_radius_y = 100
@@ -48,5 +49,3 @@ class Kamikaze(BaseEnemy):
             "info", "minus_hp", {"value": 50}
         ))
         self.kill()
-
-

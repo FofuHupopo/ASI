@@ -2,19 +2,14 @@ import pygame
 import random
 
 from engine.objects import BaseSprite
-from engine.core import EngineEvent, EventTypes
 from engine.objects.sprite import SpriteTypes
+from engine.core import EngineEvent, EventTypes
 
 
-class Heal(BaseSprite):
-    def init(self, coords, view="big"):
-        self.set_type(SpriteTypes.HEAL)
-        if view == "big":
-            self.load_image("heal/big_heal.jfif")
-        else:
-            self.load_image("heal/little_heal.png")
-        self.scale_image((50, 50))
-
+class Money(BaseSprite):
+    def init(self, coords):
+        self.load_image("money/money.jpg")
+        self.scale_image((25, 25))
         self.rect.x = coords[0]
         self.rect.y = coords[1]
 
@@ -24,7 +19,7 @@ class Heal(BaseSprite):
 
     def update(self):
         if self.fly:
-            self.rect.y += 5
+            self.rect.y += 3
             if self.checking_touch_by_type(SpriteTypes.OBSTACLE):
                 for i in self.checking_touch_by_type(SpriteTypes.OBSTACLE):
                     self.rect.y = min(i.rect.y - self.height, self.rect.y)
