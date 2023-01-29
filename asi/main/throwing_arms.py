@@ -65,13 +65,12 @@ class Arms(BaseSprite):
                 self.time_fly = 10
             elif self.time_fly > 25:
                 self.rect.y += (self.time_fly - 25) * self.speed_y * 10
+                self.damadge = max(0, self.damadge - 2)
                 if self.checking_touch_by_type(SpriteTypes.OBSTACLE) or self.checking_touch_by_type(SpriteTypes.STORAGE) \
                         or self.checking_touch_by_type(SpriteTypes.NPC):
                     self.contact_y()
                     self.heat = True
                     self.damadge = 0
                     self.time_fly = 10
-            else:
-                    self.damadge = max(0, self.damadge - 2)
             if self.time_fly == 40:
                 self.damadge = 0

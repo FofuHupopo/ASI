@@ -165,7 +165,7 @@ class PlayerSprite(BaseSprite):
                              direction=self.direction)
         for localevent in self.get_events():
             if localevent["type"] == "info" and localevent["name"] == "minus_hp":
-                print(-localevent["data"]["value"])
+                print(localevent["data"]["value"])
                 self.__change_health(-localevent["data"]["value"])
 
     def __change_health(self, value):

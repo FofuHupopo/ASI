@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from engine.objects import BaseSprite
 from engine.core import EngineEvent, EventTypes
 from engine.objects.sprite import SpriteTypes
+from asi.main.HEAL import Heal
 
 
 class BaseEnemy(BaseSprite):
@@ -63,6 +64,13 @@ class BaseEnemy(BaseSprite):
         self.zone_y = self.rect.y - self.zone_y
 
     def update(self):
+        if self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON):
+            self.health -= self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON)[0].damadge
+            self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON)[0].kill()
+        if self.health <= 0:
+            if random.randint(1, 10) <= self.chance_heal:
+                self.load_sprite(Heal, coords = (self.rect.x, self.rect.y + self.height - 50), view = "little")
+            self.kill()
         self.coords_player = self.find_sprites(SpriteTypes.PLAYER)[0].rect
         self.time = min(self.time + 1, self.time_attack)
         if not self.flag_zone:

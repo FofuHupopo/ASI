@@ -31,6 +31,9 @@ class Gunner(BaseEnemy):
         self.zone_y = self.rect.y - 250
         self.direction = 1
 
+        self.chance_heal = 2
+        self.health = 250
+
         self.attack_radius_x = 400
         self.attack_radius_y = 400
 

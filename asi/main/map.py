@@ -10,6 +10,7 @@ from .storage import Storage
 from .trader import Trader
 from .kamikaze import Kamikaze
 from .gunner import Gunner
+from .HEAL import Heal
 
 
 def load_level(filename):  # загрузка уровня
@@ -28,7 +29,8 @@ class Map:
         "$": Storage,
         "t": Trader,
         "k": Kamikaze,
-        "g": Gunner
+        "g": Gunner,
+        "h": Heal
     }
     ENVIRONMENT_SYMBOL_DECODER = {
         "#": Obstacle,
