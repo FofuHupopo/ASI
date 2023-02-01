@@ -35,12 +35,12 @@ class EngineEvents:
         self.events: set[EngineEvent] = set()
 
     def get_events(self):
-        for event in self.events:
+        for event in {*self.events}:
             yield event.get
 
     def add_event(self, event):
         self.events.add(event)
-    
+
     def clear_events(self):
         self.events.clear()
 

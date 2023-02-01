@@ -170,3 +170,34 @@ class BaseSprite(pygame.sprite.Sprite):
 
     def _key_pressed_handler(self, pressed: Sequence[bool]):
         self.key_pressed_handler(pressed)
+
+
+class AnimatedSprite(BaseSprite):
+    def __init__(self, **kwargs):
+        self.__current_animation_name = None
+        self.__current_animation_frame = 0
+        self.__animations = dict()
+
+        return super().__init__(**kwargs)
+    
+    def register_animations(self, animations_dict):
+        self.__animations = animations_dict
+        
+    def start_animation(self, animation_name):
+        if animation_name not in self.__animations:
+            raise ValueError(f"Анимация с именем {animation_name} не найдена.")
+
+        self.__current_animation_name = 0
+        self.__current_animation_frame = animation_name
+    
+    def stop_animation(self):
+        self.__current_animation_name = 0
+        self.__current_animation_frame = None
+        
+    def __run_animation(self):
+        ...
+    
+    def _update(self, scene_update=False):
+        self.__run_animation()
+
+        return super()._update(scene_update)
