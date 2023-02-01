@@ -11,6 +11,7 @@ from .throwing_arms import Arms
 from .obstacle import Obstacle
 from .storage import Storage
 from .trader import Trader
+# from .animation import Animation
 
 
 @dataclass
@@ -26,9 +27,8 @@ class PlayerСharacteristics:
 
 class PlayerSprite(BaseSprite):
     def init(self, coords=(500, 220)):
-
         self.tile_image = {
-            "wall": self.load_image("player/creature.png")
+            "player": self.load_image("player/creature.png")
         }
 
         self.set_type(SpriteTypes.PLAYER)
@@ -67,7 +67,6 @@ class PlayerSprite(BaseSprite):
                     row_sprite.append(self.load_sprite(Storage, coords=[50 * x, 50 * y]))
                 if level_map[y][x] == "t":
                     row_sprite.append(self.load_sprite(Trader, coords=[50 * x, 50 * y]))
-            # self.level_sprites.append(row_sprite) - кусок хуйни, которого не видят
 
     @staticmethod
     def load_level(filename):  # загрузка уровня

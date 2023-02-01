@@ -138,7 +138,7 @@ class BaseSprite(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(
             x=old_rect.x,
             y=old_rect.y,
-            center=old_rect.center
+            # center=old_rect.center  # располагает картинку по старому центру
         )
     
     def reset_rotation_angel(self):

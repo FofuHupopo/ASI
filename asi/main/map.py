@@ -54,21 +54,23 @@ class Map:
         for y in range(len(level_map)):
             for x in range(len(level_map[y])):
                 symbol = level_map[y][x]
-                
+
                 if symbol in Map.ENVIRONMENT_SYMBOL_DECODER:
                     self.add_env_sprite(
                         Map.ENVIRONMENT_SYMBOL_DECODER[symbol],
                         [self.block_size * (x - offset[0]), self.block_size * (y - offset[1])]
                     )
-                    
+
                 if symbol in Map.ENTITY_SYMBOL_DECODER:
                     self.add_entity_sprite(
                         Map.ENTITY_SYMBOL_DECODER[symbol],
                         [self.block_size * (x - offset[0]), self.block_size * (y - offset[1])]
                     )
-                    
+
                 if level_map[y][x] == "p":
-                    self.__scene.player = self.__scene.load_sprite(PlayerSprite, coords=[self.block_size * (x - offset[0]), self.block_size * (y - offset[1])])
+                    self.__scene.player = self.__scene.load_sprite(PlayerSprite,
+                                                                   coords=[self.block_size * (x - offset[0]),
+                                                                           self.block_size * (y - offset[1])])
 
     def __preload_player(self, level_map):
         for y in range(len(level_map)):
@@ -77,30 +79,30 @@ class Map:
                     return (x, y)
 
         raise ValueError("Игрок не обнаружен на карте")
-        
+
     def add_env_sprite(self, sprite_class, coords):
         sprite = sprite_class(self.__scene, coords=coords)
         self.__env_sprite_group.add(sprite)
         self.__scene._game_stack.sprite_group.add(sprite)
-        
+
     def add_entity_sprite(self, sprite_class, coords):
         sprite = sprite_class(self.__scene, coords=coords)
         self.__entity_sprite_group.add(sprite)
         self.__scene._game_stack.sprite_group.add(sprite)
-    
+
     def render(self, player_coords):
         self.__move_map_for_player(player_coords)
-        
+
         self.__entity_sprite_group.update()
         self.__entity_sprite_group.draw(self.__scene._surface)
 
     def __move_map_for_player(self, player_coords):
         if (
-            settings.WIDTH * 20 / 100 >= player_coords[0] or
-            player_coords[0] >= settings.WIDTH * 80 / 100 or
-            settings.HEIGHT * 20 / 100 >= player_coords[1] or
-            player_coords[1] >= settings.HEIGHT * 80 / 100
-            ):
+                settings.WIDTH * 20 / 100 >= player_coords[0] or
+                player_coords[0] >= settings.WIDTH * 80 / 100 or
+                settings.HEIGHT * 20 / 100 >= player_coords[1] or
+                player_coords[1] >= settings.HEIGHT * 80 / 100
+        ):
 
             x, y = 0, 0
 
@@ -108,12 +110,12 @@ class Map:
                 x = settings.WIDTH * 20 / 100 - player_coords[0]
             elif player_coords[0] >= settings.WIDTH * 80 / 100:
                 x = settings.WIDTH * 80 / 100 - player_coords[0]
-                
+
             if settings.HEIGHT * 20 / 100 >= player_coords[1]:
                 y = settings.HEIGHT * 20 / 100 - player_coords[1]
             elif player_coords[1] >= settings.HEIGHT * 80 / 100:
                 y = settings.HEIGHT * 80 / 100 - player_coords[1]
-            
+
             self.move_map((x, y))
 
     def move_map(self, coords):

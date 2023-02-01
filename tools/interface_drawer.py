@@ -3,7 +3,7 @@ from tkinter import Tk, Button, Entry, Label, LabelFrame, Frame, Scrollbar, Canv
 from _tkinter import TclError
 
 
-PYGAME_WINDOW_SIZE = (1000, 600)
+PYGAME_WINDOW_SIZE = (750, 500)
 PROGRAM_NAME = "Проектировщик интерфейса"
 
 BASE_CODE = (
