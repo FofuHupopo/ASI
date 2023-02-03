@@ -9,7 +9,8 @@ from engine.objects.sprite import SpriteTypes
 class Heal(BaseSprite):
     def init(self, coords, view="big"):
         self.set_type(SpriteTypes.HEAL)
-        if view == "big":
+        self.view = view
+        if self.view == "big":
             self.load_image("heal/big_heal.jfif")
         else:
             self.load_image("heal/little_heal.png")
@@ -29,3 +30,9 @@ class Heal(BaseSprite):
                 for i in self.checking_touch_by_type(SpriteTypes.OBSTACLE):
                     self.rect.y = min(i.rect.y - self.height, self.rect.y)
                 self.fly = False
+        if self.checking_touch_by_type(SpriteTypes.PLAYER):
+            if self.view == 'big':
+                self.find_sprites(SpriteTypes.PLAYER)[0].count_big_heal += 1
+            else:
+                self.find_sprites(SpriteTypes.PLAYER)[0].count_heal += 1
+            self.kill()

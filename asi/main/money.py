@@ -24,3 +24,6 @@ class Money(BaseSprite):
                 for i in self.checking_touch_by_type(SpriteTypes.OBSTACLE):
                     self.rect.y = min(i.rect.y - self.height, self.rect.y)
                 self.fly = False
+        if self.checking_touch_by_type(SpriteTypes.PLAYER):
+            self.find_sprites(SpriteTypes.PLAYER)[0].money += 1
+            self.kill()
