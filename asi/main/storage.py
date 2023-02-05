@@ -5,6 +5,7 @@ from typing import Sequence
 
 from engine.objects import BaseSprite
 from engine.objects.sprite import SpriteTypes
+from asi.main.money import Money
 
 
 class Storage(BaseSprite):
@@ -19,7 +20,7 @@ class Storage(BaseSprite):
         self.width = self.image.get_width()
         self.height = self.image.get_height()
         self.flag = False
-        
+
         self.__storage = []
 
     def open(self):
@@ -31,7 +32,12 @@ class Storage(BaseSprite):
             self.scale_image((100, 100))
 
             self.rect.x, self.rect.y = old_coords
-
+            for i in range(random.randint(3, 6)):
+                t = self.load_sprite(Money, coords=(random.randint(self.rect.x - 100, self.rect.x - 25),
+                                                    random.randint(self.rect.y, self.rect.y + self.height - 25)))
+                t = self.load_sprite(Money,
+                                     coords=(random.randint(self.rect.x + self.width, self.rect.x + self.width + 75),
+                                             random.randint(self.rect.y, self.rect.y + self.height - 25)))
 
     def update(self) -> None:
         if self.checking_touch_by_type(SpriteTypes.PLAYER):

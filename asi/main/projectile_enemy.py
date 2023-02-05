@@ -34,9 +34,7 @@ class Projectlie(BaseSprite):
             self.kill()
         self.rect.x += self.speed_x
         if self.checking_touch_by_type(SpriteTypes.PLAYER):
-            self.add_event(EngineEvent(
-                "info", "minus_hp", {"value": 25}
-            ))
+            self.find_sprites(SpriteTypes.PLAYER)[0].change_health(-25)
             self.kill()
         if self.checking_touch_by_type(SpriteTypes.OBSTACLE) or self.checking_touch_by_type(
                 SpriteTypes.NPC) or self.checking_touch_by_type(SpriteTypes.STORAGE):
