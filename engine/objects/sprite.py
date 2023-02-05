@@ -125,21 +125,31 @@ class BaseSprite(pygame.sprite.Sprite):
     def find_sprites(self, sprite_type):
         return self.__scene.find_sprites(sprite_type)
     
-    def __reload_image(self):
-        old_rect = self.rect
+    def __reload_image(self, new_sprite_image_path: str=None):
+        has_rect = False
 
-        self.load_image(self.__image_path)
+        if hasattr(self, "rect"):
+            old_rect = self.rect
+            has_rect = True
+
+        if new_sprite_image_path:
+            self.load_image(new_sprite_image_path)
+        else:
+            self.load_image(self.__image_path)
         
         self.image = pygame.transform.rotate(self.image, self.__angel)
         self.image = pygame.transform.scale(self.image, self.__size)
         
         # print(new_image.get_rect(), self.image.get_rect())
         
-        self.rect = self.image.get_rect(
-            x=old_rect.x,
-            y=old_rect.y,
-            # center=old_rect.center  # располагает картинку по старому центру
-        )
+        if has_rect:
+            self.rect = self.image.get_rect(
+                x=old_rect.x,
+                y=old_rect.y,
+                # center=old_rect.center  # располагает картинку по старому центру
+            )
+        else:
+            self.rect = self.image.get_rect()
     
     def reset_rotation_angel(self):
         """Обнуление угла поворота спрайта.
@@ -173,31 +183,87 @@ class BaseSprite(pygame.sprite.Sprite):
 
 
 class AnimatedSprite(BaseSprite):
-    def __init__(self, **kwargs):
+    def __init__(self, scene, **kwargs):
         self.__current_animation_name = None
         self.__current_animation_frame = 0
-        self.__animations = dict()
-
-        return super().__init__(**kwargs)
-    
-    def register_animations(self, animations_dict):
-        self.__animations = animations_dict
+        self.__animation_runned = False
         
-    def start_animation(self, animation_name):
+        self.__base_image_path = None
+        self.__animations = dict()
+    
+        self.__current_animation_count = 1
+        self.__current_animation_number = 1
+        
+        self.__waiting_ticks = 10
+        self.__current_tick_after_animation = 0
+
+        return super().__init__(scene, **kwargs)
+
+    def register_animations(self, base_image_path, animations_dict):
+        self.__base_image_path = base_image_path
+        self.__animations = animations_dict
+
+        self.__load_base_image()
+
+    def start_animation(self, animation_name, count=1, waiting_ticks=10):
         if animation_name not in self.__animations:
             raise ValueError(f"Анимация с именем {animation_name} не найдена.")
 
-        self.__current_animation_name = 0
-        self.__current_animation_frame = animation_name
+        self.__current_animation_name = animation_name
+        self.__current_animation_frame = 0
+        
+        self.__animation_runned = True
+        
+        self.__current_animation_count = count
+        self.__current_animation_number = 0
+        
+        self.__waiting_ticks = waiting_ticks
+        self.__current_tick_after_animation = 0
     
     def stop_animation(self):
         self.__current_animation_name = 0
         self.__current_animation_frame = None
         
-    def __run_animation(self):
-        ...
+        self.__animation_runned = False
+        
+        self.__current_animation_count = 1
+        self.__current_animation_number = 0
+        
+        self.__waiting_ticks = 10
+        self.__current_tick_after_animation = 10
+
+        self.__load_base_image()
     
+    def __load_base_image(self, path=None):
+        self._BaseSprite__reload_image(
+            path or self.__base_image_path
+        )
+
+    @property
+    def current_animation_paths(self):
+        return self.__animations[self.__current_animation_name]
+        
+    def __run_animation(self):
+        self.__current_animation_frame += 1
+        
+        if self.__current_animation_frame >= len(self.current_animation_paths):
+            self.__current_animation_frame = 0
+            self.__current_animation_number += 1
+            
+            if self.__current_animation_number >= self.__current_animation_count:
+                self.stop_animation()
+                return
+            
+        self.__load_base_image(
+            self.current_animation_paths[self.__current_animation_frame]
+        )
+
     def _update(self, scene_update=False):
-        self.__run_animation()
+        if self.__animation_runned:
+            if self.__current_tick_after_animation > self.__waiting_ticks:
+                self.__current_tick_after_animation = 0
+                self.__run_animation()
+            
+            self.__current_tick_after_animation += 1
 
         return super()._update(scene_update)
