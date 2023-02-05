@@ -25,6 +25,8 @@ class PlayerСharacteristics:
 
     max_health = 100
     max_stamina = 100
+    
+    money = 0
 
 
 class PlayerSprite(AnimatedSprite):
@@ -76,7 +78,6 @@ class PlayerSprite(AnimatedSprite):
 
         self.count_heal = 0
         self.count_big_heal = 0
-        self.money = 0
 
         self.__shift_pressed = False
         self.__artefacts = {
@@ -220,7 +221,7 @@ class PlayerSprite(AnimatedSprite):
             self.start_animation(
                 "death", 1, 10
             )
-            self.__change_health(PlayerСharacteristics.max_health)
+            self.change_health(PlayerСharacteristics.max_health)
 
     def __change_stamina(self, value):
         PlayerСharacteristics.stamina = max(0, min(self.stamina + value, PlayerСharacteristics.max_stamina))
@@ -243,6 +244,18 @@ class PlayerSprite(AnimatedSprite):
     @property
     def stamina_boost(self):
         return PlayerСharacteristics.stamina_boost
+    
+    def set_money(self, value):
+        PlayerСharacteristics.money = value
+        
+        self.add_event(EngineEvent(
+            "info", "money", {"value": self.money}
+        ))
+        
+    def get_money(self):
+        return PlayerСharacteristics.money
+    
+    money = property(fset=set_money, fget=get_money)
 
     def key_pressed_handler(self, pressed: Sequence[bool]):
         additional_speed = self.stamina_boost * self.__shift_pressed * bool(self.stamina)

@@ -132,3 +132,22 @@ class StaminaBar(BaseObject):
             if event["type"] == "info" and event["name"] == "stamina":
                 self.stamina = event["data"]["value"]
                 # print(self.stamina)
+
+
+class MoneyField(BaseObject):
+    def init(self, money=0):
+        self.money = money
+        self.image = pygame.image.load("asi/main/resources/money/money.png")
+        self.image = pygame.transform.scale(self.image, (30, 30))
+    
+    def render(self, surface: pygame.Surface):
+        surface.blit(self.image, (20, 20))
+        
+        font = pygame.font.SysFont('serif', 20, bold=True)
+        text_surface = font.render(f"{self.money}", False, "white")
+        surface.blit(text_surface, (65, 25))
+
+    def update(self) -> None:
+        for event in self.get_events():
+            if event["type"] == "info" and event["name"] == "money":
+                self.money = event["data"]["value"]

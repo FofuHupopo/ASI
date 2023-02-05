@@ -8,7 +8,7 @@ from engine.core import EngineEvent, EventTypes
 
 class Money(BaseSprite):
     def init(self, coords):
-        self.load_image("money/money.jpg")
+        self.load_image("money/money.png")
         self.scale_image((25, 25))
         self.rect.x = coords[0]
         self.rect.y = coords[1]
