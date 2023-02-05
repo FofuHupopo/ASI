@@ -135,18 +135,22 @@ class PlayerSprite(AnimatedSprite):
             self.rect.x += 50
             return object
         self.rect.x += 50
-        self.rect.y -= 50
+        self.rect.y += 50
         if self.checking_touch_by_type(type):
             object = self.checking_touch_by_type(type)[0]
-            self.rect.y += 50
+            self.rect.y -= 50
             return object
-        self.rect.y += 50
+        self.rect.y -= 50
         return None
 
     def update(self):
+        if self.health == 0:
+            self.dead()
+
         for localevent in self.get_events():
             if localevent["type"] == "info" and localevent["name"] == "minus_hp":
-                self.__change_health(-localevent["data"]["value"])
+                self.change_health(-localevent["data"]["value"])
+
         self.rect.x += self.speed_x
         contact = self.checking_touch_by_type(SpriteTypes.OBSTACLE) + self.checking_touch_by_type(SpriteTypes.STORAGE) \
                   + self.checking_touch_by_type(SpriteTypes.NPC)
@@ -173,7 +177,7 @@ class PlayerSprite(AnimatedSprite):
                         self.rect.y = min(self.rect.y, i.rect.y - self.height)
                     self.time_y = 0
 
-                    self.__change_health(-max(0, (-25 - self.speed_y) * 4))
+                    self.change_health(-max(0, (-25 - self.speed_y) * 4))
 
                 self.speed_y = 0
             else:
@@ -199,13 +203,13 @@ class PlayerSprite(AnimatedSprite):
             self.load_sprite(Arms, coords=[self.rect.x + max(0, self.width * self.direction), self.rect.y],
                              direction=self.direction)
         if event.type == pygame.KEYDOWN and keys[pygame.K_2] and self.count_heal > 0:
-            self.__change_health(50)
+            self.change_health(50)
             self.count_heal -= 1
         if event.type == pygame.KEYDOWN and keys[pygame.K_1] and self.count_big_heal > 0:
-            self.__change_health(100)
+            self.change_health(100)
             self.count_big_heal -= 1
 
-    def __change_health(self, value):
+    def change_health(self, value):
         PlayerСharacteristics.health = max(0, min(self.health + value, PlayerСharacteristics.max_health))
 
         self.add_event(EngineEvent(
@@ -224,6 +228,9 @@ class PlayerSprite(AnimatedSprite):
         self.add_event(EngineEvent(
             "info", "stamina", {"value": self.stamina}
         ))
+        
+    def dead(self):
+        pass
 
     @property
     def health(self):
