@@ -112,6 +112,7 @@ class PlayerSprite(BaseSprite):
             object = self.checking_touch_by_type(type)[0]
             self.rect.y -= 50
             return object
+        self.rect.y -= 50
         return None
 
     def update(self):
