@@ -70,7 +70,8 @@ class StartScene(BaseScene):
                          (top_left, top, width, height), thickness, corner)
 
     def render(self, surface: pygame.Surface):
-        surface.blit(StartScene.image_background, (0, 0))
+        image_background = pygame.transform.scale(StartScene.image_background, settings.SIZE)
+        surface.blit(image_background, (0, 0))
 
         for button in self.buttons:
             if button.is_hover:

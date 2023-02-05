@@ -27,3 +27,5 @@ class Money(BaseSprite):
         if self.checking_touch_by_type(SpriteTypes.PLAYER):
             self.find_sprites(SpriteTypes.PLAYER)[0].money += 1
             self.kill()
+
+

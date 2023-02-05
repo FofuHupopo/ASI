@@ -5,10 +5,13 @@ from typing import Tuple, Callable
 from engine.objects import BaseSprite
 from engine.core import EngineEvent
 
+from asi import settings
+
 
 class ButtonSprite(BaseSprite):
     def init(self, image_path, type_button, coordinates, action,  callback: Callable, **kwargs):
         self.load_image(image_path)
+        
         self.action = action
         self.rect.x = coordinates[0]
         self.rect.y = coordinates[1]
@@ -21,7 +24,7 @@ class ButtonSprite(BaseSprite):
         if self.type_button == "play":
             self.scale_image((95, 33))
         elif self.type_button == "setting":
-            self.scale_image((200, 30))
+            self.scale_image((200, 33))
         else:
             self.scale_image((85, 33))
 

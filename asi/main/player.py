@@ -76,8 +76,10 @@ class PlayerSprite(AnimatedSprite):
         self.direction = 1
         self.level_sprites = []
 
-        self.count_heal = 0
-        self.count_big_heal = 0
+        self.__count_big_heal = 0
+        self.__count_heal = 0
+        
+        self.__is_died = False
 
         self.__shift_pressed = False
         self.__artefacts = {
@@ -209,6 +211,13 @@ class PlayerSprite(AnimatedSprite):
         if event.type == pygame.KEYDOWN and keys[pygame.K_1] and self.count_big_heal > 0:
             self.change_health(100)
             self.count_big_heal -= 1
+            
+        if event.type == pygame.KEYDOWN and keys[pygame.K_3]:
+            self.change_health(50)
+            self.count_heal += 1
+        if event.type == pygame.KEYDOWN and keys[pygame.K_4]:
+            self.change_health(100)
+            self.count_big_heal += 1
 
     def change_health(self, value):
         PlayerСharacteristics.health = max(0, min(self.health + value, PlayerСharacteristics.max_health))
@@ -221,6 +230,7 @@ class PlayerSprite(AnimatedSprite):
             self.start_animation(
                 "death", 1, 10
             )
+            self.__is_died = True
             self.change_health(PlayerСharacteristics.max_health)
 
     def __change_stamina(self, value):
@@ -244,6 +254,30 @@ class PlayerSprite(AnimatedSprite):
     @property
     def stamina_boost(self):
         return PlayerСharacteristics.stamina_boost
+    
+    def set_little_heal(self, value):
+        self.__count_heal = value
+        
+        self.add_event(EngineEvent(
+            "info", "little_heal", {"value": self.__count_heal}
+        ))
+    
+    def get_little_heal(self):
+        return self.__count_heal
+    
+    count_heal = property(fset=set_little_heal, fget=get_little_heal)
+    
+    def set_big_heal(self, value):
+        self.__count_big_heal = value
+        
+        self.add_event(EngineEvent(
+            "info", "big_heal", {"value": self.__count_big_heal}
+        ))
+    
+    def get_big_heal(self):
+        return self.__count_big_heal
+    
+    count_big_heal = property(fset=set_big_heal, fget=get_big_heal)
     
     def set_money(self, value):
         PlayerСharacteristics.money = value

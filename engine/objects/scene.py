@@ -115,6 +115,9 @@ class BaseScene:
     @property
     def sprite_group(self):
         return self._game_stack.sprite_group
+    
+    def terminate(self):
+        self.__game.close()
 
     def __mainloop(self):
         while self.__running and not self.__frozen:

@@ -11,7 +11,7 @@ class Heal(BaseSprite):
         self.set_type(SpriteTypes.HEAL)
         self.view = view
         if self.view == "big":
-            self.load_image("heal/big_heal.jfif")
+            self.load_image("heal/big_heal.png")
         else:
             self.load_image("heal/little_heal.png")
         self.scale_image((50, 50))
