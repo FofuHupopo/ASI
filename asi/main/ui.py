@@ -4,10 +4,11 @@ import math
 from engine.objects import BaseObject
 from engine.core import EngineEvent
 
+from asi.settings import WIDTH, HEIGHT
 
-hp_bar_lenght = 300
-hp_bar_left_indient = 150
-hp_bar_top_indient = 580
+hp_bar_lenght = int(WIDTH * 0.3)
+hp_bar_left_indient = hp_bar_lenght // 2
+hp_bar_top_indient = int(HEIGHT * 0.96)
 hp_bar_width = 8
 
 class HPBar(BaseObject):
@@ -68,9 +69,9 @@ class HPBar(BaseObject):
                 # print(self.hp)
 
 
-stamina_bar_lenght = 200
+stamina_bar_lenght = int(WIDTH * 0.2)
 stamina_bar_left_indient = hp_bar_lenght + hp_bar_left_indient + 80
-stamina_bar_top_indient = 580
+stamina_bar_top_indient = int(HEIGHT * 0.96)
 stamina_bar_width = 8
 
 
@@ -79,7 +80,7 @@ class StaminaBar(BaseObject):
         self.stamina = stamina
     
     def render(self, surface: pygame.Surface):
-        bar_lenght = self.stamina / 100 * 200
+        bar_lenght = self.stamina / 100 * stamina_bar_lenght
 
         pygame.draw.rect(
             surface, (255, 180, 180),
@@ -131,3 +132,22 @@ class StaminaBar(BaseObject):
             if event["type"] == "info" and event["name"] == "stamina":
                 self.stamina = event["data"]["value"]
                 # print(self.stamina)
+
+
+class MoneyField(BaseObject):
+    def init(self, money=0):
+        self.money = money
+        self.image = pygame.image.load("asi/main/resources/money/money.png")
+        self.image = pygame.transform.scale(self.image, (30, 30))
+    
+    def render(self, surface: pygame.Surface):
+        surface.blit(self.image, (20, 20))
+        
+        font = pygame.font.SysFont('serif', 20, bold=True)
+        text_surface = font.render(f"{self.money}", False, "white")
+        surface.blit(text_surface, (65, 25))
+
+    def update(self) -> None:
+        for event in self.get_events():
+            if event["type"] == "info" and event["name"] == "money":
+                self.money = event["data"]["value"]

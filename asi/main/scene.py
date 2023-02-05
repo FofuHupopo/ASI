@@ -2,9 +2,10 @@ import pygame
 import random
 
 from engine.objects import BaseScene
+from engine.shortcuts.dialog import DialogObject
 
 from .map import Map, load_level
-from .ui import HPBar, StaminaBar
+from .ui import HPBar, StaminaBar, MoneyField
 
 
 class MainScene(BaseScene):
@@ -14,6 +15,7 @@ class MainScene(BaseScene):
         
         self.load_object(HPBar)
         self.load_object(StaminaBar)
+        self.load_object(MoneyField)
 
         # self.player = self.load_sprite(PlayerObject)
 
@@ -25,7 +27,10 @@ class MainScene(BaseScene):
 
         if event.type == pygame.KEYDOWN and pressed[pygame.K_ESCAPE]:
             self.pause("start")
-    
+
+        if event.type == pygame.KEYDOWN and pressed[pygame.K_b]:
+            self.load_object(DialogObject, text="Это какой-то текст в диалоговом окне", size=(500, 200))
+
     def key_pressed_handler(self, pressed):
         if pressed[pygame.K_UP]:
             self.map.move_map((0, 10))

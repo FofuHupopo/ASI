@@ -7,7 +7,7 @@ class GameStack:
 
     @staticmethod
     def append_stack(item):
-        GameStack.stack.append(item)
+        GameStack.stack.insert(-1, item)
 
     @staticmethod
     def get_stack():

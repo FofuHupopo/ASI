@@ -3,7 +3,7 @@ import random
 
 from typing import Sequence
 from dataclasses import dataclass
-from engine.objects import BaseSprite
+from engine.objects import BaseSprite, AnimatedSprite
 from engine.core import EngineEvent, EventTypes
 from engine.objects.sprite import SpriteTypes
 
@@ -25,13 +25,43 @@ class PlayerСharacteristics:
 
     max_health = 100
     max_stamina = 100
+    
+    money = 0
 
 
-class PlayerSprite(BaseSprite):
+class PlayerSprite(AnimatedSprite):
     def init(self, coords=(500, 220)):
-        self.tile_image = {
-            "player": self.load_image("player/creature.png")
-        }
+        # self.tile_image = {
+        #     "player": self.load_image("player/creature.png")
+        # }
+        self.register_animations(
+            "player/normal.png",
+            {
+                "idle": (
+                    "player/idle/idle-1.png",
+                    "player/idle/idle-2.png"
+                ),
+                "blink": (
+                    "player/blink/blink-1.png",
+                    "player/blink/blink-2.png",
+                ),
+                "walk": (
+                    "player/walk/walk-1.png",
+                    "player/walk/walk-2.png",
+                    "player/walk/walk-3.png",
+                    "player/walk/walk-4.png",
+                ),
+                "death": (
+                    "player/death/death-1.png",
+                    "player/death/death-2.png",
+                    "player/death/death-3.png",
+                    "player/death/death-4.png",
+                )
+            }
+        )
+        self.__idle_counter = 0
+        self.__idle_mx = 8
+        self.scale_image((50, 100))
 
         self.set_type(SpriteTypes.PLAYER)
         self.width = self.image.get_width()
@@ -48,7 +78,6 @@ class PlayerSprite(BaseSprite):
 
         self.count_heal = 0
         self.count_big_heal = 0
-        self.money = 0
 
         self.__shift_pressed = False
         self.__artefacts = {
@@ -187,6 +216,12 @@ class PlayerSprite(BaseSprite):
         self.add_event(EngineEvent(
             "info", "hp", {"value": self.health}
         ))
+        
+        if self.health == 0:
+            self.start_animation(
+                "death", 1, 10
+            )
+            self.change_health(PlayerСharacteristics.max_health)
 
     def __change_stamina(self, value):
         PlayerСharacteristics.stamina = max(0, min(self.stamina + value, PlayerСharacteristics.max_stamina))
@@ -209,6 +244,18 @@ class PlayerSprite(BaseSprite):
     @property
     def stamina_boost(self):
         return PlayerСharacteristics.stamina_boost
+    
+    def set_money(self, value):
+        PlayerСharacteristics.money = value
+        
+        self.add_event(EngineEvent(
+            "info", "money", {"value": self.money}
+        ))
+        
+    def get_money(self):
+        return PlayerСharacteristics.money
+    
+    money = property(fset=set_money, fget=get_money)
 
     def key_pressed_handler(self, pressed: Sequence[bool]):
         additional_speed = self.stamina_boost * self.__shift_pressed * bool(self.stamina)
@@ -217,16 +264,32 @@ class PlayerSprite(BaseSprite):
             self.direction = -1
             self.speed_x = 5 * self.direction + additional_speed * self.direction
             self.time_x = 8
+
+            self.mirror_image(by_x=True)
+            if self.current_animation_name != "walk":
+                self.start_animation("walk", 1, 7)
         elif pressed[pygame.K_d]:
             self.direction = 1
             self.speed_x = 5 * self.direction + additional_speed * self.direction
             self.time_x = 8
+
+            self.mirror_image(by_x=False)
+            if self.current_animation_name != "walk":
+                self.start_animation("walk", 1, 7)
         else:
             if self.time_x == 0:
                 self.speed_x = 0
             else:
                 self.speed_x = self.time_x * self.direction + additional_speed * self.direction
                 self.time_x -= 1
+            
+            if not self.animation_running:
+                if self.__idle_counter >= self.__idle_mx:
+                    self.__idle_counter = 0
+                    self.start_animation("blink", 1, 20)
+                else:
+                    self.__idle_counter += 1
+                    self.start_animation("idle", 1, 20)
 
         if pressed[pygame.K_e]:
             if self.check(SpriteTypes.STORAGE):
