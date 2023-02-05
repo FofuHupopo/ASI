@@ -3,7 +3,7 @@ import pygame
 from typing import Sequence
 
 from engine.objects.update import scene_update
-from engine.core.event_handler import  SceneEventHandler
+from engine.core.event_handler import SceneEventHandler
 from engine.core.events import EngineEvents
 from engine.core.stack import SceneGameStack
 from engine.core.settings import EngineSettings

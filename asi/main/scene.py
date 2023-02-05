@@ -24,7 +24,7 @@ class MainScene(BaseScene):
         pressed = pygame.key.get_pressed()
 
         if event.type == pygame.KEYDOWN and pressed[pygame.K_ESCAPE]:
-            self.pause("pause")
+            self.pause("start")
     
     def key_pressed_handler(self, pressed):
         if pressed[pygame.K_UP]:
