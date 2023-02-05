@@ -12,6 +12,7 @@ class SpriteTypes:
     PLAYER = "player"
     ENEMY = "enemy"
     OBSTACLE = "obstacle"
+    DECORATION = "decoration"
     WEAPON = "weapon"
     STORAGE = "storage"
     NPC = "npc"
@@ -27,6 +28,8 @@ class BaseSprite(pygame.sprite.Sprite):
         self.__size: Tuple[int, int] = (100, 100)
         self.__image_path = ""
         self.__type = None
+        self.__x_bool = False
+        self.__y_bool = False
 
         self.__scene_update=scene_update
         self.__scene = scene
@@ -71,6 +74,15 @@ class BaseSprite(pygame.sprite.Sprite):
         self.__angel = (self.__angel + angel) % 360
         self.__reload_image()
 
+    def mirror_image(self, by_x=None, by_y=None):
+        if not isinstance(by_x, type(None)):
+            self.__x_bool = by_x
+            
+        if not isinstance(by_y, type(None)):
+            self.__y_bool = by_y
+        
+        self.__reload_image()
+    
     def set_type(self, type_: SpriteTypes):
         """Метод для указания типа спрайта.
         Используйте 'engine.objects.sprite.SpriteTypes'
@@ -139,6 +151,7 @@ class BaseSprite(pygame.sprite.Sprite):
         
         self.image = pygame.transform.rotate(self.image, self.__angel)
         self.image = pygame.transform.scale(self.image, self.__size)
+        self.image = pygame.transform.flip(self.image, self.__x_bool, self.__y_bool)
         
         # print(new_image.get_rect(), self.image.get_rect())
         
@@ -186,7 +199,7 @@ class AnimatedSprite(BaseSprite):
     def __init__(self, scene, **kwargs):
         self.__current_animation_name = None
         self.__current_animation_frame = 0
-        self.__animation_runned = False
+        self.animation_running = False
         
         self.__base_image_path = None
         self.__animations = dict()
@@ -212,7 +225,7 @@ class AnimatedSprite(BaseSprite):
         self.__current_animation_name = animation_name
         self.__current_animation_frame = 0
         
-        self.__animation_runned = True
+        self.animation_running = True
         
         self.__current_animation_count = count
         self.__current_animation_number = 0
@@ -224,7 +237,7 @@ class AnimatedSprite(BaseSprite):
         self.__current_animation_name = 0
         self.__current_animation_frame = None
         
-        self.__animation_runned = False
+        self.animation_running = False
         
         self.__current_animation_count = 1
         self.__current_animation_number = 0
@@ -242,6 +255,10 @@ class AnimatedSprite(BaseSprite):
     @property
     def current_animation_paths(self):
         return self.__animations[self.__current_animation_name]
+    
+    @property
+    def current_animation_name(self):
+        return self.__current_animation_name
         
     def __run_animation(self):
         self.__current_animation_frame += 1
@@ -259,7 +276,7 @@ class AnimatedSprite(BaseSprite):
         )
 
     def _update(self, scene_update=False):
-        if self.__animation_runned:
+        if self.animation_running:
             if self.__current_tick_after_animation > self.__waiting_ticks:
                 self.__current_tick_after_animation = 0
                 self.__run_animation()

@@ -12,7 +12,7 @@ from .trader import Trader
 
 class Arms(BaseSprite):
     def init(self, coords, direction):
-        self.load_image("player/shuriken.png")
+        self.load_image("player/weapons/shuriken.png")
         self.set_type(SpriteTypes.THROWING_WEAPON)
         self.direction = direction
         self.width = 50
@@ -56,6 +56,8 @@ class Arms(BaseSprite):
                 if self.time_fall == 100:
                     self.kill()
         else:
+            self.rotate_image(20)
+            
             self.rect.x += 10 * self.direction
             if self.checking_touch_by_type(SpriteTypes.OBSTACLE) or self.checking_touch_by_type(SpriteTypes.STORAGE) \
                     or self.checking_touch_by_type(SpriteTypes.NPC):

@@ -4,10 +4,11 @@ import math
 from engine.objects import BaseObject
 from engine.core import EngineEvent
 
+from asi.settings import WIDTH, HEIGHT
 
-hp_bar_lenght = 300
-hp_bar_left_indient = 150
-hp_bar_top_indient = 580
+hp_bar_lenght = int(WIDTH * 0.3)
+hp_bar_left_indient = hp_bar_lenght // 2
+hp_bar_top_indient = int(HEIGHT * 0.96)
 hp_bar_width = 8
 
 class HPBar(BaseObject):
@@ -68,9 +69,9 @@ class HPBar(BaseObject):
                 # print(self.hp)
 
 
-stamina_bar_lenght = 200
+stamina_bar_lenght = int(WIDTH * 0.2)
 stamina_bar_left_indient = hp_bar_lenght + hp_bar_left_indient + 80
-stamina_bar_top_indient = 580
+stamina_bar_top_indient = int(HEIGHT * 0.96)
 stamina_bar_width = 8
 
 
@@ -79,7 +80,7 @@ class StaminaBar(BaseObject):
         self.stamina = stamina
     
     def render(self, surface: pygame.Surface):
-        bar_lenght = self.stamina / 100 * 200
+        bar_lenght = self.stamina / 100 * stamina_bar_lenght
 
         pygame.draw.rect(
             surface, (255, 180, 180),

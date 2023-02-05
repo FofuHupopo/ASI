@@ -6,6 +6,7 @@ from asi import settings
 from .throwing_arms import Arms
 from .player import PlayerSprite
 from .obstacle import Obstacle
+from .decoration import DecorationSprite
 from .storage import Storage
 from .trader import Trader
 from .kamikaze import Kamikaze
@@ -36,6 +37,16 @@ class Map:
         "#": Obstacle,
         "-": Obstacle,
     }
+    DECORATION_SYMBOL_DECODER = {
+        "G": {
+            "image_path": "map/grass-1.png",
+            "size": (50, 10)
+        },
+        "T": {
+            "image_path": "map/tree-1.png",
+            "size": (200, 200)
+        }
+    }
 
     def __init__(self, scene):
         self.__entity_sprite_group = pygame.sprite.Group()
@@ -50,6 +61,19 @@ class Map:
             player_pos[0] - 10,
             player_pos[0] - 16,
         ]
+        
+        for y in range(len(level_map)):
+            for x in range(len(level_map[y])):
+                symbol = level_map[y][x]
+                
+                if symbol in Map.DECORATION_SYMBOL_DECODER:
+                    x_pos = self.block_size * (x - offset[0]) + self.block_size - Map.DECORATION_SYMBOL_DECODER[symbol]["size"][0]
+                    y_pos = self.block_size * (y - offset[1]) + self.block_size - Map.DECORATION_SYMBOL_DECODER[symbol]["size"][1]
+
+                    self.add_decorataion_sprite(
+                        (x_pos, y_pos),
+                        Map.DECORATION_SYMBOL_DECODER[symbol]
+                    )
 
         for y in range(len(level_map)):
             for x in range(len(level_map[y])):
@@ -68,9 +92,15 @@ class Map:
                     )
 
                 if level_map[y][x] == "p":
-                    self.__scene.player = self.__scene.load_sprite(PlayerSprite,
-                                                                   coords=[self.block_size * (x - offset[0]),
-                                                                           self.block_size * (y - offset[1])])
+                    self.__player_pos = (x, y)
+    
+        self.__scene.player = self.__scene.load_sprite(
+            PlayerSprite,
+            coords=[
+                self.block_size * (self.__player_pos[0] - offset[0]),
+                self.block_size * (self.__player_pos[1] - offset[1])
+            ]
+        )
 
     def __preload_player(self, level_map):
         for y in range(len(level_map)):
@@ -82,6 +112,11 @@ class Map:
 
     def add_env_sprite(self, sprite_class, coords):
         sprite = sprite_class(self.__scene, coords=coords)
+        self.__env_sprite_group.add(sprite)
+        self.__scene._game_stack.sprite_group.add(sprite)
+    
+    def add_decorataion_sprite(self, coords, data):
+        sprite = DecorationSprite(self.__scene, coords=coords, **data)
         self.__env_sprite_group.add(sprite)
         self.__scene._game_stack.sprite_group.add(sprite)
 
@@ -116,7 +151,7 @@ class Map:
             elif player_coords[1] >= settings.HEIGHT * 80 / 100:
                 y = settings.HEIGHT * 80 / 100 - player_coords[1]
 
-            self.move_map((x, y))
+            self.move_map((int(x), int(y)))
 
     def move_map(self, coords):
         x, y = coords
