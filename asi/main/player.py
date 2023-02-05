@@ -11,6 +11,8 @@ from .throwing_arms import Arms
 from .obstacle import Obstacle
 from .storage import Storage
 from .trader import Trader
+
+
 # from .animation import Animation
 
 
@@ -43,6 +45,10 @@ class PlayerSprite(BaseSprite):
         self.time_x = 0
         self.direction = 1
         self.level_sprites = []
+
+        self.count_heal = 0
+        self.count_big_heal = 0
+        self.money = 0
 
         self.__shift_pressed = False
         self.__artefacts = {
@@ -110,7 +116,9 @@ class PlayerSprite(BaseSprite):
         return None
 
     def update(self):
-
+        for localevent in self.get_events():
+            if localevent["type"] == "info" and localevent["name"] == "minus_hp":
+                self.__change_health(-localevent["data"]["value"])
         self.rect.x += self.speed_x
         contact = self.checking_touch_by_type(SpriteTypes.OBSTACLE) + self.checking_touch_by_type(SpriteTypes.STORAGE) \
                   + self.checking_touch_by_type(SpriteTypes.NPC)
@@ -162,10 +170,12 @@ class PlayerSprite(BaseSprite):
         if event.type == pygame.KEYDOWN and keys[pygame.K_r]:
             self.load_sprite(Arms, coords=[self.rect.x + max(0, self.width * self.direction), self.rect.y],
                              direction=self.direction)
-        for localevent in self.get_events():
-            if localevent["type"] == "info" and localevent["name"] == "minus_hp":
-                print(localevent["data"]["value"])
-                self.__change_health(-localevent["data"]["value"])
+        if event.type == pygame.KEYDOWN and keys[pygame.K_2] and self.count_heal > 0:
+            self.__change_health(50)
+            self.count_heal -= 1
+        if event.type == pygame.KEYDOWN and keys[pygame.K_1] and self.count_big_heal > 0:
+            self.__change_health(100)
+            self.count_big_heal -= 1
 
     def __change_health(self, value):
         PlayerСharacteristics.health = max(0, min(self.health + value, PlayerСharacteristics.max_health))
