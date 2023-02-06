@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Sequence, Tuple
 
 from engine.core import GameStack, Resources
+from engine.shortcuts.dialog import StartDialogObject
 
 
 @dataclass
@@ -16,6 +17,7 @@ class SpriteTypes:
     WEAPON = "weapon"
     STORAGE = "storage"
     NPC = "npc"
+    BOARD = "board"
     THROWING_WEAPON = "throwing_weapon"
     HEAL = "heal"
 
@@ -125,8 +127,28 @@ class BaseSprite(pygame.sprite.Sprite):
 
         return sprites
     
-    def load_sprite(self, sprite, **kwargs):
-        return self.__scene.load_sprite(sprite, **kwargs)
+    def create_dialog(self, text, size):
+        if self.checking_touch_by_type(SpriteTypes.PLAYER):
+            if not hasattr(self, "dialog"):
+                self.dialog = self.load_object(
+                    StartDialogObject,
+                    dialog_text=text,
+                    dialog_size=size
+                )
+            else:
+                if self.dialog.readed:
+                    self.dialog.__del__()
+                    del self.__dict__["dialog"]
+        else:
+            if hasattr(self, "dialog"):
+                self.dialog.__del__()
+                del self.__dict__["dialog"]
+    
+    def load_sprite(self, sprite_class, **kwargs):
+        return self.__scene.load_sprite(sprite_class, **kwargs)
+    
+    def load_object(self, object_class, **kwargs):
+        return self.__scene.load_object(object_class, **kwargs)
     
     def add_event(self, event):
         self.__scene.add_event(event)

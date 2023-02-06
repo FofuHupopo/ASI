@@ -10,8 +10,8 @@ from asi.main.money import Money
 
 class Storage(BaseSprite):
     def init(self, coords):
-        self.load_image("storage/close_chect.jpg")
-        self.scale_image((100, 100))
+        self.load_image("storage/chest-1.png")
+        self.scale_image((50, 50))
         self.set_type(SpriteTypes.STORAGE)
 
         self.coords = coords
@@ -26,18 +26,15 @@ class Storage(BaseSprite):
     def open(self):
         if not self.flag:
             self.flag = True
-            old_coords = (self.rect.x, self.rect.y)
 
-            self.load_image("storage/open_chest.jpg")
-            self.scale_image((100, 100))
-
-            self.rect.x, self.rect.y = old_coords
             for i in range(random.randint(3, 6)):
                 t = self.load_sprite(Money, coords=(random.randint(self.rect.x - 100, self.rect.x - 25),
                                                     random.randint(self.rect.y, self.rect.y + self.height - 25)))
                 t = self.load_sprite(Money,
                                      coords=(random.randint(self.rect.x + self.width, self.rect.x + self.width + 75),
                                              random.randint(self.rect.y, self.rect.y + self.height - 25)))
+            
+            self.kill()
 
     def update(self) -> None:
         if self.checking_touch_by_type(SpriteTypes.PLAYER):

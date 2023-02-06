@@ -11,8 +11,14 @@ class BaseObject:
         self.__scene = scene
 
         self.init(**kwargs)
+    
+    def __del__(self):
+        self.__scene.remove_object(self)
 
     def init(self, **kwargs): ...
+    
+    def load_object(self, object_class, **kwargs):
+        return self.__scene.load_object(object_class, **kwargs)
     
     def add_event(self, event):
         self.__scene.add_event(event)

@@ -11,6 +11,7 @@ from .storage import Storage
 from .trader import Trader
 from .kamikaze import Kamikaze
 from .gunner import Gunner
+from .board import BoardSprite
 from .HEAL import Heal
 from .spike import Spike
 
@@ -33,7 +34,8 @@ class Map:
         "k": Kamikaze,
         "g": Gunner,
         "h": Heal,
-        "s": Spike
+        "s": Spike,
+        "B": BoardSprite,
     }
     ENVIRONMENT_SYMBOL_DECODER = {
         "#": Obstacle,
@@ -47,7 +49,7 @@ class Map:
         "T": {
             "image_path": "map/tree-1.png",
             "size": (200, 200)
-        }
+        },
     }
 
     def __init__(self, scene):
@@ -61,7 +63,7 @@ class Map:
         player_pos = self.__preload_player(level_map)
         offset = [
             player_pos[0] - 10,
-            player_pos[0] - 16,
+            player_pos[1] - 5,
         ]
         
         for y in range(len(level_map)):

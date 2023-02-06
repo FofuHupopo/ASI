@@ -1,4 +1,5 @@
 import pygame
 
+
 pygame.init()
-print(pygame.joystick.get_count())
+print("Controllers:", pygame.joystick.get_count())

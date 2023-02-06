@@ -197,7 +197,7 @@ class PlayerSprite(AnimatedSprite):
                         self.rect.y = min(self.rect.y, i.rect.y - self.height)
                     self.time_y = 0
 
-                    self.change_health(-max(0, (-25 - self.speed_y) * 4))
+                    self.change_health(-max(0, (-30 - self.speed_y) * 4))
 
                 self.speed_y = 0
             else:
@@ -223,8 +223,6 @@ class PlayerSprite(AnimatedSprite):
             self.__throwing_arms_count += 1
         
         self.send_throwing_arm_event()
-        # elif self.__throwing_arms_count == self.__throwing_arms_max_value:
-        #     self.__throwing_arms_cd_number = 0
 
     def events_handler(self, event: pygame.event.Event):
         keys = pygame.key.get_pressed()
@@ -261,12 +259,12 @@ class PlayerSprite(AnimatedSprite):
             self.start_animation(
                 "death", 1, 10, is_priority=True
             )
-            self.set_normal_image("player/blank.png")
+            # self.set_normal_image("player/blank.png")
             
-            self.__is_died = True
-            self.__can_move = False
+            # self.__is_died = True
+            # self.__can_move = False
 
-            # self.change_health(PlayerСharacteristics.max_health)
+            self.change_health(PlayerСharacteristics.max_health)
 
     def __change_stamina(self, value):
         PlayerСharacteristics.stamina = max(0, min(self.stamina + value, PlayerСharacteristics.max_stamina))
@@ -322,16 +320,16 @@ class PlayerSprite(AnimatedSprite):
     
     def get_little_heal(self):
         return self.__count_heal
-    
+
     count_heal = property(fset=set_little_heal, fget=get_little_heal)
-    
+
     def set_big_heal(self, value):
         self.__count_big_heal = value
         
         self.add_event(EngineEvent(
             "info", "big_heal", {"value": self.__count_big_heal}
         ))
-    
+
     def get_big_heal(self):
         return self.__count_big_heal
     
