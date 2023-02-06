@@ -56,6 +56,8 @@ class StartScene(BaseScene):
             type_button="exit",
             action="exit"
         )
+        
+        self.__tutorial_finished = False
 
         self.buttons = [self.play_button, self.setting_buttons, self.exit_buttons]
         self.index_button = 0
@@ -96,8 +98,8 @@ class StartScene(BaseScene):
             if pressed[pygame.K_RETURN]:
                 if self.buttons[self.index_button].action == "exit":
                     exit_game()
-                elif self.stop(self.buttons[self.index_button].action) == "main":
-                    self.stop("main")
+                elif self.buttons[self.index_button].action == "main":
+                    self.__run_main_scene()
                 else:
                     ...  # место для настроек
 
@@ -115,7 +117,7 @@ class StartScene(BaseScene):
                     if button.action == "exit":
                         exit_game()
                     else:
-                        self.stop(button.action)
+                        self.__run_main_scene()
 
         if event.type == pygame.MOUSEMOTION:
             for i, button in enumerate(self.buttons):
@@ -124,6 +126,13 @@ class StartScene(BaseScene):
                     self.buttons[self.index_button].is_hover = False
                     self.index_button = i
                     button.is_hover = True
+                    
+    def __run_main_scene(self):
+        if self.__tutorial_finished:
+            self.pause("main")
+        else:
+            self.__tutorial_finished = True
+            self.pause("tutorial")
 
     def key_pressed_handler(self, pressed):
         ...
@@ -147,5 +156,33 @@ class PauseScene(BaseScene):
             self.pause("main")
 
 
-class DieScene(BaseScene):
-    ...
+class TutorialScene(BaseScene):
+    def init(self) -> None:
+        self.__tutorial_page = 1
+        self.__max_tutorial_page = 4
+
+    def render(self, surface: pygame.Surface):
+        ...
+        
+    def update(self) -> None:
+        self.write("ТУТОРИАЛ", "red", (50, 50), 48)
+        
+        y = settings.HEIGHT - 40
+        x = settings.WIDTH - 180
+        
+        self.write(f"Страница {self.__tutorial_page} из {self.__max_tutorial_page}", "white", (x, y), 24)
+        self.write(f"Используйте <- и -> для перемещения по страницам туториала", "white", (40, y), 24)
+
+    def events_handler(self, event: pygame.event.Event):
+        pressed = pygame.key.get_pressed()
+
+        if (event.type == pygame.KEYDOWN and pressed[pygame.K_RIGHT]):
+            self.__tutorial_page += 1
+            
+            if self.__tutorial_page > self.__max_tutorial_page:
+                self.__tutorial_page = self.__max_tutorial_page
+                self.stop("main")
+        
+        if (event.type == pygame.KEYDOWN and pressed[pygame.K_LEFT]):
+            self.__tutorial_page = max(self.__tutorial_page - 1, 1)
+            

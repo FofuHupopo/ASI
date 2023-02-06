@@ -207,6 +207,8 @@ class AnimatedSprite(BaseSprite):
         self.__current_animation_count = 1
         self.__current_animation_number = 1
         
+        self.__current_animation_priority = False
+        
         self.__waiting_ticks = 10
         self.__current_tick_after_animation = 0
 
@@ -218,14 +220,18 @@ class AnimatedSprite(BaseSprite):
 
         self.__load_base_image()
 
-    def start_animation(self, animation_name, count=1, waiting_ticks=10):
+    def start_animation(self, animation_name, count=1, waiting_ticks=10, is_priority=False):
         if animation_name not in self.__animations:
             raise ValueError(f"Анимация с именем {animation_name} не найдена.")
+        
+        if self.animation_running and self.__current_animation_priority:
+            return
 
         self.__current_animation_name = animation_name
         self.__current_animation_frame = 0
         
         self.animation_running = True
+        self.__current_animation_priority = is_priority
         
         self.__current_animation_count = count
         self.__current_animation_number = 0
@@ -246,6 +252,9 @@ class AnimatedSprite(BaseSprite):
         self.__current_tick_after_animation = 10
 
         self.__load_base_image()
+    
+    def set_normal_image(self, image_path: str):
+        self.__base_image_path = image_path
     
     def __load_base_image(self, path=None):
         self._BaseSprite__reload_image(

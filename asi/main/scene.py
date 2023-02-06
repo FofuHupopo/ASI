@@ -38,6 +38,12 @@ class MainScene(BaseScene):
             index=2,
             event_name="big_heal"
         )
+        self.load_object(
+            ImageAndTextField,
+            image_path="asi/main/resources/player/weapons/shuriken.png",
+            index=3,
+            event_name="shuriken_count"
+        )
 
 
         # self.player = self.load_sprite(PlayerObject)
@@ -47,6 +53,7 @@ class MainScene(BaseScene):
     
     def render(self, surface: pygame.Surface):
         surface.blit(self.background, (0, 0))
+        ...
 
     def events_handler(self, event: pygame.event.Event):
         pressed = pygame.key.get_pressed()

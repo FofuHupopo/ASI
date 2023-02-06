@@ -56,6 +56,16 @@ class PlayerSprite(AnimatedSprite):
                     "player/death/death-2.png",
                     "player/death/death-3.png",
                     "player/death/death-4.png",
+                ),
+                "melee_attack": (
+                    "player/attack/attack-1.png",
+                    "player/attack/attack-2.png",
+                    "player/attack/attack-3.png",
+                    "player/attack/attack-4.png",
+                    "player/attack/attack-5.png",
+                    "player/attack/attack-6.png",
+                    "player/attack/attack-7.png",
+                    "player/attack/attack-8.png",
                 )
             }
         )
@@ -79,7 +89,14 @@ class PlayerSprite(AnimatedSprite):
         self.__count_big_heal = 0
         self.__count_heal = 0
         
+        self.__can_move = True
         self.__is_died = False
+        self.__throwing_arms_count = 10
+        self.__throwing_arms_max_value = 10
+        self.__throwing_arms_cd = 50
+        self.__throwing_arms_cd_number = 0
+        
+        self.send_throwing_arm_event()
 
         self.__shift_pressed = False
         self.__artefacts = {
@@ -192,31 +209,44 @@ class PlayerSprite(AnimatedSprite):
         else:
             if self.stamina < PlayerСharacteristics.max_stamina:
                 self.__change_stamina(0.2)
+                
+        if (
+            self.__throwing_arms_cd_number < self.__throwing_arms_cd and
+            self.__throwing_arms_count < self.__throwing_arms_max_value
+            ):
+            self.__throwing_arms_cd_number += 1
+        elif (
+            self.__throwing_arms_cd_number >= self.__throwing_arms_cd and
+            self.__throwing_arms_count < self.__throwing_arms_max_value
+            ):
+            self.__throwing_arms_cd_number = 0
+            self.__throwing_arms_count += 1
+        
+        self.send_throwing_arm_event()
+        # elif self.__throwing_arms_count == self.__throwing_arms_max_value:
+        #     self.__throwing_arms_cd_number = 0
 
     def events_handler(self, event: pygame.event.Event):
         keys = pygame.key.get_pressed()
         if event.type == pygame.KEYDOWN and keys[pygame.K_SPACE]:
             if not self.is_fly():
                 self.speed_y = 10
-
-        if event.type == pygame.KEYDOWN and keys[pygame.K_l]:
-            self.__change_health(-10)
+                
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == pygame.BUTTON_RIGHT:
+            self.melee_attack()
 
         if event.type == pygame.KEYDOWN and keys[pygame.K_r]:
-            self.load_sprite(Arms, coords=[self.rect.x + max(0, self.width * self.direction), self.rect.y],
-                             direction=self.direction)
-        if event.type == pygame.KEYDOWN and keys[pygame.K_2] and self.count_heal > 0:
+            self.__throw_arm()
+        if event.type == pygame.KEYDOWN and keys[pygame.K_1] and self.count_heal > 0:
             self.change_health(50)
             self.count_heal -= 1
-        if event.type == pygame.KEYDOWN and keys[pygame.K_1] and self.count_big_heal > 0:
+        if event.type == pygame.KEYDOWN and keys[pygame.K_2] and self.count_big_heal > 0:
             self.change_health(100)
             self.count_big_heal -= 1
             
         if event.type == pygame.KEYDOWN and keys[pygame.K_3]:
-            self.change_health(50)
             self.count_heal += 1
         if event.type == pygame.KEYDOWN and keys[pygame.K_4]:
-            self.change_health(100)
             self.count_big_heal += 1
 
     def change_health(self, value):
@@ -227,11 +257,16 @@ class PlayerSprite(AnimatedSprite):
         ))
         
         if self.health == 0:
+            # self.dead()
             self.start_animation(
-                "death", 1, 10
+                "death", 1, 10, is_priority=True
             )
+            self.set_normal_image("player/blank.png")
+            
             self.__is_died = True
-            self.change_health(PlayerСharacteristics.max_health)
+            self.__can_move = False
+
+            # self.change_health(PlayerСharacteristics.max_health)
 
     def __change_stamina(self, value):
         PlayerСharacteristics.stamina = max(0, min(self.stamina + value, PlayerСharacteristics.max_stamina))
@@ -239,7 +274,30 @@ class PlayerSprite(AnimatedSprite):
         self.add_event(EngineEvent(
             "info", "stamina", {"value": self.stamina}
         ))
-        
+
+    def melee_attack(self):
+        self.start_animation("melee_attack", 1, 4, True)
+    
+    def __throw_arm(self):
+        if self.__throwing_arms_count > 0:
+            self.__throwing_arms_count -= 1
+            self.load_sprite(
+                Arms,
+                coords=[self.rect.x + max(0, self.width * self.direction), self.rect.y],
+                direction=self.direction
+            )
+            
+            self.send_throwing_arm_event()
+    
+    def send_throwing_arm_event(self):
+        self.add_event(
+            EngineEvent(
+                "info", "shuriken_count", {
+                    "value": self.__throwing_arms_count
+                }
+            )
+        )
+
     def dead(self):
         pass
 
@@ -294,7 +352,7 @@ class PlayerSprite(AnimatedSprite):
     def key_pressed_handler(self, pressed: Sequence[bool]):
         additional_speed = self.stamina_boost * self.__shift_pressed * bool(self.stamina)
 
-        if pressed[pygame.K_a]:
+        if pressed[pygame.K_a] and self.__can_move:
             self.direction = -1
             self.speed_x = 5 * self.direction + additional_speed * self.direction
             self.time_x = 8
@@ -302,7 +360,7 @@ class PlayerSprite(AnimatedSprite):
             self.mirror_image(by_x=True)
             if self.current_animation_name != "walk":
                 self.start_animation("walk", 1, 7)
-        elif pressed[pygame.K_d]:
+        elif pressed[pygame.K_d] and self.__can_move:
             self.direction = 1
             self.speed_x = 5 * self.direction + additional_speed * self.direction
             self.time_x = 8
@@ -317,7 +375,7 @@ class PlayerSprite(AnimatedSprite):
                 self.speed_x = self.time_x * self.direction + additional_speed * self.direction
                 self.time_x -= 1
             
-            if not self.animation_running:
+            if not self.animation_running and self.__can_move:
                 if self.__idle_counter >= self.__idle_mx:
                     self.__idle_counter = 0
                     self.start_animation("blink", 1, 20)

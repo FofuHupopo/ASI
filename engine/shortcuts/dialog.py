@@ -27,7 +27,8 @@ class DialogObject(BaseObject):
         surface.blit(text_surface, (x + 25, y + 25))
         
         font = pygame.font.SysFont('serif', 13, bold=True)
-        text_surface = font.render("Press \"F\" to close this window", False, "white")
+        # text_surface = font.render("Press \"F\" to close this window", False, "white")
+        text_surface = font.render("Нажмите \"F\" для закрытия окна.", False, "white")
         surface.blit(text_surface, (x + 25, y + self.__size[1] - 25))
     
     def update(self) -> None:
