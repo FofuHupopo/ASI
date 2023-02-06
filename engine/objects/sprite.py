@@ -17,6 +17,8 @@ class SpriteTypes:
     NPC = "npc"
     THROWING_WEAPON = "throwing_weapon"
     HEAL = "heal"
+    DOOR = "door"
+    TRIGGER = "trigger"
 
 
 class BaseSprite(pygame.sprite.Sprite):

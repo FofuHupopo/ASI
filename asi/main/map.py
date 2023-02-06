@@ -12,6 +12,9 @@ from .kamikaze import Kamikaze
 from .gunner import Gunner
 from .HEAL import Heal
 from .spike import Spike
+from .boss import Boss
+from .trigger import Trigger
+from .door import Door
 
 
 def load_level(filename):  # загрузка уровня
@@ -32,7 +35,10 @@ class Map:
         "k": Kamikaze,
         "g": Gunner,
         "h": Heal,
-        "s": Spike
+        "s": Spike,
+        "b": Boss,
+        "*": Trigger,
+        "z": Door
     }
     ENVIRONMENT_SYMBOL_DECODER = {
         "#": Obstacle,

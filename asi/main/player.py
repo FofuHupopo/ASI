@@ -50,6 +50,9 @@ class PlayerSprite(BaseSprite):
         self.count_big_heal = 0
         self.money = 0
 
+        self.list_door = self.find_sprites(SpriteTypes.DOOR)
+        self.list_trigger = self.find_sprites(SpriteTypes.TRIGGER)
+
         self.__shift_pressed = False
         self.__artefacts = {
             "head": None,
