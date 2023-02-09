@@ -40,7 +40,7 @@ class Kamikaze(BaseEnemy):
         self.attack_radius_y = 100
 
         self.speed = 3
-        self.speed_agra = 5
+        self.speed_agra = 7
         self.time = 0
         self.time_attack = 0
 

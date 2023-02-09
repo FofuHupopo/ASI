@@ -11,7 +11,7 @@ from .projectile_enemy import Projectlie
 
 class Boss(BaseSprite):
     def init(self, coords):
-        self.set_type(SpriteTypes.ENEMY)
+        self.set_type(SpriteTypes.BOSS)
         self.load_image("boss/boss.jpg")
         self.scale_image((100, 100))
         self.rect.x = coords[0]
@@ -21,7 +21,7 @@ class Boss(BaseSprite):
         self.height = self.image.get_height()
 
         self.health = 1000
-        self.var = True
+        self.var = False
         self.direction = 1
         self.time_attack = 55
         self.time = 0
@@ -29,13 +29,25 @@ class Boss(BaseSprite):
     def attack(self):
         if self.find_sprites(SpriteTypes.PLAYER)[0].rect.x > self.rect.x:
             self.load_sprite(Projectlie, coords=(self.rect.x + self.width, self.rect.y),
-                             coords_player=self.find_sprites(SpriteTypes.PLAYER)[0].rect.x)
+                             coords_player=self.find_sprites(SpriteTypes.PLAYER)[0].rect.x, damadge=25, speed=10,
+                             view="fire_ball")
         else:
             self.load_sprite(Projectlie, coords=self.rect,
-                             coords_player=self.find_sprites(SpriteTypes.PLAYER)[0].rect.x)
+                             coords_player=self.find_sprites(SpriteTypes.PLAYER)[0].rect.x, damadge=25, speed=10,
+                             view="fire_ball")
+
+    def big_attack(self):
+        if self.find_sprites(SpriteTypes.PLAYER)[0].rect.x > self.rect.x:
+            self.load_sprite(Projectlie, coords=(self.rect.x + self.width, self.rect.y),
+                             coords_player=self.find_sprites(SpriteTypes.PLAYER)[0].rect.x, damadge=50, speed=8,
+                             view="ice_ball")
+        else:
+            self.load_sprite(Projectlie, coords=self.rect,
+                             coords_player=self.find_sprites(SpriteTypes.PLAYER)[0].rect.x, damadge=50, speed=8,
+                             view="ice_ball")
 
     def dead(self):
-        self.find_sprites(SpriteTypes.PLAYER)[0].list_trigger[0].close()
+        self.find_sprites(SpriteTypes.PLAYER)[0].list_trigger[0].close_door()
         self.kill()
 
     def update(self):
@@ -47,5 +59,13 @@ class Boss(BaseSprite):
         self.time = min(self.time + 1, self.time_attack)
         if self.var:
             if self.time_attack == self.time:
-                self.attack()
-                self.time = 0
+                if self.health > 750:
+                    self.attack()
+                    self.time = 0
+                elif self.health > 500:
+                    if random.randint(1, 10) < 4:
+                        self.big_attack()
+                        self.time = 0
+                    else:
+                        self.attack()
+                        self.time = 0

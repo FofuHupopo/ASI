@@ -20,6 +20,7 @@ class SpriteTypes:
     HEAL = "heal"
     DOOR = "door"
     TRIGGER = "trigger"
+    BOSS = "boss"
 
 
 class BaseSprite(pygame.sprite.Sprite):

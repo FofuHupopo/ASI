@@ -46,7 +46,9 @@ class Gunner(BaseEnemy):
     def attack(self):
         if self.find_sprites(SpriteTypes.PLAYER)[0].rect.x > self.rect.x:
             self.load_sprite(Projectlie, coords=(self.rect.x + self.width, self.rect.y),
-                             coords_player=self.find_sprites(SpriteTypes.PLAYER)[0].rect.x)
+                             coords_player=self.find_sprites(SpriteTypes.PLAYER)[
+                                 0].rect.x, damadge=25, speed=10, view="fire_ball")
         else:
             self.load_sprite(Projectlie, coords=self.rect,
-                             coords_player=self.find_sprites(SpriteTypes.PLAYER)[0].rect.x)
+                             coords_player=self.find_sprites(SpriteTypes.PLAYER)[0].rect.x, damadge=25, speed=10,
+                             view="fire_ball")

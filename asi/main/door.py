@@ -21,14 +21,3 @@ class Door(Obstacle):
         self.set_type(SpriteTypes.OBSTACLE)
         self.rect.x = self.main_coords[0] - (-self.rect.x - 1e9)
         self.rect.y = self.main_coords[1] - (-self.rect.y - 1e9)
-
-    def close(self):
-        self.set_type(SpriteTypes.DOOR)
-        self.rect.x = -1e9 + self.rect.x - self.main_coords[0]
-        self.rect.y = -1e9 + self.rect.y - self.main_coords[1]
-        print(self.rect.x, self.rect.y)
-
-
-
-
-
