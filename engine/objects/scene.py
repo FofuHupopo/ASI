@@ -3,7 +3,7 @@ import pygame
 from typing import Sequence
 
 from engine.objects.update import scene_update
-from engine.core.event_handler import  SceneEventHandler
+from engine.core.event_handler import SceneEventHandler
 from engine.core.events import EngineEvents
 from engine.core.stack import SceneGameStack
 from engine.core.settings import EngineSettings
@@ -73,14 +73,25 @@ class BaseScene:
         self.__frozen = True
         self.__next_scene = next_scene
 
-    def load_object(self, object):
-        self._game_stack.object_stack.append(object(scene=self))
+    def load_object(self, object_class, **kwargs):
+        object = object_class(scene=self, **kwargs)
+        self._game_stack.object_stack.append(object)
+        
+        return object
 
     def load_sprite(self, sprite_class, **kwargs):
         sprite = sprite_class(scene=self, scene_update=True, **kwargs)
         self._game_stack.sprite_group.add(sprite)
 
         return sprite
+
+    def remove_object(self, object):
+        if object in self._game_stack.object_stack:
+            self._game_stack.object_stack.remove(object)
+    
+    def remove_sprite(self, sprite):
+        self._game_stack.sprite_group.remove(sprite)
+        sprite.kill()
     
     def move_all_sprites(self, coords):
         for sprite in self._game_stack.sprite_group.sprites():
@@ -104,6 +115,9 @@ class BaseScene:
     @property
     def sprite_group(self):
         return self._game_stack.sprite_group
+    
+    def terminate(self):
+        self.__game.close()
 
     def __mainloop(self):
         while self.__running and not self.__frozen:

@@ -8,7 +8,7 @@ from engine.core import EngineEvent, EventTypes
 
 class Money(BaseSprite):
     def init(self, coords):
-        self.load_image("money/money.jpg")
+        self.load_image("money/money.png")
         self.scale_image((25, 25))
         self.rect.x = coords[0]
         self.rect.y = coords[1]
@@ -27,3 +27,5 @@ class Money(BaseSprite):
         if self.checking_touch_by_type(SpriteTypes.PLAYER):
             self.find_sprites(SpriteTypes.PLAYER)[0].money += 1
             self.kill()
+
+

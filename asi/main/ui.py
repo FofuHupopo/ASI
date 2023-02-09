@@ -4,10 +4,11 @@ import math
 from engine.objects import BaseObject
 from engine.core import EngineEvent
 
+from asi.settings import WIDTH, HEIGHT
 
-hp_bar_lenght = 300
-hp_bar_left_indient = 150
-hp_bar_top_indient = 580
+hp_bar_lenght = int(WIDTH * 0.3)
+hp_bar_left_indient = hp_bar_lenght // 2
+hp_bar_top_indient = int(HEIGHT * 0.96)
 hp_bar_width = 8
 
 class HPBar(BaseObject):
@@ -68,9 +69,9 @@ class HPBar(BaseObject):
                 # print(self.hp)
 
 
-stamina_bar_lenght = 200
+stamina_bar_lenght = int(WIDTH * 0.2)
 stamina_bar_left_indient = hp_bar_lenght + hp_bar_left_indient + 80
-stamina_bar_top_indient = 580
+stamina_bar_top_indient = int(HEIGHT * 0.96)
 stamina_bar_width = 8
 
 
@@ -79,7 +80,7 @@ class StaminaBar(BaseObject):
         self.stamina = stamina
     
     def render(self, surface: pygame.Surface):
-        bar_lenght = self.stamina / 100 * 200
+        bar_lenght = self.stamina / 100 * stamina_bar_lenght
 
         pygame.draw.rect(
             surface, (255, 180, 180),
@@ -131,3 +132,30 @@ class StaminaBar(BaseObject):
             if event["type"] == "info" and event["name"] == "stamina":
                 self.stamina = event["data"]["value"]
                 # print(self.stamina)
+
+
+class ImageAndTextField(BaseObject):
+    def init(self, image_path: str, index: int, event_name: str, event_type="info"):
+        self.__value = 0
+        self.__index = index
+        
+        self.__event_name = event_name
+        self.__event_type = event_type
+
+        self.__image = pygame.image.load(image_path)
+        self.__image = pygame.transform.scale(self.__image, (30, 30))
+    
+    def render(self, surface: pygame.Surface):
+        x_indient = 20
+        y_indient = 20 + self.__index * 40
+        
+        surface.blit(self.__image, (x_indient, y_indient))
+        
+        font = pygame.font.SysFont('serif', 20, bold=True)
+        text_surface = font.render(f"{self.__value}", False, "white")
+        surface.blit(text_surface, (65, y_indient + 5))
+
+    def update(self) -> None:
+        for event in self.get_events():
+            if event["type"] == self.__event_type and event["name"] == self.__event_name:
+                self.__value = event["data"]["value"]
