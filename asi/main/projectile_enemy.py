@@ -15,7 +15,7 @@ class Projectlie(BaseSprite):
         if view == "fire_ball":
             self.load_image("projectly/fire_ball.jpg")
         else:
-            self.load_image("projectly/ice_ball.png")
+            self.load_image("projectly/ice_ball.jpg")
         self.damadge = damadge
         self.scale_image((50, 50))
 

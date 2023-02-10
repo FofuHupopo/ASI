@@ -23,6 +23,7 @@ class Trigger(Obstacle):
                 for i in self.find_sprites(SpriteTypes.PLAYER)[0].list_door:
                     i.open()
                 self.find_sprites(SpriteTypes.BOSS)[0].var = True
+                self.set_type(SpriteTypes.OBSTACLE)
 
     def close_door(self):
         for i in self.find_sprites(SpriteTypes.PLAYER)[0].list_door:

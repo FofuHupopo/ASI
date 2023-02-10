@@ -7,6 +7,9 @@ from engine.objects import BaseSprite
 from engine.core import EngineEvent, EventTypes
 from engine.objects.sprite import SpriteTypes
 from .projectile_enemy import Projectlie
+from .grad import Grad
+from .HEAL import Heal
+from .money import Money
 
 
 class Boss(BaseSprite):
@@ -46,8 +49,20 @@ class Boss(BaseSprite):
                              coords_player=self.find_sprites(SpriteTypes.PLAYER)[0].rect.x, damadge=50, speed=8,
                              view="ice_ball")
 
+    def bombard(self):
+        x = self.rect.x - 50 * 15
+        for i in range(7):
+            self.load_sprite(Grad, coords=(x + i * 4 * 50 + random.randint(0, 3) * 50, self.rect.y - 50 * 8),
+                             speed=random.randint(8, 13))
+
     def dead(self):
         self.find_sprites(SpriteTypes.PLAYER)[0].list_trigger[0].close_door()
+        self.load_sprite(Heal, coords=(random.randint(self.rect.x - 20, self.rect.x + self.width),
+                                       random.randint(self.rect.y - 20, self.rect.y + self.height - 50)),
+                         view="little")
+        for i in range(random.randint(6, 10)):
+            self.load_sprite(Money, coords=(random.randint(self.rect.x - 20, self.rect.x + self.width),
+                                            random.randint(self.rect.y - 20, self.rect.y + self.height - 25)))
         self.kill()
 
     def update(self):
@@ -68,4 +83,14 @@ class Boss(BaseSprite):
                         self.time = 0
                     else:
                         self.attack()
+                        self.time = 0
+                else:
+                    if random.randint(1, 10) < 6:
+                        self.attack()
+                        self.time = 0
+                    elif random.randint(1, 6) < 3:
+                        self.bombard()
+                        self.time = 0
+                    else:
+                        self.big_attack()
                         self.time = 0

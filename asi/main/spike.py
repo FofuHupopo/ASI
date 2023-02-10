@@ -10,6 +10,7 @@ from engine.core import EngineEvent, EventTypes
 
 class Spike(BaseSprite):
     def init(self, coords):
+        self.set_type(SpriteTypes.OBSTACLE)
         self.load_image("spike/spike.jpg")
         self.scale_image((50, 50))
         self.rect.x = coords[0]

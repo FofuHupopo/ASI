@@ -253,7 +253,6 @@ class PlayerSprite(AnimatedSprite):
             self.count_big_heal += 1
 
     def change_health(self, value):
-        value = 0
         PlayerСharacteristics.health = max(0, min(self.health + value, PlayerСharacteristics.max_health))
 
         self.add_event(EngineEvent(
