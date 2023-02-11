@@ -22,6 +22,7 @@ class Grad(BaseSprite):
         self.rect.y += self.speed
         if self.checking_touch_by_type(SpriteTypes.PLAYER):
             self.find_sprites(SpriteTypes.PLAYER)[0].change_health(-30)
+            pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/bomb.mp3"))
             self.kill()
 
         if self.checking_touch_by_type(SpriteTypes.OBSTACLE):

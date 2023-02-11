@@ -25,7 +25,7 @@ class PlayerСharacteristics:
 
     max_health = 100
     max_stamina = 100
-    
+
     money = 0
 
 
@@ -88,14 +88,14 @@ class PlayerSprite(AnimatedSprite):
 
         self.__count_big_heal = 0
         self.__count_heal = 0
-        
+
         self.__can_move = True
         self.__is_died = False
         self.__throwing_arms_count = 10
         self.__throwing_arms_max_value = 10
         self.__throwing_arms_cd = 50
         self.__throwing_arms_cd_number = 0
-        
+
         self.send_throwing_arm_event()
 
         self.list_door = self.find_sprites(SpriteTypes.DOOR)
@@ -110,6 +110,13 @@ class PlayerSprite(AnimatedSprite):
             "bracelet": None,
             "boots": None,
         }
+
+        pygame.mixer.init()
+        self.list_musik = ["fon_horizon.mp3", "fon_inrestellar.mp3", "fon_original1.mp3", "fon_original2.mp3",
+                           "fon_original3.mp3", "fon_original4.mp3", "fon_wither.mp3", "fon_detroit.mp3"]
+        self.now_musik = -1
+        self.musik()
+        pygame.mixer.set_num_channels(20)
 
     # ----------
     # self.create_map(self.load_level("map.txt"))
@@ -199,7 +206,8 @@ class PlayerSprite(AnimatedSprite):
                     for i in contact:
                         self.rect.y = min(self.rect.y, i.rect.y - self.height)
                     self.time_y = 0
-
+                    pygame.mixer.Channel(8).play(pygame.mixer.Sound("asi/main/resources/sound/player_in_floor.mp3"))
+                    pygame.mixer.Channel(8).set_volume(0.1)
                     self.change_health(-max(0, (-25 - self.speed_y) * 4))
 
                 self.speed_y = 0
@@ -212,20 +220,22 @@ class PlayerSprite(AnimatedSprite):
         else:
             if self.stamina < PlayerСharacteristics.max_stamina:
                 self.__change_stamina(0.2)
-                
+
         if (
-            self.__throwing_arms_cd_number < self.__throwing_arms_cd and
-            self.__throwing_arms_count < self.__throwing_arms_max_value
-            ):
+                self.__throwing_arms_cd_number < self.__throwing_arms_cd and
+                self.__throwing_arms_count < self.__throwing_arms_max_value
+        ):
             self.__throwing_arms_cd_number += 1
         elif (
-            self.__throwing_arms_cd_number >= self.__throwing_arms_cd and
-            self.__throwing_arms_count < self.__throwing_arms_max_value
-            ):
+                self.__throwing_arms_cd_number >= self.__throwing_arms_cd and
+                self.__throwing_arms_count < self.__throwing_arms_max_value
+        ):
             self.__throwing_arms_cd_number = 0
             self.__throwing_arms_count += 1
-        
+
         self.send_throwing_arm_event()
+        if not pygame.mixer.get_busy():
+            self.musik()
         # elif self.__throwing_arms_count == self.__throwing_arms_max_value:
         #     self.__throwing_arms_cd_number = 0
 
@@ -234,7 +244,7 @@ class PlayerSprite(AnimatedSprite):
         if event.type == pygame.KEYDOWN and keys[pygame.K_SPACE]:
             if not self.is_fly():
                 self.speed_y = 10
-                
+
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == pygame.BUTTON_RIGHT:
             self.melee_attack()
 
@@ -243,10 +253,12 @@ class PlayerSprite(AnimatedSprite):
         if event.type == pygame.KEYDOWN and keys[pygame.K_1] and self.count_heal > 0:
             self.change_health(50)
             self.count_heal -= 1
+            pygame.mixer.Channel(7).play(pygame.mixer.Sound("asi/main/resources/sound/little_heal.mp3"))
         if event.type == pygame.KEYDOWN and keys[pygame.K_2] and self.count_big_heal > 0:
             self.change_health(100)
+            pygame.mixer.Channel(7).play(pygame.mixer.Sound("asi/main/resources/sound/big_heal.mp3"))
             self.count_big_heal -= 1
-            
+
         if event.type == pygame.KEYDOWN and keys[pygame.K_3]:
             self.count_heal += 1
         if event.type == pygame.KEYDOWN and keys[pygame.K_4]:
@@ -254,18 +266,17 @@ class PlayerSprite(AnimatedSprite):
 
     def change_health(self, value):
         PlayerСharacteristics.health = max(0, min(self.health + value, PlayerСharacteristics.max_health))
-
         self.add_event(EngineEvent(
             "info", "hp", {"value": self.health}
         ))
-        
+
         if self.health == 0:
             # self.dead()
             self.start_animation(
                 "death", 1, 10, is_priority=True
             )
             self.set_normal_image("player/blank.png")
-            
+            pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/dead_player.mp3"))
             self.__is_died = True
             self.__can_move = False
 
@@ -280,7 +291,7 @@ class PlayerSprite(AnimatedSprite):
 
     def melee_attack(self):
         self.start_animation("melee_attack", 1, 4, True)
-    
+
     def __throw_arm(self):
         if self.__throwing_arms_count > 0:
             self.__throwing_arms_count -= 1
@@ -289,9 +300,9 @@ class PlayerSprite(AnimatedSprite):
                 coords=[self.rect.x + max(0, self.width * self.direction), self.rect.y],
                 direction=self.direction
             )
-            
+
             self.send_throwing_arm_event()
-    
+
     def send_throwing_arm_event(self):
         self.add_event(
             EngineEvent(
@@ -315,41 +326,41 @@ class PlayerSprite(AnimatedSprite):
     @property
     def stamina_boost(self):
         return PlayerСharacteristics.stamina_boost
-    
+
     def set_little_heal(self, value):
         self.__count_heal = value
-        
+
         self.add_event(EngineEvent(
             "info", "little_heal", {"value": self.__count_heal}
         ))
-    
+
     def get_little_heal(self):
         return self.__count_heal
-    
+
     count_heal = property(fset=set_little_heal, fget=get_little_heal)
-    
+
     def set_big_heal(self, value):
         self.__count_big_heal = value
-        
+
         self.add_event(EngineEvent(
             "info", "big_heal", {"value": self.__count_big_heal}
         ))
-    
+
     def get_big_heal(self):
         return self.__count_big_heal
-    
+
     count_big_heal = property(fset=set_big_heal, fget=get_big_heal)
-    
+
     def set_money(self, value):
         PlayerСharacteristics.money = value
-        
+
         self.add_event(EngineEvent(
             "info", "money", {"value": self.money}
         ))
-        
+
     def get_money(self):
         return PlayerСharacteristics.money
-    
+
     money = property(fset=set_money, fget=get_money)
 
     def key_pressed_handler(self, pressed: Sequence[bool]):
@@ -377,7 +388,7 @@ class PlayerSprite(AnimatedSprite):
             else:
                 self.speed_x = self.time_x * self.direction + additional_speed * self.direction
                 self.time_x -= 1
-            
+
             if not self.animation_running and self.__can_move:
                 if self.__idle_counter >= self.__idle_mx:
                     self.__idle_counter = 0
@@ -391,3 +402,11 @@ class PlayerSprite(AnimatedSprite):
                 self.check(SpriteTypes.STORAGE).open()
 
         self.__shift_pressed = pressed[pygame.K_LSHIFT]
+
+    def musik(self):
+        id = random.randint(0, 7)
+        while id == self.now_musik:
+            id = random.randint(0, 7)
+        self.now_musik = id
+        pygame.mixer.Channel(0).play(pygame.mixer.Sound("asi/main/resources/musik/" + self.list_musik[id]))
+        pygame.mixer.Channel(0).set_volume(0.2)

@@ -29,6 +29,7 @@ class Boss(BaseSprite):
         self.time_attack = 55
         self.time = 0
 
+
     def attack(self):
         if self.find_sprites(SpriteTypes.PLAYER)[0].rect.x > self.rect.x:
             self.load_sprite(Projectlie, coords=(self.rect.x + self.width, self.rect.y),
@@ -63,11 +64,13 @@ class Boss(BaseSprite):
         for i in range(random.randint(6, 10)):
             self.load_sprite(Money, coords=(random.randint(self.rect.x - 20, self.rect.x + self.width),
                                             random.randint(self.rect.y - 20, self.rect.y + self.height - 25)))
+        self.find_sprites(SpriteTypes.PLAYER)[0].musik()
         self.kill()
 
     def update(self):
         if self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON):
             self.health -= self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON)[0].damadge
+            pygame.mixer.Channel(2).play(pygame.mixer.Sound("asi/main/resources/sound/arms_in_enemy.mp3"))
             self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON)[0].kill()
         if self.health == 0:
             self.dead()

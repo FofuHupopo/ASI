@@ -48,4 +48,5 @@ class Kamikaze(BaseEnemy):
         self.add_event(EngineEvent(
             "info", "minus_hp", {"value": 50}
         ))
+        pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/bomb.mp3"))
         self.kill()

@@ -38,6 +38,7 @@ class Storage(BaseSprite):
                 t = self.load_sprite(Money,
                                      coords=(random.randint(self.rect.x + self.width, self.rect.x + self.width + 75),
                                              random.randint(self.rect.y, self.rect.y + self.height - 25)))
+            pygame.mixer.Channel(5).play(pygame.mixer.Sound("asi/main/resources/sound/open_storage.mp3"))
 
     def update(self) -> None:
         if self.checking_touch_by_type(SpriteTypes.PLAYER):

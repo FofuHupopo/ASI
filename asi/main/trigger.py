@@ -24,6 +24,7 @@ class Trigger(Obstacle):
                     i.open()
                 self.find_sprites(SpriteTypes.BOSS)[0].var = True
                 self.set_type(SpriteTypes.OBSTACLE)
+                pygame.mixer.Channel(0).play(pygame.mixer.Sound("asi/main/resources/musik/musik_boss.mp3"))
 
     def close_door(self):
         for i in self.find_sprites(SpriteTypes.PLAYER)[0].list_door:

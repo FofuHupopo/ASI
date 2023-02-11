@@ -14,6 +14,8 @@ class Projectlie(BaseSprite):
         self.set_type(SpriteTypes.ENEMY)
         if view == "fire_ball":
             self.load_image("projectly/fire_ball.jpg")
+            pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/pusk_fireball.mp3"))
+            pygame.mixer.Channel(0).set_volume(0.05)
         else:
             self.load_image("projectly/ice_ball.jpg")
         self.damadge = damadge
