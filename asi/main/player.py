@@ -25,7 +25,7 @@ class PlayerСharacteristics:
 
     max_health = 100
     max_stamina = 100
-    
+
     money = 0
 
 
@@ -88,14 +88,14 @@ class PlayerSprite(AnimatedSprite):
 
         self.__count_big_heal = 0
         self.__count_heal = 0
-        
+
         self.__can_move = True
         self.__is_died = False
         self.__throwing_arms_count = 10
         self.__throwing_arms_max_value = 10
         self.__throwing_arms_cd = 50
         self.__throwing_arms_cd_number = 0
-        
+
         self.send_throwing_arm_event()
 
         self.list_door = self.find_sprites(SpriteTypes.DOOR)
@@ -212,19 +212,19 @@ class PlayerSprite(AnimatedSprite):
         else:
             if self.stamina < PlayerСharacteristics.max_stamina:
                 self.__change_stamina(0.2)
-                
+
         if (
-            self.__throwing_arms_cd_number < self.__throwing_arms_cd and
-            self.__throwing_arms_count < self.__throwing_arms_max_value
-            ):
+                self.__throwing_arms_cd_number < self.__throwing_arms_cd and
+                self.__throwing_arms_count < self.__throwing_arms_max_value
+        ):
             self.__throwing_arms_cd_number += 1
         elif (
-            self.__throwing_arms_cd_number >= self.__throwing_arms_cd and
-            self.__throwing_arms_count < self.__throwing_arms_max_value
-            ):
+                self.__throwing_arms_cd_number >= self.__throwing_arms_cd and
+                self.__throwing_arms_count < self.__throwing_arms_max_value
+        ):
             self.__throwing_arms_cd_number = 0
             self.__throwing_arms_count += 1
-        
+
         self.send_throwing_arm_event()
         # elif self.__throwing_arms_count == self.__throwing_arms_max_value:
         #     self.__throwing_arms_cd_number = 0
@@ -234,7 +234,7 @@ class PlayerSprite(AnimatedSprite):
         if event.type == pygame.KEYDOWN and keys[pygame.K_SPACE]:
             if not self.is_fly():
                 self.speed_y = 10
-                
+
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == pygame.BUTTON_RIGHT:
             self.melee_attack()
 
@@ -246,7 +246,7 @@ class PlayerSprite(AnimatedSprite):
         if event.type == pygame.KEYDOWN and keys[pygame.K_2] and self.count_big_heal > 0:
             self.change_health(100)
             self.count_big_heal -= 1
-            
+
         if event.type == pygame.KEYDOWN and keys[pygame.K_3]:
             self.count_heal += 1
         if event.type == pygame.KEYDOWN and keys[pygame.K_4]:
@@ -258,14 +258,14 @@ class PlayerSprite(AnimatedSprite):
         self.add_event(EngineEvent(
             "info", "hp", {"value": self.health}
         ))
-        
+
         if self.health == 0:
             # self.dead()
             self.start_animation(
                 "death", 1, 10, is_priority=True
             )
             self.set_normal_image("player/blank.png")
-            
+
             self.__is_died = True
             self.__can_move = False
 
@@ -280,7 +280,7 @@ class PlayerSprite(AnimatedSprite):
 
     def melee_attack(self):
         self.start_animation("melee_attack", 1, 4, True)
-    
+
     def __throw_arm(self):
         if self.__throwing_arms_count > 0:
             self.__throwing_arms_count -= 1
@@ -289,9 +289,9 @@ class PlayerSprite(AnimatedSprite):
                 coords=[self.rect.x + max(0, self.width * self.direction), self.rect.y],
                 direction=self.direction
             )
-            
+
             self.send_throwing_arm_event()
-    
+
     def send_throwing_arm_event(self):
         self.add_event(
             EngineEvent(
@@ -315,41 +315,41 @@ class PlayerSprite(AnimatedSprite):
     @property
     def stamina_boost(self):
         return PlayerСharacteristics.stamina_boost
-    
+
     def set_little_heal(self, value):
         self.__count_heal = value
-        
+
         self.add_event(EngineEvent(
             "info", "little_heal", {"value": self.__count_heal}
         ))
-    
+
     def get_little_heal(self):
         return self.__count_heal
-    
+
     count_heal = property(fset=set_little_heal, fget=get_little_heal)
-    
+
     def set_big_heal(self, value):
         self.__count_big_heal = value
-        
+
         self.add_event(EngineEvent(
             "info", "big_heal", {"value": self.__count_big_heal}
         ))
-    
+
     def get_big_heal(self):
         return self.__count_big_heal
-    
+
     count_big_heal = property(fset=set_big_heal, fget=get_big_heal)
-    
+
     def set_money(self, value):
         PlayerСharacteristics.money = value
-        
+
         self.add_event(EngineEvent(
             "info", "money", {"value": self.money}
         ))
-        
+
     def get_money(self):
         return PlayerСharacteristics.money
-    
+
     money = property(fset=set_money, fget=get_money)
 
     def key_pressed_handler(self, pressed: Sequence[bool]):
@@ -377,7 +377,7 @@ class PlayerSprite(AnimatedSprite):
             else:
                 self.speed_x = self.time_x * self.direction + additional_speed * self.direction
                 self.time_x -= 1
-            
+
             if not self.animation_running and self.__can_move:
                 if self.__idle_counter >= self.__idle_mx:
                     self.__idle_counter = 0
