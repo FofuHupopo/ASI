@@ -28,6 +28,7 @@ class Arms(BaseSprite):
         self.heat = False
         self.speed_y = 0.05
         self.time_fall = 0
+        pygame.mixer.Channel(1).play(pygame.mixer.Sound("asi/main/resources/sound/arms_in_fly.mp3"))
 
     def contact_x(self):
         contact = self.checking_touch_by_type(SpriteTypes.OBSTACLE) + self.checking_touch_by_type(SpriteTypes.STORAGE) \
@@ -51,6 +52,7 @@ class Arms(BaseSprite):
             self.rect.y += self.time_fly * self.speed_y * 10
             if self.checking_touch_by_type(SpriteTypes.OBSTACLE) or self.checking_touch_by_type(SpriteTypes.STORAGE) \
                     or self.checking_touch_by_type(SpriteTypes.NPC):
+
                 self.contact_y()
                 self.time_fall += 1
                 if self.time_fall == 100:
@@ -61,6 +63,7 @@ class Arms(BaseSprite):
             self.rect.x += 10 * self.direction
             if self.checking_touch_by_type(SpriteTypes.OBSTACLE) or self.checking_touch_by_type(SpriteTypes.STORAGE) \
                     or self.checking_touch_by_type(SpriteTypes.NPC):
+                pygame.mixer.Channel(1).play(pygame.mixer.Sound("asi/main/resources/sound/arms_in_floor.mp3"))
                 self.contact_x()
                 self.heat = True
                 self.damadge = 0
@@ -70,6 +73,7 @@ class Arms(BaseSprite):
                 self.damadge = max(0, self.damadge - 2)
                 if self.checking_touch_by_type(SpriteTypes.OBSTACLE) or self.checking_touch_by_type(SpriteTypes.STORAGE) \
                         or self.checking_touch_by_type(SpriteTypes.NPC):
+                    pygame.mixer.Channel(1).play(pygame.mixer.Sound("asi/main/resources/sound/arms_in_floor.mp3"))
                     self.contact_y()
                     self.heat = True
                     self.damadge = 0

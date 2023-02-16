@@ -10,9 +10,15 @@ from math import sqrt
 
 
 class Projectlie(BaseSprite):
-    def init(self, coords, coords_player):
+    def init(self, coords, coords_player, damadge, speed, view):
         self.set_type(SpriteTypes.ENEMY)
-        self.load_image("projectly/fire_ball.jpg")
+        if view == "fire_ball":
+            self.load_image("projectly/fire_ball.jpg")
+            pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/pusk_fireball.mp3"))
+            pygame.mixer.Channel(0).set_volume(0.05)
+        else:
+            self.load_image("projectly/ice_ball.jpg")
+        self.damadge = damadge
         self.scale_image((50, 50))
 
         self.rect.x = coords[0]
@@ -22,9 +28,9 @@ class Projectlie(BaseSprite):
         self.height = self.image.get_height()
 
         if self.rect.x < coords_player:
-            self.speed_x = 10
+            self.speed_x = speed
         else:
-            self.speed_x = -10
+            self.speed_x = -speed
             self.rect.x -= self.width
         self.time = 0
 
@@ -34,7 +40,7 @@ class Projectlie(BaseSprite):
             self.kill()
         self.rect.x += self.speed_x
         if self.checking_touch_by_type(SpriteTypes.PLAYER):
-            self.find_sprites(SpriteTypes.PLAYER)[0].change_health(-25)
+            self.find_sprites(SpriteTypes.PLAYER)[0].change_health(-self.damadge)
             self.kill()
         if self.checking_touch_by_type(SpriteTypes.OBSTACLE) or self.checking_touch_by_type(
                 SpriteTypes.NPC) or self.checking_touch_by_type(SpriteTypes.STORAGE):

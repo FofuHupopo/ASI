@@ -31,6 +31,7 @@ class Heal(BaseSprite):
                     self.rect.y = min(i.rect.y - self.height, self.rect.y)
                 self.fly = False
         if self.checking_touch_by_type(SpriteTypes.PLAYER):
+            pygame.mixer.Channel(6).play(pygame.mixer.Sound("asi/main/resources/sound/take_heal.mp3"))
             if self.view == 'big':
                 self.find_sprites(SpriteTypes.PLAYER)[0].count_big_heal += 1
             else:

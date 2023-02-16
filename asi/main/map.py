@@ -16,6 +16,9 @@ from .gunner import Gunner
 from .board import BoardSprite
 from .HEAL import Heal
 from .spike import Spike
+from .boss import Boss
+from .trigger import Trigger
+from .door import Door
 
 
 def load_level(filename):  # загрузка уровня
@@ -38,6 +41,9 @@ class Map:
         "h": Heal,
         "s": Spike,
         "B": BoardSprite,
+        "b": Boss,
+        "*": Trigger,
+        "z": Door
     }
     NO_UPDATE_SYMBOL_DECODER = {
         "#": Obstacle,
