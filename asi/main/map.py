@@ -1,6 +1,8 @@
 import pygame
 
-from typing import Sequence
+from typing import Any, Tuple
+from pprint import pprint
+from colorama import Fore, Style
 
 from asi import settings
 from .throwing_arms import Arms
@@ -37,7 +39,7 @@ class Map:
         "s": Spike,
         "B": BoardSprite,
     }
-    ENVIRONMENT_SYMBOL_DECODER = {
+    NO_UPDATE_SYMBOL_DECODER = {
         "#": Obstacle,
         "-": Obstacle,
     }
@@ -52,12 +54,261 @@ class Map:
         },
     }
 
-    def __init__(self, scene):
+    def __init__(self, scene, surface):
         self.__entity_sprite_group = pygame.sprite.Group()
         self.__env_sprite_group = pygame.sprite.Group()
+        self.__update_sprite_group = pygame.sprite.Group()
+        self.__no_update_sprite_group = pygame.sprite.Group()
         self.__scene = scene
+        self.__surface = surface
+        
+        self.__x_player_render = 20
+        self.__y_player_render = 10
+
+        self.__background_image = pygame.image.load("asi/main/resources/background.png")
 
         self.block_size = 50
+        self.map: list[list[Any]]
+        self.map_symbol: list[list[str]]
+        self.map_status: list[list[Any]]
+    
+    def create_map_2(self, level_map):
+        self.start_player_pos = self.__preload_player(level_map)
+        
+        self.map_size_x = len(max(level_map, key=lambda x: len(x[0])))
+        self.map_size_y = len(level_map)
+        
+        self.__background_size = [
+            self.map_size_x * self.block_size,
+            self.map_size_y * self.block_size
+        ]
+        self.__background_image = pygame.transform.scale(self.__background_image, self.__background_size)
+        
+        self.map = [[None for x in range(self.map_size_x)] for y in range(self.map_size_y)]
+        self.map_status = [[False for x in range(self.map_size_x)] for y in range(self.map_size_y)]
+        self.map_symbol = [[" " for x in range(self.map_size_x)] for y in range(self.map_size_y)]
+    
+        
+        for y in range(len(level_map)):
+            for x in range(len(level_map[y])):
+                symbol = level_map[y][x]
+                
+                if symbol in Map.NO_UPDATE_SYMBOL_DECODER:
+                    sprite = self.__scene.load_sprite(
+                        Map.NO_UPDATE_SYMBOL_DECODER[symbol],
+                        coords=[
+                            self.block_size * x,
+                            self.block_size * y
+                        ]
+                    )
+                    self.map[y][x] = sprite
+                    
+                    self.map_symbol[y][x] = symbol
+                
+                if symbol in Map.ENTITY_SYMBOL_DECODER:
+                    sprite = self.__scene.load_sprite(
+                        Map.ENTITY_SYMBOL_DECODER[symbol],
+                        coords=[
+                            self.block_size * x,
+                            self.block_size * y
+                        ]
+                    )
+                    self.map[y][x] = sprite
+
+                    self.map_symbol[y][x] = symbol
+                    
+
+        self.player = self.__scene.load_sprite(
+            PlayerSprite,
+            coords=[
+                self.block_size * self.start_player_pos[0],
+                self.block_size * self.start_player_pos[1]
+            ]
+        )
+        self.__scene.player = self.player
+        self.start_player_pos = [0, 0]
+        self.__last_player_pos = self.get_payer_map_pos()
+
+        self.__update_sprite_group.add(self.player)
+        
+        player_pos = self.get_payer_map_pos()
+        
+        for y in range(
+            max(player_pos[1] - self.__y_player_render, 0),
+            min(player_pos[1] + self.__y_player_render, self.map_size_y)
+        ):
+            for x in range(
+                max(player_pos[0] - self.__x_player_render, 0),
+                min(player_pos[0] + self.__x_player_render, self.map_size_x)
+            ):
+                self.map_status[y][x] = True
+
+                if self.map[y][x] and self.map_symbol[y][x] not in Map.NO_UPDATE_SYMBOL_DECODER:
+                    self.__update_sprite_group.add(
+                        self.map[y][x]
+                    )
+
+                if self.map[y][x] and self.map_symbol[y][x] in Map.NO_UPDATE_SYMBOL_DECODER:
+                    self.__no_update_sprite_group.add(
+                        self.map[y][x]
+                    )
+    
+    def get_payer_map_pos(self):
+        return [
+            int(self.start_player_pos[0] + self.player.rect.center[0] // self.block_size),
+            int(self.start_player_pos[1] + self.player.rect.center[1] // self.block_size)
+        ]
+    
+    def in_render_zone(self, player_pos, coords: Tuple[int, int]):
+        return (
+            player_pos[0] - self.__x_player_render <= coords[0] <= player_pos[0] + self.__x_player_render and
+            player_pos[1] - self.__y_player_render <= coords[1] <= player_pos[1] + self.__y_player_render
+        )
+    
+    def draw_debug_map(self):
+        for y in range(self.map_size_y):
+                for x in range(self.map_size_x):
+                    if self.map_status[y][x]:
+                        color = Fore.GREEN
+                    else:
+                        color = Fore.RED
+                        
+                    print(self.map_symbol[y][x] + color, end=" ")
+                print()
+            
+        print(Style.RESET_ALL)
+
+    def draw_background(self):
+        player_x, player_y = self.get_payer_map_pos()
+        # player_x += self.player.rect.center[0] / 50
+        # player_y += self.player.rect.center[1] / 50
+        # player_x = player_x * 50 + self.player.rect.center[0] / 50
+        print(player_x)
+        self.__surface.blit(self.__background_image, ((14 - player_x) * 50, 0))
+
+    def update(self):
+        player_pos = self.get_payer_map_pos()
+
+        if self.__last_player_pos != player_pos:
+            player_shift = [
+                player_pos[0] - self.__last_player_pos[0],
+                player_pos[1] - self.__last_player_pos[1]
+            ]
+
+            
+            old_left_x_render = self.__last_player_pos[0] + self.__x_player_render
+            old_right_x_render = self.__last_player_pos[0] - self.__x_player_render
+            
+            new_left_x_render = self.__last_player_pos[0] + player_shift[0] + self.__x_player_render
+            new_right_x_render = self.__last_player_pos[0] + player_shift[0] - self.__x_player_render
+            
+            min_left_x_render, max_left_x_render = min(old_left_x_render, new_left_x_render), max(old_left_x_render, new_left_x_render)
+            min_right_x_render, max_right_x_render = min(old_right_x_render, new_right_x_render), max(old_right_x_render, new_right_x_render)
+    
+            for y in range(
+                max(min(
+                        player_pos[1],
+                        self.__last_player_pos[1]
+                    ) - self.__y_player_render, 0),
+                min(max(
+                    player_pos[1],
+                    self.__last_player_pos[1]
+                    )+ self.__y_player_render + 1, self.map_size_y)
+                ):
+                for x in (*range(max(min_left_x_render, 0), min(max_left_x_render + 1, self.map_size_x)), *range(max(min_right_x_render, 0), min(max_right_x_render + 1, self.map_size_x))):
+                    if self.in_render_zone(player_pos, (x, y)) and not self.map_status[y][x] and self.map_symbol[y][x] not in Map.NO_UPDATE_SYMBOL_DECODER:
+                        if self.map[y][x] and self.map[y][x] in self.__scene.sprite_group:
+                            self.__update_sprite_group.add(
+                                self.map[y][x]
+                            )
+
+                        self.map_status[y][x] = True
+                    
+                    if self.in_render_zone(player_pos, (x, y)) and not self.map_status[y][x] and self.map_symbol[y][x] in Map.NO_UPDATE_SYMBOL_DECODER:
+                        if self.map[y][x] and self.map[y][x] in self.__scene.sprite_group:
+                            self.__no_update_sprite_group.add(
+                                self.map[y][x]
+                            )
+
+                        self.map_status[y][x] = True
+
+                    if not self.in_render_zone(player_pos, (x, y)) and self.map_status[y][x]:
+                        if self.map_symbol[y][x] in Map.NO_UPDATE_SYMBOL_DECODER:
+                            self.__no_update_sprite_group.remove(
+                                self.map[y][x]
+                            )
+                        else:
+                            self.__update_sprite_group.remove(
+                                self.map[y][x]
+                            )
+                            
+                        self.map_status[y][x] = False
+
+
+            old_top_y_render = self.__last_player_pos[1] + self.__y_player_render
+            old_bottom_y_render = self.__last_player_pos[1] - self.__y_player_render
+            
+            new_top_y_render = self.__last_player_pos[1] + player_shift[1] + self.__y_player_render
+            new_bottom_y_render = self.__last_player_pos[1] + player_shift[1] - self.__y_player_render
+            
+            min_top_y_render, max_top_y_render = min(old_top_y_render, new_top_y_render), max(old_top_y_render, new_top_y_render)
+            min_bottom_y_render, max_bottom_y_render = min(old_bottom_y_render, new_bottom_y_render), max(old_bottom_y_render, new_bottom_y_render)
+            
+            for x in range(
+                max(min(
+                        player_pos[0],
+                        self.__last_player_pos[0]
+                    ) - self.__x_player_render, 0),
+                min(max(
+                        player_pos[0],
+                        self.__last_player_pos[0]
+                    ) + self.__x_player_render + 1, self.map_size_x)
+                ):
+                for y in (*range(max(min_top_y_render, 0), min(max_top_y_render + 1, self.map_size_y)), *range(max(min_bottom_y_render, 0), min(max_bottom_y_render + 1, self.map_size_y))):
+                    if self.in_render_zone(player_pos, (x, y)) and not self.map_status[y][x] and self.map_symbol[y][x] not in Map.NO_UPDATE_SYMBOL_DECODER:
+                        if self.map[y][x] and self.map[y][x] in self.__scene.sprite_group:
+                            self.__update_sprite_group.add(
+                                self.map[y][x]
+                            )
+
+                        self.map_status[y][x] = True
+
+                    if self.in_render_zone(player_pos, (x, y)) and not self.map_status[y][x] and self.map_symbol[y][x] in Map.NO_UPDATE_SYMBOL_DECODER:
+                        if self.map[y][x] and self.map[y][x] in self.__scene.sprite_group:
+                            self.__no_update_sprite_group.add(
+                                self.map[y][x]
+                            )
+
+                        self.map_status[y][x] = True
+
+                    if not self.in_render_zone(player_pos, (x, y))  and self.map_status[y][x]:
+                        if self.map_symbol[y][x] in Map.NO_UPDATE_SYMBOL_DECODER:
+                            self.__no_update_sprite_group.remove(
+                                self.map[y][x]
+                            )
+                        else:
+                            self.__update_sprite_group.remove(
+                                self.map[y][x]
+                            )
+                        
+                        self.map_status[y][x] = False
+                
+            # self.draw_debug_map()
+    
+            
+            self.__last_player_pos = player_pos
+                    
+
+        # self.__update_sprite_group.update()
+        for sprite in self.__update_sprite_group.sprites():
+            sprite._update(True)
+            
+        # self.draw_background()
+
+        self.__no_update_sprite_group.draw(self.__surface)
+        self.__update_sprite_group.draw(self.__surface)
+        
+        self.render(self.player.rect.center)
 
     def create_map(self, level_map):
         player_pos = self.__preload_player(level_map)
@@ -83,9 +334,9 @@ class Map:
             for x in range(len(level_map[y])):
                 symbol = level_map[y][x]
 
-                if symbol in Map.ENVIRONMENT_SYMBOL_DECODER:
+                if symbol in Map.NO_UPDATE_SYMBOL_DECODER:
                     self.add_env_sprite(
-                        Map.ENVIRONMENT_SYMBOL_DECODER[symbol],
+                        Map.NO_UPDATE_SYMBOL_DECODER[symbol],
                         [self.block_size * (x - offset[0]), self.block_size * (y - offset[1])]
                     )
 
@@ -110,7 +361,7 @@ class Map:
         for y in range(len(level_map)):
             for x in range(len(level_map[y])):
                 if level_map[y][x] == "p":
-                    return (x, y)
+                    return [x, y]
 
         raise ValueError("Игрок не обнаружен на карте")
 
@@ -118,49 +369,60 @@ class Map:
         sprite = sprite_class(self.__scene, coords=coords)
         self.__env_sprite_group.add(sprite)
         self.__scene._game_stack.sprite_group.add(sprite)
+        
+        return sprite
     
     def add_decorataion_sprite(self, coords, data):
         sprite = DecorationSprite(self.__scene, coords=coords, **data)
         self.__env_sprite_group.add(sprite)
         self.__scene._game_stack.sprite_group.add(sprite)
+        
+        return sprite
 
     def add_entity_sprite(self, sprite_class, coords):
         sprite = sprite_class(self.__scene, coords=coords)
         self.__entity_sprite_group.add(sprite)
         self.__scene._game_stack.sprite_group.add(sprite)
+        
+        return sprite
 
     def render(self, player_coords):
         self.__move_map_for_player(player_coords)
 
-        self.__entity_sprite_group.update()
-        self.__entity_sprite_group.draw(self.__scene._surface)
+        # self.__entity_sprite_group.update()
+        # self.__entity_sprite_group.draw(self.__scene._surface)
 
     def __move_map_for_player(self, player_coords):
+        move_percent = 30
+
         if (
-                settings.WIDTH * 20 / 100 >= player_coords[0] or
-                player_coords[0] >= settings.WIDTH * 80 / 100 or
-                settings.HEIGHT * 20 / 100 >= player_coords[1] or
-                player_coords[1] >= settings.HEIGHT * 80 / 100
+                settings.WIDTH * move_percent / 100 >= player_coords[0] or
+                player_coords[0] >= settings.WIDTH * (100 - move_percent) / 100 or
+                settings.HEIGHT * move_percent / 100 >= player_coords[1] or
+                player_coords[1] >= settings.HEIGHT * (100 - move_percent) / 100
         ):
 
             x, y = 0, 0
 
-            if settings.WIDTH * 20 / 100 >= player_coords[0]:
-                x = settings.WIDTH * 20 / 100 - player_coords[0]
-            elif player_coords[0] >= settings.WIDTH * 80 / 100:
-                x = settings.WIDTH * 80 / 100 - player_coords[0]
+            if settings.WIDTH * move_percent / 100 >= player_coords[0]:
+                x = settings.WIDTH * move_percent / 100 - player_coords[0]
+            elif player_coords[0] >= settings.WIDTH * (100 - move_percent) / 100:
+                x = settings.WIDTH * (100 - move_percent) / 100 - player_coords[0]
 
-            if settings.HEIGHT * 20 / 100 >= player_coords[1]:
-                y = settings.HEIGHT * 20 / 100 - player_coords[1]
-            elif player_coords[1] >= settings.HEIGHT * 80 / 100:
-                y = settings.HEIGHT * 80 / 100 - player_coords[1]
+            if settings.HEIGHT * move_percent / 100 >= player_coords[1]:
+                y = settings.HEIGHT * move_percent / 100 - player_coords[1]
+            elif player_coords[1] >= settings.HEIGHT * (100 - move_percent) / 100:
+                y = settings.HEIGHT * (100 - move_percent) / 100 - player_coords[1]
 
             self.move_map((int(x), int(y)))
 
     def move_map(self, coords):
         x, y = coords
+        self.start_player_pos[0] -= x / self.block_size
+        self.start_player_pos[1] -= y / self.block_size
 
         self.__scene.move_all_sprites((x, y))
 
-        self.__env_sprite_group.update()
-        self.__env_sprite_group.draw(self.__scene._surface)
+        # self.__env_sprite_group.update()
+        # self.__env_sprite_group.draw(self.__scene._surface)
+

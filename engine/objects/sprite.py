@@ -4,7 +4,7 @@ import os
 from dataclasses import dataclass
 from typing import Sequence, Tuple
 
-from engine.core import GameStack, Resources
+from engine.core import GameStack, Resources, EngineSettings
 from engine.shortcuts.dialog import StartDialogObject
 
 
@@ -33,7 +33,7 @@ class BaseSprite(pygame.sprite.Sprite):
         self.__x_bool = False
         self.__y_bool = False
 
-        self.__scene_update=scene_update
+        self.__scene_update = scene_update
         self.__scene = scene
 
         self.init(**kwargs)
@@ -53,6 +53,9 @@ class BaseSprite(pygame.sprite.Sprite):
 
         self.image = pygame.image.load(fullname)
         self.rect = self.image.get_rect()
+    
+    def kill(self) -> None:
+        super().kill()
         
     def scale_image(self, new_size: Tuple[int, int]) -> None:
         """Изменения размеров спрайта.
@@ -145,7 +148,12 @@ class BaseSprite(pygame.sprite.Sprite):
                 del self.__dict__["dialog"]
     
     def load_sprite(self, sprite_class, **kwargs):
-        return self.__scene.load_sprite(sprite_class, **kwargs)
+        sprite = self.__scene.load_sprite(sprite_class, **kwargs)
+        
+        for group in self.groups():
+            group.add(sprite)
+        
+        return sprite
     
     def load_object(self, object_class, **kwargs):
         return self.__scene.load_object(object_class, **kwargs)
@@ -233,6 +241,8 @@ class AnimatedSprite(BaseSprite):
         
         self.__waiting_ticks = 10
         self.__current_tick_after_animation = 0
+        
+        self.__draw_animations = EngineSettings.get_var("DRAW_ANIMATIONS")
 
         return super().__init__(scene, **kwargs)
 
@@ -246,7 +256,7 @@ class AnimatedSprite(BaseSprite):
         if animation_name not in self.__animations:
             raise ValueError(f"Анимация с именем {animation_name} не найдена.")
         
-        if self.animation_running and self.__current_animation_priority:
+        if (self.animation_running and self.__current_animation_priority) or not self.__draw_animations:
             return
 
         self.__current_animation_name = animation_name
@@ -307,7 +317,7 @@ class AnimatedSprite(BaseSprite):
         )
 
     def _update(self, scene_update=False):
-        if self.animation_running:
+        if self.animation_running and self.__draw_animations:
             if self.__current_tick_after_animation > self.__waiting_ticks:
                 self.__current_tick_after_animation = 0
                 self.__run_animation()

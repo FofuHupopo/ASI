@@ -36,11 +36,11 @@ def update(
     return surface
 
 
-def scene_update(
+def sprite_scene_update(
         surface: pygame.Surface, scene_stack: SceneGameStack,
         base_color: pygame.Color = pygame.Color("black")
         ) -> pygame.Surface:
-    """Функция обновления состояния поверхности для сцены.
+    """Функция обновления спрайтов сцены.
 
     Args:
         surface (pygame.Surface): Поверхность.
@@ -51,11 +51,27 @@ def scene_update(
         pygame.Surface: Обновленный кадр.
     """
     
-    # scene_stack.sprite_group.update()
-    for sprite in scene_stack.sprite_group.sprites():
-        sprite._update(True)
-
+    # for sprite in scene_stack.sprite_group.sprites():
+    #     sprite._update(True)
+    
+    scene_stack.sprite_group.update()
     scene_stack.sprite_group.draw(surface)
+
+
+def object_scene_update(
+        surface: pygame.Surface, scene_stack: SceneGameStack,
+        base_color: pygame.Color = pygame.Color("black")
+        )  -> pygame.Surface:
+    """Функция обновления объектов сцены.
+
+    Args:
+        surface (pygame.Surface): Поверхность.
+        
+        base_color (pygame.Color, optional): Базовый цвет поверхности. Обычно черный.
+
+    Returns:
+        pygame.Surface: Обновленный кадр.
+    """
 
     for object in scene_stack.object_stack:
         object: BaseObject

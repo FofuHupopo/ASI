@@ -3,7 +3,7 @@ import os
 
 class Resources:
     dirs = []
-    
+
     @staticmethod
     def load():
         for rootdir, dirs, files in os.walk(os.getcwd()):

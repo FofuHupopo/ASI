@@ -43,9 +43,12 @@ class Kamikaze(BaseEnemy):
         self.speed_agra = 5
         self.time = 0
         self.time_attack = 0
+        
+        super().init()
 
     def attack(self):
-        self.add_event(EngineEvent(
-            "info", "minus_hp", {"value": 50}
-        ))
+        self.find_sprites(SpriteTypes.PLAYER)[0].change_health(-50)
         self.kill()
+    
+    # def update(self):
+    #     print(f"Kamikaze: {self.rect.center}")

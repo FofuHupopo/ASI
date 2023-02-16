@@ -1,7 +1,8 @@
 class EngineSettings:    
     DEFAULT_VARIABLES = {
         "BACKGROUND_COLOR": "black",
-        "FPS": 60
+        "FPS": 100,
+        "DRAW_ANIMATIONS": True,
     }
     
     VARIABLES = DEFAULT_VARIABLES.copy()

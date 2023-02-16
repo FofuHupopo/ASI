@@ -2,7 +2,7 @@ import pygame
 
 from typing import Sequence
 
-from engine.objects.update import scene_update
+from engine.objects.update import sprite_scene_update, object_scene_update
 from engine.core.event_handler import SceneEventHandler
 from engine.core.events import EngineEvents
 from engine.core.stack import SceneGameStack
@@ -21,6 +21,8 @@ class BaseScene:
         self._game_stack = SceneGameStack()        
         self.__event_handler = SceneEventHandler(self._game_stack)
         self.__events = EngineEvents()
+        
+        self.__game_stack_sprite_update = True
         
         self.__load_pygame_vars()
         self.init()
@@ -92,6 +94,9 @@ class BaseScene:
     def remove_sprite(self, sprite):
         self._game_stack.sprite_group.remove(sprite)
         sprite.kill()
+        
+    def set_stack_sprite_update(self, value: bool):
+        self.__game_stack_sprite_update = value
     
     def move_all_sprites(self, coords):
         for sprite in self._game_stack.sprite_group.sprites():
@@ -112,6 +117,9 @@ class BaseScene:
         
         return sprites
     
+    def sprite_stack_update(self, stack: SceneGameStack):
+        sprite_scene_update(self._surface, stack, self.__background_color)
+    
     @property
     def sprite_group(self):
         return self._game_stack.sprite_group
@@ -125,10 +133,14 @@ class BaseScene:
             self.__pressed_handler()
 
             self._surface.fill("black")
+            self.__render()
             self.__update()
 
-            self.__render()
-            scene_update(self._surface, self._game_stack, self.__background_color)
+            
+            if self.__game_stack_sprite_update:
+                sprite_scene_update(self._surface, self._game_stack, self.__background_color)
+                
+            object_scene_update(self._surface, self._game_stack, self.__background_color)
             
             self.post_update()
             self.__events.clear_events()

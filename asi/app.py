@@ -20,7 +20,7 @@ class App:
             "tutorial": TutorialScene,
         })
 
-        game.set_start_scene("start")
+        game.set_start_scene("main")
 
         game.run()
 
