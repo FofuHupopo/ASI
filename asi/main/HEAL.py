@@ -5,6 +5,8 @@ from engine.objects import BaseSprite
 from engine.core import EngineEvent, EventTypes
 from engine.objects.sprite import SpriteTypes
 
+from asi import settings
+
 
 class Heal(BaseSprite):
     def init(self, coords, view="big"):
@@ -31,7 +33,9 @@ class Heal(BaseSprite):
                     self.rect.y = min(i.rect.y - self.height, self.rect.y)
                 self.fly = False
         if self.checking_touch_by_type(SpriteTypes.PLAYER):
-            pygame.mixer.Channel(6).play(pygame.mixer.Sound("asi/main/resources/sound/take_heal.mp3"))
+            if settings.PLAY_SOUNDS:
+                pygame.mixer.Channel(6).play(pygame.mixer.Sound("asi/main/resources/sound/take_heal.mp3"))
+
             if self.view == 'big':
                 self.find_sprites(SpriteTypes.PLAYER)[0].count_big_heal += 1
             else:

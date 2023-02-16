@@ -3,13 +3,16 @@ import random
 
 from typing import Sequence
 from dataclasses import dataclass
+
 from engine.objects import BaseSprite
 from engine.core import EngineEvent, EventTypes
 from engine.objects.sprite import SpriteTypes
+
 from .projectile_enemy import Projectlie
 from .grad import Grad
 from .HEAL import Heal
 from .money import Money
+from asi import settings
 
 
 class Boss(BaseSprite):
@@ -70,7 +73,10 @@ class Boss(BaseSprite):
     def update(self):
         if self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON):
             self.health -= self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON)[0].damadge
-            pygame.mixer.Channel(2).play(pygame.mixer.Sound("asi/main/resources/sound/arms_in_enemy.mp3"))
+
+            if settings.PLAY_SOUNDS:
+                pygame.mixer.Channel(2).play(pygame.mixer.Sound("asi/main/resources/sound/arms_in_enemy.mp3"))
+
             self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON)[0].kill()
         if self.health == 0:
             self.dead()

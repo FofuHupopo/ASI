@@ -5,6 +5,8 @@ from engine.objects import BaseSprite
 from engine.objects.sprite import SpriteTypes
 from engine.core import EngineEvent, EventTypes
 
+from asi import settings
+
 
 class Money(BaseSprite):
     def init(self, coords):
@@ -24,10 +26,14 @@ class Money(BaseSprite):
                 for i in self.checking_touch_by_type(SpriteTypes.OBSTACLE):
                     self.rect.y = min(i.rect.y - self.height, self.rect.y)
                 self.fly = False
-                pygame.mixer.Channel(3).play(pygame.mixer.Sound("asi/main/resources/sound/money_in_floor.mp3"))
+                
+                if settings.PLAY_SOUNDS:
+                    pygame.mixer.Channel(3).play(pygame.mixer.Sound("asi/main/resources/sound/money_in_floor.mp3"))
         if self.checking_touch_by_type(SpriteTypes.PLAYER):
             self.find_sprites(SpriteTypes.PLAYER)[0].money += 1
-            pygame.mixer.Channel(4).play(pygame.mixer.Sound("asi/main/resources/sound/take_money.mp3"))
+            
+            if settings.PLAY_SOUNDS:
+                pygame.mixer.Channel(4).play(pygame.mixer.Sound("asi/main/resources/sound/take_money.mp3"))
             self.kill()
 
 

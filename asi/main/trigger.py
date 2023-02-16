@@ -8,6 +8,8 @@ from engine.objects.sprite import SpriteTypes
 from engine.core import EngineEvent, EventTypes
 from .obstacle import Obstacle
 
+from asi import settings
+
 
 class Trigger(Obstacle):
     def init(self, coords):
@@ -24,7 +26,9 @@ class Trigger(Obstacle):
                     i.open()
                 self.find_sprites(SpriteTypes.BOSS)[0].var = True
                 self.set_type(SpriteTypes.OBSTACLE)
-                pygame.mixer.Channel(0).play(pygame.mixer.Sound("asi/main/resources/musik/musik_boss.mp3"))
+                
+                if settings.PLAY_SOUNDS:
+                    pygame.mixer.Channel(0).play(pygame.mixer.Sound("asi/main/resources/musik/musik_boss.mp3"))
 
     def close_door(self):
         for i in self.find_sprites(SpriteTypes.PLAYER)[0].list_door:

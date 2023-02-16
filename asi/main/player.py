@@ -12,6 +12,8 @@ from .obstacle import Obstacle
 from .storage import Storage
 from .trader import Trader
 
+from asi import settings
+
 
 # from .animation import Animation
 
@@ -206,8 +208,9 @@ class PlayerSprite(AnimatedSprite):
                     for i in contact:
                         self.rect.y = min(self.rect.y, i.rect.y - self.height)
                     self.time_y = 0
-                    pygame.mixer.Channel(8).play(pygame.mixer.Sound("asi/main/resources/sound/player_in_floor.mp3"))
-                    pygame.mixer.Channel(8).set_volume(0.1)
+                    if settings.PLAY_SOUNDS:
+                        pygame.mixer.Channel(8).play(pygame.mixer.Sound("asi/main/resources/sound/player_in_floor.mp3"))
+                        pygame.mixer.Channel(8).set_volume(0.1)
                     self.change_health(-max(0, (-25 - self.speed_y) * 4))
 
                 self.speed_y = 0
@@ -236,6 +239,7 @@ class PlayerSprite(AnimatedSprite):
         self.send_throwing_arm_event()
         if not pygame.mixer.get_busy():
             self.musik()
+
         # elif self.__throwing_arms_count == self.__throwing_arms_max_value:
         #     self.__throwing_arms_cd_number = 0
 
@@ -263,10 +267,12 @@ class PlayerSprite(AnimatedSprite):
             ):
             self.change_health(50)
             self.count_heal -= 1
-            pygame.mixer.Channel(7).play(pygame.mixer.Sound("asi/main/resources/sound/little_heal.mp3"))
+            if settings.PLAY_SOUNDS:
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound("asi/main/resources/sound/little_heal.mp3"))
         if event.type == pygame.KEYDOWN and keys[pygame.K_2] and self.count_big_heal > 0:
             self.change_health(100)
-            pygame.mixer.Channel(7).play(pygame.mixer.Sound("asi/main/resources/sound/big_heal.mp3"))
+            if settings.PLAY_SOUNDS:
+                pygame.mixer.Channel(7).play(pygame.mixer.Sound("asi/main/resources/sound/big_heal.mp3"))
             self.count_big_heal -= 1
 
         if event.type == pygame.KEYDOWN and keys[pygame.K_3]:
@@ -286,7 +292,8 @@ class PlayerSprite(AnimatedSprite):
                 "death", 1, 10, is_priority=True
             )
             # self.set_normal_image("player/blank.png")
-            pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/dead_player.mp3"))
+            if settings.PLAY_SOUNDS:
+                pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/dead_player.mp3"))
             # self.__is_died = True
             # self.__can_move = False
 
@@ -420,5 +427,7 @@ class PlayerSprite(AnimatedSprite):
         while id == self.now_musik:
             id = random.randint(0, 7)
         self.now_musik = id
-        pygame.mixer.Channel(0).play(pygame.mixer.Sound("asi/main/resources/musik/" + self.list_musik[id]))
-        pygame.mixer.Channel(0).set_volume(0.2)
+
+        if settings.PLAY_SOUNDS:
+            pygame.mixer.Channel(0).play(pygame.mixer.Sound("asi/main/resources/musik/" + self.list_musik[id]))
+            pygame.mixer.Channel(0).set_volume(0.2)

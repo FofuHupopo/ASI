@@ -8,14 +8,17 @@ from engine.core import EngineEvent, EventTypes
 from engine.objects.sprite import SpriteTypes
 from math import sqrt
 
+from asi import settings
+
 
 class Projectlie(BaseSprite):
     def init(self, coords, coords_player, damadge, speed, view):
         self.set_type(SpriteTypes.ENEMY)
         if view == "fire_ball":
             self.load_image("projectly/fire_ball.jpg")
-            pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/pusk_fireball.mp3"))
-            pygame.mixer.Channel(0).set_volume(0.05)
+            if settings.PLAY_SOUNDS:
+                pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/pusk_fireball.mp3"))
+                pygame.mixer.Channel(0).set_volume(0.05)
         else:
             self.load_image("projectly/ice_ball.jpg")
         self.damadge = damadge

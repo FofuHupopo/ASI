@@ -7,6 +7,8 @@ from engine.objects import BaseSprite
 from engine.objects.sprite import SpriteTypes
 from asi.main.money import Money
 
+from asi import settings
+
 
 class Storage(BaseSprite):
     def init(self, coords):
@@ -34,7 +36,8 @@ class Storage(BaseSprite):
                                      coords=(random.randint(self.rect.x + self.width, self.rect.x + self.width + 75),
                                              random.randint(self.rect.y, self.rect.y + self.height - 25)))
             
-            pygame.mixer.Channel(5).play(pygame.mixer.Sound("asi/main/resources/sound/open_storage.mp3"))
+            if settings.PLAY_SOUNDS:
+                pygame.mixer.Channel(5).play(pygame.mixer.Sound("asi/main/resources/sound/open_storage.mp3"))
             self.kill()
 
     def update(self) -> None:

@@ -68,8 +68,8 @@ class Map:
         self.__scene = scene
         self.__surface = surface
         
-        self.__x_player_render = 20
-        self.__y_player_render = 10
+        self.__x_player_render = 10
+        self.__y_player_render = 6
 
         self.__background_image = pygame.image.load("asi/main/resources/background.png")
 

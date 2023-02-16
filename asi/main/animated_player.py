@@ -29,5 +29,6 @@ class AimatedPlayerSprite(AnimatedSprite):
         pressed = pygame.key.get_pressed()
         
         if event.type == pygame.KEYDOWN and pressed[pygame.K_f]:
-            start
+            # start
+            ...
             

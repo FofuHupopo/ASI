@@ -5,6 +5,9 @@ from engine.objects import BaseSprite
 from engine.core import EngineEvent, EventTypes
 from engine.objects.sprite import SpriteTypes
 
+from asi import settings
+
+
 class Grad(BaseSprite):
     def init(self, coords, speed):
         self.set_type(SpriteTypes.ENEMY)
@@ -22,7 +25,10 @@ class Grad(BaseSprite):
         self.rect.y += self.speed
         if self.checking_touch_by_type(SpriteTypes.PLAYER):
             self.find_sprites(SpriteTypes.PLAYER)[0].change_health(-30)
-            pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/bomb.mp3"))
+            
+            if settings.PLAY_SOUNDS:
+                pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/bomb.mp3"))
+
             self.kill()
 
         if self.checking_touch_by_type(SpriteTypes.OBSTACLE):
