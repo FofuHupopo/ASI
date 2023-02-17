@@ -23,6 +23,7 @@ class SpriteTypes:
     DOOR = "door"
     TRIGGER = "trigger"
     BOSS = "boss"
+    TREADER = "treader"
 
 
 class BaseSprite(pygame.sprite.Sprite):
@@ -149,7 +150,7 @@ class BaseSprite(pygame.sprite.Sprite):
             if hasattr(self, "dialog"):
                 self.dialog.__del__()
                 del self.__dict__["dialog"]
-    
+
     def load_sprite(self, sprite_class, **kwargs):
         sprite = self.__scene.load_sprite(sprite_class, **kwargs)
         

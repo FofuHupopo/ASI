@@ -52,7 +52,7 @@ class Map:
     DECORATION_SYMBOL_DECODER = {
         "G": {
             "image_path": "map/grass-1.png",
-            "size": (50, 10)
+            "size": (50, 20)
         },
         "T": {
             "image_path": "map/tree-1.png",
@@ -121,6 +121,19 @@ class Map:
                     )
                     self.map[y][x] = sprite
 
+                    self.map_symbol[y][x] = symbol
+                
+                if symbol in Map.DECORATION_SYMBOL_DECODER:
+                    sprite = self.__scene.load_sprite(
+                        DecorationSprite,
+                        coords=[
+                            self.block_size * x + self.block_size - Map.DECORATION_SYMBOL_DECODER[symbol]["size"][0],
+                            self.block_size * y + self.block_size - Map.DECORATION_SYMBOL_DECODER[symbol]["size"][1]
+                        ],
+                        **Map.DECORATION_SYMBOL_DECODER[symbol]
+                    )
+                    self.map[y][x] = sprite
+                    
                     self.map_symbol[y][x] = symbol
                     
 

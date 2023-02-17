@@ -16,6 +16,8 @@ class StartDialogObject(BaseObject):
         
         self.__opened = False
         self.__readed = False
+        
+        print("dialog")
 
     def render(self, surface: pygame.Surface):
         if not self.__opened:

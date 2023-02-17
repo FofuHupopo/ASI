@@ -21,12 +21,14 @@ class Trader(AnimatedSprite):
             }
         )
         self.scale_image((80, 100))
-        self.set_type(SpriteTypes.NPC)
+        self.set_type(SpriteTypes.TREADER)
         self.coords = coords
         self.rect.x = coords[0]
         self.rect.y = coords[1]
         self.width = self.image.get_width()
         self.height = self.image.get_height()
+        
+        self.__triger_zone = 200
 
     def events_handler(self, event: pygame.event.Event):
         pressed = pygame.key.get_pressed()
@@ -36,6 +38,9 @@ class Trader(AnimatedSprite):
             
         if event.type == pygame.KEYDOWN and pressed[pygame.K_f]:
             self.stop_animation()
+    
+    def update(self) -> None:
+        self.create_dialog("Dialog", (200, 200))
 
     def buy(self):
         pass
