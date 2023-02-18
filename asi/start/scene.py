@@ -1,3 +1,5 @@
+import random
+
 import pygame
 from pathlib import Path
 
@@ -165,8 +167,24 @@ class TutorialScene(BaseScene):
         ...
         
     def update(self) -> None:
-        self.write("ТУТОРИАЛ", "red", (50, 50), 48)
-        
+        if self.__tutorial_page == 1:
+            self.write("Сюрикен опасен лишь когда летит прямо,", "green", (50, 50), 48)
+            self.write("чем сильнее он падает, тем меньше он ", "green", (50, 100), 48)
+            self.write("наносит урона. ", "green", (50, 150), 48)
+        if self.__tutorial_page == 2:
+            self.write("Используйте клавишу SHIFT при движении,", "green", (50, 50), 48)
+            self.write("чтобы двигаться быстрее. Но помните, энергия ", "green", (50, 100), 48)
+            self.write("быстро заканчивается и долго восстанавливается,", "green", (50, 150), 48)
+            self.write("поэтому не тратьте её зря, чтобы не остаться ", "green", (50, 200), 48)
+            self.write("без неё в критической ситуации.", "green", (50, 250), 48)
+        if self.__tutorial_page == 3:
+            self.write("Чем выше ты взлетаешь, тем больнее будет", "green", (50, 50), 48)
+            self.write("приземление.", "green", (50, 100), 48)
+        if self.__tutorial_page == 4:
+            self.write("Если у вас не получается победить врага,", "green", (50, 50), 48)
+            self.write("не расстраивайтесь, пробуйте разные тактики и", "green", (50, 100), 48)
+            self.write("разный подход, умирайте и пробуйте ещё раз", "green", (50, 150), 48)
+            self.write("сразиться с ним, и когда ни будь вы его одолеете.", "green", (50, 200), 48)
         y = settings.HEIGHT - 40
         x = settings.WIDTH - 180
         

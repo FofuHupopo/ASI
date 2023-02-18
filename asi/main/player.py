@@ -118,7 +118,7 @@ class PlayerSprite(AnimatedSprite):
                            "fon_original3.mp3", "fon_original4.mp3", "fon_wither.mp3", "fon_detroit.mp3"]
         self.now_musik = -1
         self.musik()
-        pygame.mixer.set_num_channels(20)
+        pygame.mixer.set_num_channels(15)
 
     # ----------
     # self.create_map(self.load_level("map.txt"))
