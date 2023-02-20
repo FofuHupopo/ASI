@@ -4,6 +4,7 @@ import pygame
 from pathlib import Path
 
 from engine.objects import BaseScene
+from engine.core import EngineSettings
 
 from .button_sprite import ButtonSprite
 from .objects.loader import LoaderSprite
@@ -47,7 +48,7 @@ class StartScene(BaseScene):
             image_path="start/sett.png",
             callback=lambda: print(222),
             type_button="setting",
-            action="main"
+            action="settings"
         )
 
         self.exit_buttons = self.load_sprite(
@@ -82,7 +83,8 @@ class StartScene(BaseScene):
                 self.draw_rect_button(surface, button.draw_line())
 
     def update(self) -> None:
-        self.write("Нажмите 'space' для начала игры", "white", (50, 500), 24)
+        ...
+        # self.write("Нажмите 'space' для начала игры", "white", (50, 500), 24)
 
     def reset_hover(self):
         for button in self.buttons:
@@ -102,8 +104,8 @@ class StartScene(BaseScene):
                     exit_game()
                 elif self.buttons[self.index_button].action == "main":
                     self.__run_main_scene()
-                else:
-                    ...  # место для настроек
+                elif self.buttons[self.index_button].action == "settings":
+                    self.pause("settings")
 
             elif pressed[pygame.K_UP]:
                 self.pressed_arrows(-1)
@@ -118,8 +120,10 @@ class StartScene(BaseScene):
                 if button.rect.collidepoint(pos):
                     if button.action == "exit":
                         exit_game()
-                    else:
+                    elif button.action == "main":
                         self.__run_main_scene()
+                    elif button.action == "settings":
+                        self.pause("settings")
 
         if event.type == pygame.MOUSEMOTION:
             for i, button in enumerate(self.buttons):
@@ -203,4 +207,57 @@ class TutorialScene(BaseScene):
         
         if (event.type == pygame.KEYDOWN and pressed[pygame.K_LEFT]):
             self.__tutorial_page = max(self.__tutorial_page - 1, 1)
-            
+
+
+class SettingsScene(BaseScene):
+    def init(self) -> None:
+        ...
+
+    def render(self, surface: pygame.Surface):
+        pygame.draw.rect(
+            surface, "white",
+            pygame.Rect(100, 100, 150, 50), 1
+        )
+        pygame.draw.rect(
+            surface, "blue" if settings.DRAW_ANIMATIONS else "red",
+            pygame.Rect(101, 101, 148, 48)
+        )
+        self.write("Анимации", "white", (110, 110), 24)
+        
+        pygame.draw.rect(
+            surface, "white",
+            pygame.Rect(100, 200, 150, 50), 1
+        )
+        pygame.draw.rect(
+            surface, "blue" if settings.PLAY_SOUNDS else "red",
+            pygame.Rect(101, 201, 148, 48)
+        )
+        self.write("Музыка", "white", (110, 210), 24)
+        
+    def update(self) -> None:
+        self.write("Настройки: ", "white", (50, 50), 48)
+
+    def events_handler(self, event: pygame.event.Event):
+        pressed = pygame.key.get_pressed()
+
+        if event.type == pygame.KEYDOWN and (pressed[pygame.K_SPACE] or pressed[pygame.K_ESCAPE]):
+            self.stop("start")
+
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if (
+                100 <= event.pos[0] <= 250 and
+                100 <= event.pos[1] <= 150
+            ):
+                change_to = not settings.DRAW_ANIMATIONS
+                settings.DRAW_ANIMATIONS = change_to
+                EngineSettings.DEFAULT_VARIABLES["DRAW_ANIMATIONS"] = change_to
+                EngineSettings.VARIABLES["DRAW_ANIMATIONS"] = change_to
+                
+            if (
+                100 <= event.pos[0] <= 250 and
+                200 <= event.pos[1] <= 250
+            ):
+                change_to = not settings.PLAY_SOUNDS
+                settings.PLAY_SOUNDS = change_to
+                EngineSettings.DEFAULT_VARIABLES["PLAY_SOUNDS"] = change_to
+                EngineSettings.VARIABLES["PLAY_SOUNDS"] = change_to
