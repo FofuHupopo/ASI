@@ -260,6 +260,8 @@ class AnimatedSprite(BaseSprite):
         if animation_name not in self.__animations:
             raise ValueError(f"Анимация с именем {animation_name} не найдена.")
         
+        self.__draw_animations = EngineSettings.get_var("DRAW_ANIMATIONS")
+        
         if (self.animation_running and self.__current_animation_priority) or not self.__draw_animations:
             return
 

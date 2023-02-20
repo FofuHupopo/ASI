@@ -150,6 +150,8 @@ class Map:
 
         self.__update_sprite_group.add(self.player)
         
+        # self.__scene._game_stack.sprite_group.update()
+        
         player_pos = self.get_payer_map_pos()
         
         for y in range(
