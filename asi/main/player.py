@@ -119,6 +119,7 @@ class PlayerSprite(AnimatedSprite):
         self.now_musik = -1
         self.musik()
         pygame.mixer.set_num_channels(15)
+        self.time_attack = 10
 
     # ----------
     # self.create_map(self.load_level("map.txt"))
@@ -176,9 +177,7 @@ class PlayerSprite(AnimatedSprite):
         return None
 
     def update(self):
-        if self.health == 0:
-            self.dead()
-
+        self.time_attack = min(10, self.time_attack + 1)
         for localevent in self.get_events():
             if localevent["type"] == "info" and localevent["name"] == "minus_hp":
                 self.change_health(-localevent["data"]["value"])
@@ -260,7 +259,9 @@ class PlayerSprite(AnimatedSprite):
             (event.type == pygame.KEYDOWN and keys[pygame.K_r]) or
             (event.type == pygame.JOYBUTTONDOWN and event.button == 10)
             ):
-            self.__throw_arm()
+            if self.time_attack == 10:
+                self.__throw_arm()
+                self.time_attack = 0
         if (
             (event.type == pygame.KEYDOWN and keys[pygame.K_1] and self.count_heal > 0) or
             (event.type == pygame.JOYBUTTONDOWN and event.button == 13)
@@ -309,6 +310,7 @@ class PlayerSprite(AnimatedSprite):
     def melee_attack(self):
         self.start_animation("melee_attack", 1, 4, True)
 
+
     def __throw_arm(self):
         if self.__throwing_arms_count > 0:
             self.__throwing_arms_count -= 1
@@ -330,7 +332,8 @@ class PlayerSprite(AnimatedSprite):
         )
 
     def dead(self):
-        pass
+        if self.health != 0:
+            self.change_health(-100)
 
     @property
     def health(self):
@@ -431,3 +434,5 @@ class PlayerSprite(AnimatedSprite):
         if settings.PLAY_SOUNDS:
             pygame.mixer.Channel(0).play(pygame.mixer.Sound("asi/main/resources/musik/" + self.list_musik[id]))
             pygame.mixer.Channel(0).set_volume(0.2)
+
+

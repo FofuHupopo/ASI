@@ -40,7 +40,7 @@ class Trader(AnimatedSprite):
             self.stop_animation()
     
     def update(self) -> None:
-        self.create_dialog("Dialog", (200, 200))
+        self.create_dialog("Привет", (200, 200))
 
     def buy(self):
         pass
