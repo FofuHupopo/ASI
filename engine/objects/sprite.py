@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from typing import Sequence, Tuple, List
 
 from engine.core import GameStack, Resources, EngineSettings
-from engine.objects import BaseSprite
 from engine.shortcuts import StartDialogObject
 
 
@@ -105,7 +104,7 @@ class BaseSprite(pygame.sprite.Sprite):
     def get_type(self):
         return self.__type
 
-    def checking_touch_by_type(self, type_: SpriteTypes) -> List[BaseSprite]:
+    def checking_touch_by_type(self, type_: SpriteTypes) -> List["BaseSprite"]:
         """Возвращает список объектов по типу, с которыми пересекается этот спрайт
 
         Args:
