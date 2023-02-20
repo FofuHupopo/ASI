@@ -211,53 +211,159 @@ class TutorialScene(BaseScene):
 
 class SettingsScene(BaseScene):
     def init(self) -> None:
-        ...
+        self.settings_btns = [
+            {
+                "title": "Анимации",
+                "pos": (50, 175),
+                "size": (150, 50),
+                "callback": self.__animation_btn_pressed,
+                "var_name": "DRAW_ANIMATIONS",
+                "type": "submit",
+            },
+            {
+                "title": "Музыка",
+                "pos": (50, 250),
+                "size": (150, 50),
+                "callback": self.__sounds_btn_pressed,
+                "var_name": "PLAY_SOUNDS",
+                "type": "submit",
+            },
+            {
+                "title": "Фон",
+                "pos": (50, 325),
+                "size": (150, 50),
+                "callback": self.__background_btn_pressed,
+                "var_name": "DRAW_BACKGROUND",
+                "type": "submit",
+            },
+            {
+                "title": "20x10",
+                "pos": (600, 200),
+                "size": (150, 50),
+                "callback": lambda: self.__set_new_render_distance((20, 10)),
+                "var_name": "RENDER_DISTANCE",
+                "type": "select",
+                "active": EngineSettings.get_var("RENDER_DISTANCE") == (20, 10)
+            },
+            {
+                "title": "16x8",
+                "pos": (600, 275),
+                "size": (150, 50),
+                "callback": lambda: self.__set_new_render_distance((16, 8)),
+                "var_name": "RENDER_DISTANCE",
+                "type": "select",
+                "active": EngineSettings.get_var("RENDER_DISTANCE") == (16, 8)
+            },
+            {
+                "title": "12x6",
+                "pos": (600, 350),
+                "size": (150, 50),
+                "callback": lambda: self.__set_new_render_distance((12, 6)),
+                "var_name": "RENDER_DISTANCE",
+                "type": "select",
+                "active": EngineSettings.get_var("RENDER_DISTANCE") == (12, 6)
+            },
+            {
+                "title": "8x4",
+                "pos": (600, 425),
+                "size": (150, 50),
+                "callback": lambda: self.__set_new_render_distance((8, 4)),
+                "var_name": "RENDER_DISTANCE",
+                "type": "select",
+                "active": EngineSettings.get_var("RENDER_DISTANCE") == (8, 4)
+            }
+        ]
+        
+        self.on_color = pygame.Color("#332FD0")
+        self.off_color = pygame.Color("#FB2576")
 
     def render(self, surface: pygame.Surface):
-        pygame.draw.rect(
-            surface, "white",
-            pygame.Rect(100, 100, 150, 50), 1
-        )
-        pygame.draw.rect(
-            surface, "blue" if settings.DRAW_ANIMATIONS else "red",
-            pygame.Rect(101, 101, 148, 48)
-        )
-        self.write("Анимации", "white", (110, 110), 24)
+        surface.fill("#20262E")
+        self.write("Настройки: ", "white", (50, 50), 48)
         
-        pygame.draw.rect(
-            surface, "white",
-            pygame.Rect(100, 200, 150, 50), 1
-        )
-        pygame.draw.rect(
-            surface, "blue" if settings.PLAY_SOUNDS else "red",
-            pygame.Rect(101, 201, 148, 48)
-        )
-        self.write("Музыка", "white", (110, 210), 24)
+        self.write("Зона рендера: ", "white", (600, 125), 30)
+
+        for btn in self.settings_btns:
+            pygame.draw.rect(
+                surface, "white",
+                pygame.Rect(btn["pos"], btn["size"]), 1
+            )
+
+            if btn["type"] == "submit":
+                pygame.draw.rect(
+                    surface, self.on_color if settings.__dict__[btn["var_name"]] else self.off_color,
+                    pygame.Rect(
+                        btn["pos"][0] + 1, btn["pos"][1] + 1,
+                        btn["size"][0] - 2, btn["size"][1] - 2
+                    )
+                )
+            else:
+                pygame.draw.rect(
+                    surface, self.on_color if btn["active"] else self.off_color,
+                    pygame.Rect(
+                        btn["pos"][0] + 1, btn["pos"][1] + 1,
+                        btn["size"][0] - 2, btn["size"][1] - 2
+                    )
+                )
+
+            self.write(btn["title"], "white", (btn["pos"][0] + 15, btn["pos"][1] + 15), 24)
         
     def update(self) -> None:
-        self.write("Настройки: ", "white", (50, 50), 48)
+        ...
 
     def events_handler(self, event: pygame.event.Event):
         pressed = pygame.key.get_pressed()
 
         if event.type == pygame.KEYDOWN and (pressed[pygame.K_SPACE] or pressed[pygame.K_ESCAPE]):
             self.stop("start")
+            
+        if event.type == pygame.KEYDOWN and pressed[pygame.K_g]:
+            pygame.display.set_mode((1000, 600))
+
+            settings.HEIGHT = 1000
+            EngineSettings.VARIABLES["HEIGHT"] = 1000
+            
+            settings.WIDTH = 600
+            EngineSettings.VARIABLES["WIDTH"] = 600
+            
+            settings.SIZE = (1000, 600)
+            EngineSettings.VARIABLES["SIZE"] = (1000, 600)
 
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if (
-                100 <= event.pos[0] <= 250 and
-                100 <= event.pos[1] <= 150
-            ):
-                change_to = not settings.DRAW_ANIMATIONS
-                settings.DRAW_ANIMATIONS = change_to
-                EngineSettings.DEFAULT_VARIABLES["DRAW_ANIMATIONS"] = change_to
-                EngineSettings.VARIABLES["DRAW_ANIMATIONS"] = change_to
-                
-            if (
-                100 <= event.pos[0] <= 250 and
-                200 <= event.pos[1] <= 250
-            ):
-                change_to = not settings.PLAY_SOUNDS
-                settings.PLAY_SOUNDS = change_to
-                EngineSettings.DEFAULT_VARIABLES["PLAY_SOUNDS"] = change_to
-                EngineSettings.VARIABLES["PLAY_SOUNDS"] = change_to
+            for btn in self.settings_btns:
+                if (
+                    btn["pos"][0] <= event.pos[0] <= btn["pos"][0] + btn["size"][0] and
+                    btn["pos"][1] <= event.pos[1] <= btn["pos"][1] + btn["size"][1]
+                ):
+                    btn["callback"]()
+
+    def __animation_btn_pressed(self):
+        change_to = not settings.DRAW_ANIMATIONS
+
+        settings.DRAW_ANIMATIONS = change_to
+        EngineSettings.DEFAULT_VARIABLES["DRAW_ANIMATIONS"] = change_to
+        EngineSettings.VARIABLES["DRAW_ANIMATIONS"] = change_to
+    
+    def __sounds_btn_pressed(self):
+        pygame.mixer.stop()
+        change_to = not settings.PLAY_SOUNDS
+
+        settings.PLAY_SOUNDS = change_to
+        EngineSettings.VARIABLES["PLAY_SOUNDS"] = change_to
+    
+    def __background_btn_pressed(self):
+        change_to = not settings.DRAW_BACKGROUND
+
+        settings.DRAW_BACKGROUND = change_to
+        EngineSettings.VARIABLES["DRAW_BACKGROUND"] = change_to
+        
+    def __set_new_render_distance(self, render_distance):
+        settings.RENDER_DISTANCE = render_distance
+        EngineSettings.VARIABLES["RENDER_DISTANCE"] = render_distance
+        
+        for ind, btn in enumerate(self.settings_btns):
+            if btn["var_name"] == "RENDER_DISTANCE":
+                self.settings_btns[ind]["active"] = False
+            
+            if btn["title"] == f"{render_distance[0]}x{render_distance[1]}":
+                self.settings_btns[ind]["active"] = True

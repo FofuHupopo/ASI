@@ -12,11 +12,7 @@ from .ui import HPBar, StaminaBar, ImageAndTextField
 class MainScene(BaseScene):
     def init(self) -> None:
         self.map = Map(self, self._surface)
-        # self.map.create_map(load_level("map.txt"))
         self.map.create_map_2(load_level("map.txt"))
-        
-        # self.background = pygame.image.load("asi/main/resources/background.png")
-        # self.background = pygame.transform.scale2x(self.background)
         
         self.load_object(HPBar)
         self.load_object(StaminaBar)
@@ -49,11 +45,9 @@ class MainScene(BaseScene):
         self.set_stack_sprite_update(False)
 
     def update(self) -> None:
-        # self.map.render(self.player.rect.center)
         self.map.update()
     
     def render(self, surface: pygame.Surface):
-        # surface.blit(self.background, (0, 0))
         ...
 
     def events_handler(self, event: pygame.event.Event):
@@ -67,15 +61,15 @@ class MainScene(BaseScene):
             self.load_object(StartDialogObject, dialog_text="Это какой-то текст в диалоговом окне", dialog_size=(500, 200))
 
     def key_pressed_handler(self, pressed):
-        # if pressed[pygame.K_UP]:
-        #     self.map.move_map((0, 10))
-        # if pressed[pygame.K_DOWN]:
-        #     self.map.move_map((0, -10))
+        if pressed[pygame.K_UP]:
+            self.map.move_map((0, 10))
+        if pressed[pygame.K_DOWN]:
+            self.map.move_map((0, -10))
 
-        # if pressed[pygame.K_RIGHT]:
-        #     self.map.move_map((-10, 0))
-        # if pressed[pygame.K_LEFT]:
-        #     self.map.move_map((10, 0))
+        if pressed[pygame.K_RIGHT]:
+            self.map.move_map((-10, 0))
+        if pressed[pygame.K_LEFT]:
+            self.map.move_map((10, 0))
         ...
 
 class ArtifactsScene(BaseScene):

@@ -5,6 +5,7 @@ from typing import Sequence
 
 from engine.objects import BaseSprite
 from engine.objects.sprite import SpriteTypes
+from engine.core import EngineSettings
 
 from .obstacle import Obstacle
 from .storage import Storage
@@ -32,7 +33,7 @@ class Arms(BaseSprite):
         self.speed_y = 0.05
         self.time_fall = 0
         
-        if settings.PLAY_SOUNDS:
+        if EngineSettings.get_var("PLAY_SOUNDS"):
             pygame.mixer.Channel(1).play(pygame.mixer.Sound("asi/main/resources/sound/arms_in_fly.mp3"))
 
     def contact_x(self):
@@ -60,7 +61,7 @@ class Arms(BaseSprite):
 
                 self.contact_y()
                 self.time_fall += 1
-                if self.time_fall == 100:
+                if self.time_fall == 20:
                     self.kill()
         else:
             self.rotate_image(20)
@@ -68,7 +69,7 @@ class Arms(BaseSprite):
             self.rect.x += 10 * self.direction
             if self.checking_touch_by_type(SpriteTypes.OBSTACLE) or self.checking_touch_by_type(SpriteTypes.STORAGE) \
                     or self.checking_touch_by_type(SpriteTypes.NPC):
-                if settings.PLAY_SOUNDS:
+                if EngineSettings.get_var("PLAY_SOUNDS"):
                     pygame.mixer.Channel(1).play(pygame.mixer.Sound("asi/main/resources/sound/arms_in_floor.mp3"))
                 self.contact_x()
                 self.heat = True
@@ -79,7 +80,7 @@ class Arms(BaseSprite):
                 self.damadge = max(0, self.damadge - 2)
                 if self.checking_touch_by_type(SpriteTypes.OBSTACLE) or self.checking_touch_by_type(SpriteTypes.STORAGE) \
                         or self.checking_touch_by_type(SpriteTypes.NPC):
-                    if settings.PLAY_SOUNDS:
+                    if EngineSettings.get_var("PLAY_SOUNDS"):
                         pygame.mixer.Channel(1).play(pygame.mixer.Sound("asi/main/resources/sound/arms_in_floor.mp3"))
                     self.contact_y()
                     self.heat = True
