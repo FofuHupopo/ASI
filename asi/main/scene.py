@@ -13,7 +13,7 @@ class MainScene(BaseScene):
     def init(self) -> None:
         self.map = Map(self, self._surface)
         # self.map.create_map(load_level("map.txt"))
-        self.map.create_map_2(load_level("map_copy.txt"))
+        self.map.create_map_2(load_level("map.txt"))
         
         # self.background = pygame.image.load("asi/main/resources/background.png")
         # self.background = pygame.transform.scale2x(self.background)
