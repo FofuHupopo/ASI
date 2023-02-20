@@ -13,7 +13,7 @@ class MainScene(BaseScene):
     def init(self) -> None:
         self.map = Map(self, self._surface)
         # self.map.create_map(load_level("map.txt"))
-        self.map.create_map_2(load_level("map.txt"))
+        self.map.create_map_2(load_level("map_copy.txt"))
         
         # self.background = pygame.image.load("asi/main/resources/background.png")
         # self.background = pygame.transform.scale2x(self.background)
@@ -67,16 +67,16 @@ class MainScene(BaseScene):
             self.load_object(StartDialogObject, dialog_text="Это какой-то текст в диалоговом окне", dialog_size=(500, 200))
 
     def key_pressed_handler(self, pressed):
-        # if pressed[pygame.K_UP]:
-        #     self.map.move_map((0, 10))
-        # if pressed[pygame.K_DOWN]:
-        #     self.map.move_map((0, -10))
+        if pressed[pygame.K_UP]:
+            self.map.move_map((0, 10))
+        if pressed[pygame.K_DOWN]:
+            self.map.move_map((0, -10))
 
-        # if pressed[pygame.K_RIGHT]:
-        #     self.map.move_map((-10, 0))
-        # if pressed[pygame.K_LEFT]:
-        #     self.map.move_map((10, 0))
-        ...
+        if pressed[pygame.K_RIGHT]:
+            self.map.move_map((-10, 0))
+        if pressed[pygame.K_LEFT]:
+            self.map.move_map((10, 0))
+
 
 class ArtifactsScene(BaseScene):
     def init(self) -> None:
