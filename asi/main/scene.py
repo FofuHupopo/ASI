@@ -2,7 +2,7 @@ import pygame
 import random
 
 from engine.objects import BaseScene
-from engine.shortcuts.dialog import DialogObject, StartDialogObject
+from engine.shortcuts.dialog import StartDialogObject
 
 from asi import settings
 from .map import Map, load_level
@@ -41,7 +41,7 @@ class MainScene(BaseScene):
             index=3,
             event_name="shuriken_count"
         )
-        
+
         self.set_stack_sprite_update(False)
 
     def update(self) -> None:
@@ -57,20 +57,20 @@ class MainScene(BaseScene):
             self.pause("start")
 
         if event.type == pygame.KEYDOWN and pressed[pygame.K_b]:
-            # self.load_object(DialogObject, text="Это какой-то текст в диалоговом окне", size=(500, 200))
             self.load_object(StartDialogObject, dialog_text="Это какой-то текст в диалоговом окне", dialog_size=(500, 200))
 
     def key_pressed_handler(self, pressed):
-        # if pressed[pygame.K_UP]:
-        #     self.map.move_map((0, 10))
-        # if pressed[pygame.K_DOWN]:
-        #     self.map.move_map((0, -10))
+        if pressed[pygame.K_UP]:
+            self.map.move_map((0, 10))
+        if pressed[pygame.K_DOWN]:
+            self.map.move_map((0, -10))
 
-        # if pressed[pygame.K_RIGHT]:
-        #     self.map.move_map((-10, 0))
-        # if pressed[pygame.K_LEFT]:
-        #     self.map.move_map((10, 0))
+        if pressed[pygame.K_RIGHT]:
+            self.map.move_map((-10, 0))
+        if pressed[pygame.K_LEFT]:
+            self.map.move_map((10, 0))
         ...
+
 
 class ArtifactsScene(BaseScene):
     def init(self) -> None:

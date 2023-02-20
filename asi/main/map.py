@@ -1,13 +1,11 @@
 import pygame
 
 from typing import Any, Tuple
-from pprint import pprint
 from colorama import Fore, Style
 
 from engine.core import EngineSettings
 
 from asi import settings
-from .sprites.player.throwing_arms import Arms
 from .sprites.player.player import PlayerSprite
 from .sprites.environment.obstacle import Obstacle
 from .sprites.environment.decoration import DecorationSprite
@@ -381,53 +379,6 @@ class Map:
         
         self.render(self.player.rect.center)
 
-    def create_map(self, level_map):
-        player_pos = self.__preload_player(level_map)
-        offset = [
-            player_pos[0] - 10,
-            player_pos[1] - 5,
-        ]
-        
-        for y in range(len(level_map)):
-            for x in range(len(level_map[y])):
-                symbol = level_map[y][x]
-                
-                if symbol in Map.DECORATION_SYMBOL_DECODER:
-                    x_pos = self.block_size * (x - offset[0]) + self.block_size - Map.DECORATION_SYMBOL_DECODER[symbol]["size"][0]
-                    y_pos = self.block_size * (y - offset[1]) + self.block_size - Map.DECORATION_SYMBOL_DECODER[symbol]["size"][1]
-
-                    self.add_decorataion_sprite(
-                        (x_pos, y_pos),
-                        Map.DECORATION_SYMBOL_DECODER[symbol]
-                    )
-
-        for y in range(len(level_map)):
-            for x in range(len(level_map[y])):
-                symbol = level_map[y][x]
-
-                if symbol in Map.NO_UPDATE_SYMBOL_DECODER:
-                    self.add_env_sprite(
-                        Map.NO_UPDATE_SYMBOL_DECODER[symbol],
-                        [self.block_size * (x - offset[0]), self.block_size * (y - offset[1])]
-                    )
-
-                if symbol in Map.ENTITY_SYMBOL_DECODER:
-                    self.add_entity_sprite(
-                        Map.ENTITY_SYMBOL_DECODER[symbol],
-                        [self.block_size * (x - offset[0]), self.block_size * (y - offset[1])]
-                    )
-
-                if level_map[y][x] == "p":
-                    self.__player_pos = (x, y)
-    
-        self.__scene.player = self.__scene.load_sprite(
-            PlayerSprite,
-            coords=[
-                self.block_size * (self.__player_pos[0] - offset[0]),
-                self.block_size * (self.__player_pos[1] - offset[1])
-            ]
-        )
-
     def __preload_player(self, level_map):
         for y in range(len(level_map)):
             for x in range(len(level_map[y])):
@@ -459,9 +410,6 @@ class Map:
 
     def render(self, player_coords):
         self.__move_map_for_player(player_coords)
-
-        # self.__entity_sprite_group.update()
-        # self.__entity_sprite_group.draw(self.__scene._surface)
 
     def __move_map_for_player(self, player_coords):
         move_percent = 30
@@ -497,7 +445,3 @@ class Map:
         self.__scene.move_all_sprites((x, y))
         self.__background_pos[0] += x * self.block_size / 10
         self.__background_pos[0] += x * self.block_size
-
-        # self.__env_sprite_group.update()
-        # self.__env_sprite_group.draw(self.__scene._surface)
-
