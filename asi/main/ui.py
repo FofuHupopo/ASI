@@ -2,20 +2,21 @@ import pygame
 import math
 
 from engine.objects import BaseObject
-from engine.core import EngineEvent
+from engine.core import EngineEvent, EngineSettings
 
-from asi.settings import WIDTH, HEIGHT
-
-hp_bar_lenght = int(WIDTH * 0.3)
-hp_bar_left_indient = hp_bar_lenght // 2
-hp_bar_top_indient = int(HEIGHT * 0.96)
-hp_bar_width = 8
 
 class HPBar(BaseObject):
     def init(self, hp=100):
         self.hp = hp
     
     def render(self, surface: pygame.Surface):
+        width, height = EngineSettings.get_var("SIZE")
+
+        hp_bar_lenght = int(width * 0.3)
+        hp_bar_left_indient = hp_bar_lenght // 2
+        hp_bar_top_indient = int(height * 0.96)
+        hp_bar_width = 8
+        
         hp_lenght = self.hp / 100 * hp_bar_lenght
 
         pygame.draw.rect(
@@ -69,17 +70,21 @@ class HPBar(BaseObject):
                 # print(self.hp)
 
 
-stamina_bar_lenght = int(WIDTH * 0.2)
-stamina_bar_left_indient = hp_bar_lenght + hp_bar_left_indient + 80
-stamina_bar_top_indient = int(HEIGHT * 0.96)
-stamina_bar_width = 8
-
-
 class StaminaBar(BaseObject):
     def init(self, stamina=100):
         self.stamina = stamina
     
     def render(self, surface: pygame.Surface):
+        width, height = EngineSettings.get_var("SIZE")
+
+        hp_bar_lenght = int(width * 0.3)
+        hp_bar_left_indient = hp_bar_lenght // 2
+
+        stamina_bar_lenght = int(width * 0.2)
+        stamina_bar_left_indient = hp_bar_lenght + hp_bar_left_indient + 80
+        stamina_bar_top_indient = int(height * 0.96)
+        stamina_bar_width = 8
+
         bar_lenght = self.stamina / 100 * stamina_bar_lenght
 
         pygame.draw.rect(

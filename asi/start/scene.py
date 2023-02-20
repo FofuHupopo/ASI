@@ -25,14 +25,6 @@ class StartScene(BaseScene):
     image_background = open_image("ui_start_components/back.jpg")
 
     def init(self) -> None:
-        # self.load_sprite(
-        #     LoaderSprite,
-        #     coords=(
-        #         settings.WIDTH,
-        #         settings.HEIGHT
-        #     )
-        # )
-
         self.play_button = self.load_sprite(
             ButtonSprite,
             coordinates=(55, 200),
@@ -44,7 +36,7 @@ class StartScene(BaseScene):
 
         self.setting_buttons = self.load_sprite(
             ButtonSprite,
-            coordinates=(53, 280),
+            coordinates=(55, 320),
             image_path="start/sett.png",
             callback=lambda: print(222),
             type_button="setting",
@@ -53,7 +45,7 @@ class StartScene(BaseScene):
 
         self.exit_buttons = self.load_sprite(
             ButtonSprite,
-            coordinates=(55, 350),
+            coordinates=(55, 440),
             image_path="start/exit.png",
             callback=lambda: print(333),
             type_button="exit",
@@ -166,34 +158,44 @@ class TutorialScene(BaseScene):
     def init(self) -> None:
         self.__tutorial_page = 1
         self.__max_tutorial_page = 4
+        
+        self.__main_color = pygame.Color("#FB2576")
+        self.__background_color = "#20262E"
 
     def render(self, surface: pygame.Surface):
-        ...
+        width, height = EngineSettings.get_var("SIZE")
         
-    def update(self) -> None:
+        surface.fill(self.__background_color)
+
         if self.__tutorial_page == 1:
-            self.write("Сюрикен опасен лишь когда летит прямо,", "green", (50, 50), 48)
-            self.write("чем сильнее он падает, тем меньше он ", "green", (50, 100), 48)
-            self.write("наносит урона. ", "green", (50, 150), 48)
+            self.write("Сюрикен опасен лишь когда летит прямо,", self.__main_color, (50, 50), 48)
+            self.write("чем сильнее он падает, тем меньше он ", self.__main_color, (50, 100), 48)
+            self.write("наносит урона. ", self.__main_color, (50, 150), 48)
         if self.__tutorial_page == 2:
-            self.write("Используйте клавишу SHIFT при движении,", "green", (50, 50), 48)
-            self.write("чтобы двигаться быстрее. Но помните, энергия ", "green", (50, 100), 48)
-            self.write("быстро заканчивается и долго восстанавливается,", "green", (50, 150), 48)
-            self.write("поэтому не тратьте её зря, чтобы не остаться ", "green", (50, 200), 48)
-            self.write("без неё в критической ситуации.", "green", (50, 250), 48)
+            self.write("Используйте клавишу SHIFT при движении,", self.__main_color, (50, 50), 48)
+            self.write("чтобы двигаться быстрее. Но помните, ", self.__main_color, (50, 100), 48)
+            self.write("энергия быстро заканчивается и долго,", self.__main_color, (50, 150), 48)
+            self.write("восстанавливается поэтому не тратьте ", self.__main_color, (50, 200), 48)
+            self.write("её зря, чтобы не остаться без неё в ", self.__main_color, (50, 250), 48)
+            self.write("критической ситуации. ", self.__main_color, (50, 300), 48)
         if self.__tutorial_page == 3:
-            self.write("Чем выше ты взлетаешь, тем больнее будет", "green", (50, 50), 48)
-            self.write("приземление.", "green", (50, 100), 48)
+            self.write("Чем выше ты взлетаешь, тем больнее будет", self.__main_color, (50, 50), 48)
+            self.write("приземление.", self.__main_color, (50, 100), 48)
         if self.__tutorial_page == 4:
-            self.write("Если у вас не получается победить врага,", "green", (50, 50), 48)
-            self.write("не расстраивайтесь, пробуйте разные тактики и", "green", (50, 100), 48)
-            self.write("разный подход, умирайте и пробуйте ещё раз", "green", (50, 150), 48)
-            self.write("сразиться с ним, и когда ни будь вы его одолеете.", "green", (50, 200), 48)
-        y = settings.HEIGHT - 40
-        x = settings.WIDTH - 180
+            self.write("Если у вас не получается победить врага,", self.__main_color, (50, 50), 48)
+            self.write("не расстраивайтесь, пробуйте разные ", self.__main_color, (50, 100), 48)
+            self.write("тактики и разный подход, умирайте и ", self.__main_color, (50, 150), 48)
+            self.write("пробуйте ещё раз сразиться с ним, и когда ни будь вы его одолеете.", self.__main_color, (50, 200), 48)
+            self.write("когда ни будь вы его одолеете.", self.__main_color, (50, 250), 48)
+        
+        x = width - 180
+        y = height - 40
         
         self.write(f"Страница {self.__tutorial_page} из {self.__max_tutorial_page}", "white", (x, y), 24)
         self.write(f"Используйте <- и -> для перемещения по страницам туториала", "white", (40, y), 24)
+        
+    def update(self) -> None:
+        ...
 
     def events_handler(self, event: pygame.event.Event):
         pressed = pygame.key.get_pressed()
@@ -222,7 +224,7 @@ class SettingsScene(BaseScene):
             },
             {
                 "title": "Музыка",
-                "pos": (50, 250),
+                "pos": (250, 175),
                 "size": (150, 50),
                 "callback": self.__sounds_btn_pressed,
                 "var_name": "PLAY_SOUNDS",
@@ -230,58 +232,43 @@ class SettingsScene(BaseScene):
             },
             {
                 "title": "Фон",
-                "pos": (50, 325),
+                "pos": (450, 175),
                 "size": (150, 50),
                 "callback": self.__background_btn_pressed,
                 "var_name": "DRAW_BACKGROUND",
                 "type": "submit",
             },
-            {
-                "title": "20x10",
-                "pos": (600, 200),
-                "size": (150, 50),
-                "callback": lambda: self.__set_new_render_distance((20, 10)),
-                "var_name": "RENDER_DISTANCE",
-                "type": "select",
-                "active": EngineSettings.get_var("RENDER_DISTANCE") == (20, 10)
-            },
-            {
-                "title": "16x8",
-                "pos": (600, 275),
-                "size": (150, 50),
-                "callback": lambda: self.__set_new_render_distance((16, 8)),
-                "var_name": "RENDER_DISTANCE",
-                "type": "select",
-                "active": EngineSettings.get_var("RENDER_DISTANCE") == (16, 8)
-            },
-            {
-                "title": "12x6",
-                "pos": (600, 350),
-                "size": (150, 50),
-                "callback": lambda: self.__set_new_render_distance((12, 6)),
-                "var_name": "RENDER_DISTANCE",
-                "type": "select",
-                "active": EngineSettings.get_var("RENDER_DISTANCE") == (12, 6)
-            },
-            {
-                "title": "8x4",
-                "pos": (600, 425),
-                "size": (150, 50),
-                "callback": lambda: self.__set_new_render_distance((8, 4)),
-                "var_name": "RENDER_DISTANCE",
-                "type": "select",
-                "active": EngineSettings.get_var("RENDER_DISTANCE") == (8, 4)
-            }
         ]
         
-        self.on_color = pygame.Color("#332FD0")
-        self.off_color = pygame.Color("#FB2576")
+        window_size_shift = EngineSettings.get_var("WINDOW_SHIFT")
+        
+        for ind, window_size in enumerate(EngineSettings.get_var("AVAILABLE_WINDOW_SIZES")):
+            y_pos = 325 + ind // 3 * 75
+            x_pos = (ind % 3) * 200 + 50
+
+            self.settings_btns.append({
+                "title": f"{window_size[0] + window_size_shift[0]}x{window_size[1] + window_size_shift[1]}",
+                "pos": (x_pos, y_pos),
+                "size": (150, 50),
+                "callback": self.__set_window_size,
+                "var_name": "WINDOW_SIZE",
+                "type": "select",
+                "active": EngineSettings.get_var("WINDOW_SIZE") == window_size
+            })
+
+        self.__on_color = pygame.Color("#332FD0")
+        self.__off_color = pygame.Color("#FB2576")
+        self.__background_color = "#20262E"
 
     def render(self, surface: pygame.Surface):
-        surface.fill("#20262E")
-        self.write("Настройки: ", "white", (50, 50), 48)
+        surface.fill(self.__background_color)
         
-        self.write("Зона рендера: ", "white", (600, 125), 30)
+        self.write("Настройки: ", "white", (50, 50), 48)
+        self.write("Основные: ", "white", (50, 125), 30)
+        self.write("Размеры экрана: ", "white", (50, 275), 30)
+        
+        height = EngineSettings.get_var("HEIGHT")
+        self.write("Нажмите 'esc' для выхода в главное меню", "white", (50, height - 50), 24)
 
         for btn in self.settings_btns:
             pygame.draw.rect(
@@ -291,7 +278,7 @@ class SettingsScene(BaseScene):
 
             if btn["type"] == "submit":
                 pygame.draw.rect(
-                    surface, self.on_color if settings.__dict__[btn["var_name"]] else self.off_color,
+                    surface, self.__on_color if settings.__dict__[btn["var_name"]] else self.__off_color,
                     pygame.Rect(
                         btn["pos"][0] + 1, btn["pos"][1] + 1,
                         btn["size"][0] - 2, btn["size"][1] - 2
@@ -299,7 +286,7 @@ class SettingsScene(BaseScene):
                 )
             else:
                 pygame.draw.rect(
-                    surface, self.on_color if btn["active"] else self.off_color,
+                    surface, self.__on_color if btn["active"] else self.__off_color,
                     pygame.Rect(
                         btn["pos"][0] + 1, btn["pos"][1] + 1,
                         btn["size"][0] - 2, btn["size"][1] - 2
@@ -330,40 +317,63 @@ class SettingsScene(BaseScene):
             EngineSettings.VARIABLES["SIZE"] = (1000, 600)
 
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            for btn in self.settings_btns:
+            for ind, btn in enumerate(self.settings_btns):
                 if (
                     btn["pos"][0] <= event.pos[0] <= btn["pos"][0] + btn["size"][0] and
                     btn["pos"][1] <= event.pos[1] <= btn["pos"][1] + btn["size"][1]
                 ):
-                    btn["callback"]()
+                    btn["callback"](ind)
 
-    def __animation_btn_pressed(self):
+    def __animation_btn_pressed(self, ind):
         change_to = not settings.DRAW_ANIMATIONS
 
         settings.DRAW_ANIMATIONS = change_to
         EngineSettings.DEFAULT_VARIABLES["DRAW_ANIMATIONS"] = change_to
         EngineSettings.VARIABLES["DRAW_ANIMATIONS"] = change_to
     
-    def __sounds_btn_pressed(self):
+    def __sounds_btn_pressed(self, ind):
         pygame.mixer.stop()
         change_to = not settings.PLAY_SOUNDS
 
         settings.PLAY_SOUNDS = change_to
         EngineSettings.VARIABLES["PLAY_SOUNDS"] = change_to
     
-    def __background_btn_pressed(self):
+    def __background_btn_pressed(self, ind):
         change_to = not settings.DRAW_BACKGROUND
 
         settings.DRAW_BACKGROUND = change_to
         EngineSettings.VARIABLES["DRAW_BACKGROUND"] = change_to
+    
+    def __set_window_size(self, ind):
+        width_shift, height_shift = EngineSettings.get_var("WINDOW_SHIFT")
         
-    def __set_new_render_distance(self, render_distance):
+        width, height = tuple(map(int, self.settings_btns[ind]["title"].split("x")))
+        width -= width_shift
+        height -= height_shift
+        
+        size = width, height
+        
+        pygame.display.set_mode(size)
+        
+        settings.SIZE = size
+        EngineSettings.VARIABLES["SIZE"] = size
+        
+        settings.WIDTH = width
+        EngineSettings.VARIABLES["WIDTH"] = width
+        
+        settings.HEIGHT = height
+        EngineSettings.VARIABLES["HEIGHT"] = height
+        
+        for btn in self.settings_btns:
+            if btn["var_name"] == "WINDOW_SIZE":
+                self.settings_btns[ind]["active"] = False
+
+        self.settings_btns[ind]["active"] = True
+
+        render_distance = (
+            width // EngineSettings.get_var("BLOCK_SIZE"),
+            height // EngineSettings.get_var("BLOCK_SIZE")
+        )
+
         settings.RENDER_DISTANCE = render_distance
         EngineSettings.VARIABLES["RENDER_DISTANCE"] = render_distance
-        
-        for ind, btn in enumerate(self.settings_btns):
-            if btn["var_name"] == "RENDER_DISTANCE":
-                self.settings_btns[ind]["active"] = False
-            
-            if btn["title"] == f"{render_distance[0]}x{render_distance[1]}":
-                self.settings_btns[ind]["active"] = True

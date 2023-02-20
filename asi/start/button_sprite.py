@@ -22,11 +22,11 @@ class ButtonSprite(BaseSprite):
 
     def change_size_image(self):  # изменить размер картинки кнопки
         if self.type_button == "play":
-            self.scale_image((95, 33))
+            self.scale_image((190, 66))
         elif self.type_button == "setting":
-            self.scale_image((200, 33))
+            self.scale_image((400, 66))
         else:
-            self.scale_image((85, 33))
+            self.scale_image((170, 66))
 
     def update(self) -> None:
         self.change_size_image()

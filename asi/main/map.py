@@ -207,6 +207,11 @@ class Map:
         print(Style.RESET_ALL)
 
     def draw_background(self):
+        self.__background_image = pygame.transform.scale(self.__background_image, (
+            max(self.map_size_x * self.block_size, settings.HEIGHT),
+            max(self.map_size_y * self.block_size, settings.WIDTH))
+        )
+
         self.__surface.blit(self.__background_image, (min(self.t.rect.x, 0), min(self.t.rect.y, 0)))
 
     def update(self):
@@ -460,25 +465,27 @@ class Map:
 
     def __move_map_for_player(self, player_coords):
         move_percent = 30
+        
+        WIDTH, HEIGHT = EngineSettings.get_var("SIZE")
 
         if (
-                settings.WIDTH * move_percent / 100 >= player_coords[0] or
-                player_coords[0] >= settings.WIDTH * (100 - move_percent) / 100 or
-                settings.HEIGHT * move_percent / 100 >= player_coords[1] or
-                player_coords[1] >= settings.HEIGHT * (100 - move_percent) / 100
+                WIDTH * move_percent / 100 >= player_coords[0] or
+                player_coords[0] >= WIDTH * (100 - move_percent) / 100 or
+                HEIGHT * move_percent / 100 >= player_coords[1] or
+                player_coords[1] >= HEIGHT * (100 - move_percent) / 100
         ):
 
             x, y = 0, 0
 
-            if settings.WIDTH * move_percent / 100 >= player_coords[0]:
-                x = settings.WIDTH * move_percent / 100 - player_coords[0]
-            elif player_coords[0] >= settings.WIDTH * (100 - move_percent) / 100:
-                x = settings.WIDTH * (100 - move_percent) / 100 - player_coords[0]
+            if WIDTH * move_percent / 100 >= player_coords[0]:
+                x = WIDTH * move_percent / 100 - player_coords[0]
+            elif player_coords[0] >= WIDTH * (100 - move_percent) / 100:
+                x = WIDTH * (100 - move_percent) / 100 - player_coords[0]
 
-            if settings.HEIGHT * move_percent / 100 >= player_coords[1]:
-                y = settings.HEIGHT * move_percent / 100 - player_coords[1]
-            elif player_coords[1] >= settings.HEIGHT * (100 - move_percent) / 100:
-                y = settings.HEIGHT * (100 - move_percent) / 100 - player_coords[1]
+            if HEIGHT * move_percent / 100 >= player_coords[1]:
+                y = HEIGHT * move_percent / 100 - player_coords[1]
+            elif player_coords[1] >= HEIGHT * (100 - move_percent) / 100:
+                y = HEIGHT * (100 - move_percent) / 100 - player_coords[1]
 
             self.move_map((int(x), int(y)))
 

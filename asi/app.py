@@ -21,7 +21,7 @@ class App:
             "settings": SettingsScene,
         })
 
-        game.set_start_scene("main")
+        game.set_start_scene("start")
 
         game.run()
 
