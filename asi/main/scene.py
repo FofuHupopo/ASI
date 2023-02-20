@@ -61,15 +61,15 @@ class MainScene(BaseScene):
             self.load_object(StartDialogObject, dialog_text="Это какой-то текст в диалоговом окне", dialog_size=(500, 200))
 
     def key_pressed_handler(self, pressed):
-        if pressed[pygame.K_UP]:
-            self.map.move_map((0, 10))
-        if pressed[pygame.K_DOWN]:
-            self.map.move_map((0, -10))
+        # if pressed[pygame.K_UP]:
+        #     self.map.move_map((0, 10))
+        # if pressed[pygame.K_DOWN]:
+        #     self.map.move_map((0, -10))
 
-        if pressed[pygame.K_RIGHT]:
-            self.map.move_map((-10, 0))
-        if pressed[pygame.K_LEFT]:
-            self.map.move_map((10, 0))
+        # if pressed[pygame.K_RIGHT]:
+        #     self.map.move_map((-10, 0))
+        # if pressed[pygame.K_LEFT]:
+        #     self.map.move_map((10, 0))
         ...
 
 class ArtifactsScene(BaseScene):
