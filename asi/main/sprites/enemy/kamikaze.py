@@ -8,7 +8,7 @@ from engine.core import EngineEvent, EventTypes, EngineSettings
 from engine.objects.sprite import SpriteTypes
 from engine.objects.enemy import BaseEnemy
 
-from .obstacle import Obstacle
+from ..environment.obstacle import Obstacle
 
 
 class Kamikaze(BaseEnemy):

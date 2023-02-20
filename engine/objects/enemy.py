@@ -1,13 +1,10 @@
 import pygame
 import random
 
-from typing import Sequence
-from dataclasses import dataclass
 from engine.objects import BaseSprite
-from engine.core import EngineEvent, EventTypes
 from engine.objects.sprite import SpriteTypes
-from asi.main.HEAL import Heal
-from asi.main.money import Money
+from asi.main.sprites.player.HEAL import Heal
+from asi.main.sprites.player.money import Money
 
 
 class BaseEnemy(BaseSprite):
@@ -92,10 +89,6 @@ class BaseEnemy(BaseSprite):
         self.time = min(self.time + 1, self.time_attack)
         if not self.flag_zone:
             self.find_zone()
-            # self.flag_zone = True
-            # self.zone_x1 = -300
-            # self.zone_x2 = 300
-            # self.zone_y = 100
         elif self.coords_player.x >= self.zone_x1 + self.rect.x - self.relacetion_x and \
                 self.coords_player.x <= self.zone_x2 + self.rect.x - self.relacetion_x \
                 and self.coords_player.y >= - self.zone_y + self.rect.y and self.coords_player.y <= self.rect.y:

@@ -1,8 +1,8 @@
 from engine.core import EngineSettings, Game
-from .start.scene import StartScene, PauseScene, TutorialScene, SettingsScene
-from .main.scene import MainScene, ArtifactsScene
 
 from . import settings
+from .start.scene import StartScene, PauseScene, TutorialScene, SettingsScene
+from .main.scene import MainScene, ArtifactsScene
 
 
 class App:
@@ -22,7 +22,6 @@ class App:
         })
 
         game.set_start_scene("start")
-
         game.run()
 
         game.close()

@@ -6,7 +6,7 @@ from typing import Sequence
 from engine.objects import BaseSprite
 from engine.objects.sprite import SpriteTypes
 from engine.core import EngineEvent, EngineSettings
-from asi.main.money import Money
+from asi.main.sprites.player.money import Money
 
 from asi import settings
 

@@ -1,13 +1,10 @@
-import random
-
 import pygame
 from pathlib import Path
 
 from engine.objects import BaseScene
 from engine.core import EngineSettings
 
-from .button_sprite import ButtonSprite
-from .objects.loader import LoaderSprite
+from .sprites.button_sprite import ButtonSprite
 from asi import settings
 
 
@@ -28,28 +25,28 @@ class StartScene(BaseScene):
         self.play_button = self.load_sprite(
             ButtonSprite,
             coordinates=(55, 200),
+            size=(190, 66),
             image_path="start/play.png",
-            callback=lambda: print(111),
-            type_button="play",
-            action="main"
+            action="main",
+            callback=lambda: self.__run_main_scene(),
         )
 
         self.setting_buttons = self.load_sprite(
             ButtonSprite,
             coordinates=(55, 320),
+            size=(400, 66),
             image_path="start/sett.png",
-            callback=lambda: print(222),
-            type_button="setting",
-            action="settings"
+            action="settings",
+            callback=lambda: self.pause("settings"),
         )
 
         self.exit_buttons = self.load_sprite(
             ButtonSprite,
             coordinates=(55, 440),
+            size=(170, 66),
             image_path="start/exit.png",
-            callback=lambda: print(333),
-            type_button="exit",
-            action="exit"
+            action="exit",
+            callback=lambda: exit_game(),
         )
         
         self.__tutorial_finished = False
@@ -76,7 +73,6 @@ class StartScene(BaseScene):
 
     def update(self) -> None:
         ...
-        # self.write("Нажмите 'space' для начала игры", "white", (50, 500), 24)
 
     def reset_hover(self):
         for button in self.buttons:
@@ -92,12 +88,7 @@ class StartScene(BaseScene):
 
         if event.type == pygame.KEYDOWN:
             if pressed[pygame.K_RETURN]:
-                if self.buttons[self.index_button].action == "exit":
-                    exit_game()
-                elif self.buttons[self.index_button].action == "main":
-                    self.__run_main_scene()
-                elif self.buttons[self.index_button].action == "settings":
-                    self.pause("settings")
+                self.buttons[self.index_button].callback()                    
 
             elif pressed[pygame.K_UP]:
                 self.pressed_arrows(-1)
@@ -106,16 +97,6 @@ class StartScene(BaseScene):
                 self.pressed_arrows(1)
 
         pos = pygame.mouse.get_pos()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-
-            for button in self.buttons:
-                if button.rect.collidepoint(pos):
-                    if button.action == "exit":
-                        exit_game()
-                    elif button.action == "main":
-                        self.__run_main_scene()
-                    elif button.action == "settings":
-                        self.pause("settings")
 
         if event.type == pygame.MOUSEMOTION:
             for i, button in enumerate(self.buttons):

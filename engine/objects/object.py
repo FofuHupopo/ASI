@@ -1,5 +1,4 @@
 import pygame
-import enum
 
 from typing import Sequence
 from engine.core import GameStack

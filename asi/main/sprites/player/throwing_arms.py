@@ -7,9 +7,9 @@ from engine.objects import BaseSprite
 from engine.objects.sprite import SpriteTypes
 from engine.core import EngineSettings
 
-from .obstacle import Obstacle
+from ..environment.obstacle import Obstacle
 from .storage import Storage
-from .trader import Trader
+from ..npc.trader import Trader
 
 from asi import settings
 

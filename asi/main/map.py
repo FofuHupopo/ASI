@@ -7,20 +7,20 @@ from colorama import Fore, Style
 from engine.core import EngineSettings
 
 from asi import settings
-from .throwing_arms import Arms
-from .player import PlayerSprite
-from .obstacle import Obstacle
-from .decoration import DecorationSprite
-from .storage import Storage
-from .trader import Trader
-from .kamikaze import Kamikaze
-from .gunner import Gunner
-from .board import BoardSprite
-from .HEAL import Heal
-from .spike import Spike
-from .boss import Boss
-from .trigger import Trigger
-from .door import Door
+from .sprites.player.throwing_arms import Arms
+from .sprites.player.player import PlayerSprite
+from .sprites.environment.obstacle import Obstacle
+from .sprites.environment.decoration import DecorationSprite
+from .sprites.player.storage import Storage
+from .sprites.npc.trader import Trader
+from .sprites.enemy.kamikaze import Kamikaze
+from .sprites.enemy.gunner import Gunner
+from .sprites.environment.board import BoardSprite
+from .sprites.player.HEAL import Heal
+from .sprites.enemy.spike import Spike
+from .sprites.enemy.boss import Boss
+from .sprites.environment.trigger import Trigger
+from .sprites.environment.door import Door
 
 
 def load_level(filename):  # загрузка уровня

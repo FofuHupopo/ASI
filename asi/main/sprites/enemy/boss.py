@@ -10,8 +10,8 @@ from engine.objects.sprite import SpriteTypes
 
 from .projectile_enemy import Projectlie
 from .grad import Grad
-from .HEAL import Heal
-from .money import Money
+from ..player.HEAL import Heal
+from ..player.money import Money
 from asi import settings
 
 
