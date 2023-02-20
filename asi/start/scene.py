@@ -166,7 +166,7 @@ class TutorialScene(BaseScene):
             self.write("Если у вас не получается победить врага,", self.__main_color, (50, 50), 48)
             self.write("не расстраивайтесь, пробуйте разные ", self.__main_color, (50, 100), 48)
             self.write("тактики и разный подход, умирайте и ", self.__main_color, (50, 150), 48)
-            self.write("пробуйте ещё раз сразиться с ним, и когда ни будь вы его одолеете.", self.__main_color, (50, 200), 48)
+            self.write("пробуйте ещё раз сразиться с ним, и", self.__main_color, (50, 200), 48)
             self.write("когда ни будь вы его одолеете.", self.__main_color, (50, 250), 48)
         
         x = width - 180

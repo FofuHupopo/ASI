@@ -118,7 +118,10 @@ class PlayerSprite(AnimatedSprite):
         self.list_musik = ["fon_horizon.mp3", "fon_inrestellar.mp3", "fon_original1.mp3", "fon_original2.mp3",
                            "fon_original3.mp3", "fon_original4.mp3", "fon_wither.mp3", "fon_detroit.mp3"]
         self.now_musik = -1
-        self.musik()
+        
+        if EngineSettings.get_var("PLAY_SOUNDS"):
+            self.musik()
+
         pygame.mixer.set_num_channels(15)
         self.time_attack = 10
 

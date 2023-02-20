@@ -3,6 +3,7 @@ import random
 
 from engine.objects import BaseSprite
 from engine.objects.sprite import SpriteTypes
+from engine.core import EngineSettings
 from asi.main.sprites.player.HEAL import Heal
 from asi.main.sprites.player.money import Money
 
@@ -74,14 +75,20 @@ class BaseEnemy(BaseSprite):
             for i in range(random.randint(self.max_prize // 2, self.max_prize)):
                 self.load_sprite(Money, coords=(random.randint(self.rect.x - 20, self.rect.x + self.width),
                                                 random.randint(self.rect.y - 20, self.rect.y + self.height - 25)))
-        pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/dead_enemy.mp3"))
-        pygame.mixer.Channel(0).set_volume(0.05)
+                
+        if EngineSettings.get_var("PLAY_SOUNDS"):
+            pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/dead_enemy.mp3"))
+            pygame.mixer.Channel(0).set_volume(0.05)
+
         self.kill()
 
     def update(self):
         if self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON):
             self.health -= self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON)[0].damadge
-            pygame.mixer.Channel(2).play(pygame.mixer.Sound("asi/main/resources/sound/arms_in_enemy.mp3"))
+            
+            if EngineSettings.get_var("PLAY_SOUNDS"):
+                pygame.mixer.Channel(2).play(pygame.mixer.Sound("asi/main/resources/sound/arms_in_enemy.mp3"))
+
             self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON)[0].kill()
         if self.health <= 0:
             self.dead()

@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from engine.objects import BaseSprite
 from engine.core import EngineEvent, EventTypes, EngineSettings
 from engine.objects.sprite import SpriteTypes
-from engine.objects.enemy import BaseEnemy
+from .enemy import BaseEnemy
 
 from ..environment.obstacle import Obstacle
 
@@ -53,6 +53,3 @@ class Kamikaze(BaseEnemy):
             pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/bomb.mp3"))
 
         self.kill()
-    
-    # def update(self):
-    #     print(f"Kamikaze: {self.rect.center}")

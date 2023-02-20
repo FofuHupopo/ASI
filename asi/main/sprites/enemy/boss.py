@@ -5,14 +5,13 @@ from typing import Sequence
 from dataclasses import dataclass
 
 from engine.objects import BaseSprite
-from engine.core import EngineEvent, EventTypes, EngineSettings
+from engine.core import EngineSettings
 from engine.objects.sprite import SpriteTypes
 
 from .projectile_enemy import Projectlie
 from .grad import Grad
 from ..player.HEAL import Heal
 from ..player.money import Money
-from asi import settings
 
 
 class Boss(BaseSprite):
