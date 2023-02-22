@@ -2,7 +2,7 @@ import pygame
 import random
 
 from engine.objects import BaseSprite
-from engine.core import EngineEvent, EventTypes
+from engine.core import EngineEvent, EventTypes, EngineSettings
 from engine.objects.sprite import SpriteTypes
 
 from asi import settings
@@ -33,7 +33,7 @@ class Heal(BaseSprite):
                     self.rect.y = min(i.rect.y - self.height, self.rect.y)
                 self.fly = False
         if self.checking_touch_by_type(SpriteTypes.PLAYER):
-            if settings.PLAY_SOUNDS:
+            if EngineSettings.get_var("PLAY_SOUNDS"):
                 pygame.mixer.Channel(6).play(pygame.mixer.Sound("asi/main/resources/sound/take_heal.mp3"))
 
             if self.view == 'big':

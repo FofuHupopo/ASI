@@ -4,7 +4,7 @@ import random
 from typing import Sequence
 from dataclasses import dataclass
 from engine.objects import BaseSprite
-from engine.core import EngineEvent, EventTypes
+from engine.core import EngineEvent, EventTypes, EngineSettings
 from engine.objects.sprite import SpriteTypes
 from math import sqrt
 
@@ -16,7 +16,7 @@ class Projectlie(BaseSprite):
         self.set_type(SpriteTypes.ENEMY)
         if view == "fire_ball":
             self.load_image("projectly/fire_ball.jpg")
-            if settings.PLAY_SOUNDS:
+            if EngineSettings.get_var("PLAY_SOUNDS"):
                 pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/pusk_fireball.mp3"))
                 pygame.mixer.Channel(0).set_volume(0.05)
         else:

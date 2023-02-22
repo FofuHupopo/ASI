@@ -5,7 +5,8 @@ from typing import Sequence
 
 from engine.objects import BaseSprite
 from engine.objects.sprite import SpriteTypes
-from asi.main.money import Money
+from engine.core import EngineEvent, EngineSettings
+from asi.main.sprites.player.money import Money
 
 from asi import settings
 
@@ -36,7 +37,7 @@ class Storage(BaseSprite):
                                      coords=(random.randint(self.rect.x + self.width, self.rect.x + self.width + 75),
                                              random.randint(self.rect.y, self.rect.y + self.height - 25)))
             
-            if settings.PLAY_SOUNDS:
+            if EngineSettings.get_var("PLAY_SOUNDS"):
                 pygame.mixer.Channel(5).play(pygame.mixer.Sound("asi/main/resources/sound/open_storage.mp3"))
             self.kill()
 

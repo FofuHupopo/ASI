@@ -1,11 +1,10 @@
 import pygame
-import os
 
 from dataclasses import dataclass
-from typing import Sequence, Tuple
+from typing import Sequence, Tuple, List
 
 from engine.core import GameStack, Resources, EngineSettings
-from engine.shortcuts.dialog import StartDialogObject
+from engine.shortcuts import StartDialogObject
 
 
 @dataclass
@@ -98,30 +97,22 @@ class BaseSprite(pygame.sprite.Sprite):
 
         Args:
             type_ (SpriteTypes): Тип спрайта.
-
-        Raises:
-            ValueError: Пердан не правильный тип спрайта.
         """
-
-        # if type(type_) not in SpriteTypes.mro():
-        #     raise ValueError("Параметр 'type_' должен принадлежать классу 'SpriteTypes'")
         
         self.__type = type_
         
     def get_type(self):
         return self.__type
 
-    def checking_touch_by_type(self, type_: SpriteTypes):
+    def checking_touch_by_type(self, type_: SpriteTypes) -> List["BaseSprite"]:
         """Возвращает список объектов по типу, с которыми пересекается этот спрайт
 
         Args:
             type_ (SpriteTypes): Тип спрайтов
 
         Returns:
-            _type_: _description_
+            List: Список спрайтов
         """
-        # if type(type_) not in SpriteTypes:
-        #     raise ValueError("Параметр 'type_' должен принадлежать классу 'SpriteTypes'")
         
         sprites = []
         
@@ -256,7 +247,19 @@ class AnimatedSprite(BaseSprite):
 
         self.__load_base_image()
 
-    def start_animation(self, animation_name, count=1, waiting_ticks=10, is_priority=False):
+    def start_animation(self, animation_name: str, count: int=1, waiting_ticks: int=10, is_priority: bool=False):
+        """Метод начала анимации
+
+        Args:
+            animation_name (str): Название анимации
+            count (int, optional): Кол-во повторений. По стандарту 1.
+            waiting_ticks (int, optional): Задержка в тиках между анимациями. По стандарту 10.
+            is_priority (bool, optional): Приоритет. Выолняется в любом случае или не выполняется при исполнении другой анимации.
+
+        Raises:
+            ValueError: Анимация с таким названием не существует
+        """
+
         if animation_name not in self.__animations:
             raise ValueError(f"Анимация с именем {animation_name} не найдена.")
         

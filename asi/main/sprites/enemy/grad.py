@@ -2,7 +2,7 @@ import pygame
 
 from typing import Sequence
 from engine.objects import BaseSprite
-from engine.core import EngineEvent, EventTypes
+from engine.core import EngineEvent, EventTypes, EngineSettings
 from engine.objects.sprite import SpriteTypes
 
 from asi import settings
@@ -26,7 +26,7 @@ class Grad(BaseSprite):
         if self.checking_touch_by_type(SpriteTypes.PLAYER):
             self.find_sprites(SpriteTypes.PLAYER)[0].change_health(-30)
             
-            if settings.PLAY_SOUNDS:
+            if EngineSettings.get_var("PLAY_SOUNDS"):
                 pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/bomb.mp3"))
 
             self.kill()

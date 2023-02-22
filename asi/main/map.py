@@ -1,24 +1,24 @@
 import pygame
 
 from typing import Any, Tuple
-from pprint import pprint
 from colorama import Fore, Style
 
+from engine.core import EngineSettings
+
 from asi import settings
-from .throwing_arms import Arms
-from .player import PlayerSprite
-from .obstacle import Obstacle
-from .decoration import DecorationSprite
-from .storage import Storage
-from .trader import Trader
-from .kamikaze import Kamikaze
-from .gunner import Gunner
-from .board import BoardSprite
-from .HEAL import Heal
-from .spike import Spike
-from .boss import Boss
-from .trigger import Trigger
-from .door import Door
+from .sprites.player.player import PlayerSprite
+from .sprites.environment.obstacle import Obstacle
+from .sprites.environment.decoration import DecorationSprite
+from .sprites.player.storage import Storage
+from .sprites.npc.trader import Trader
+from .sprites.enemy.kamikaze import Kamikaze
+from .sprites.enemy.gunner import Gunner
+from .sprites.environment.board import BoardSprite
+from .sprites.player.HEAL import Heal
+from .sprites.enemy.spike import Spike
+from .sprites.enemy.boss import Boss
+from .sprites.environment.trigger import Trigger
+from .sprites.environment.door import Door
 
 
 def load_level(filename):  # загрузка уровня
@@ -68,8 +68,7 @@ class Map:
         self.__scene = scene
         self.__surface = surface
         
-        self.__x_player_render = 10
-        self.__y_player_render = 6
+        self.__player_render = EngineSettings.get_var("RENDER_DISTANCE")
 
         self.__background_image = pygame.image.load("asi/main/resources/background.png")
 
@@ -85,15 +84,17 @@ class Map:
         self.map_size_y = len(level_map)
         
         self.__background_size = [
-            self.map_size_x * self.block_size,
-            self.map_size_y * self.block_size
+            max(self.map_size_x * self.block_size, settings.HEIGHT),
+            max(self.map_size_y * self.block_size, settings.WIDTH)
         ]
+        self.__background_pos = [0, 0]
         self.__background_image = pygame.transform.scale(self.__background_image, self.__background_size)
         
         self.map = [[None for x in range(self.map_size_x)] for y in range(self.map_size_y)]
         self.map_status = [[False for x in range(self.map_size_x)] for y in range(self.map_size_y)]
         self.map_symbol = [[" " for x in range(self.map_size_x)] for y in range(self.map_size_y)]
-    
+        
+        f = False
         
         for y in range(len(level_map)):
             for x in range(len(level_map[y])):
@@ -110,6 +111,10 @@ class Map:
                     self.map[y][x] = sprite
                     
                     self.map_symbol[y][x] = symbol
+                    
+                    if not f:
+                        self.t = sprite
+                        f = True
                 
                 if symbol in Map.ENTITY_SYMBOL_DECODER:
                     sprite = self.__scene.load_sprite(
@@ -150,17 +155,17 @@ class Map:
 
         self.__update_sprite_group.add(self.player)
         
-        # self.__scene._game_stack.sprite_group.update()
+        self.__scene._game_stack.sprite_group.update()
         
         player_pos = self.get_payer_map_pos()
         
         for y in range(
-            max(player_pos[1] - self.__y_player_render, 0),
-            min(player_pos[1] + self.__y_player_render, self.map_size_y)
+            max(player_pos[1] - self.__player_render[1], 0),
+            min(player_pos[1] + self.__player_render[1], self.map_size_y)
         ):
             for x in range(
-                max(player_pos[0] - self.__x_player_render, 0),
-                min(player_pos[0] + self.__x_player_render, self.map_size_x)
+                max(player_pos[0] - self.__player_render[0], 0),
+                min(player_pos[0] + self.__player_render[0], self.map_size_x)
             ):
                 self.map_status[y][x] = True
 
@@ -182,8 +187,8 @@ class Map:
     
     def in_render_zone(self, player_pos, coords: Tuple[int, int]):
         return (
-            player_pos[0] - self.__x_player_render <= coords[0] <= player_pos[0] + self.__x_player_render and
-            player_pos[1] - self.__y_player_render <= coords[1] <= player_pos[1] + self.__y_player_render
+            player_pos[0] - self.__player_render[0] <= coords[0] <= player_pos[0] + self.__player_render[0] and
+            player_pos[1] - self.__player_render[1] <= coords[1] <= player_pos[1] + self.__player_render[1]
         )
     
     def draw_debug_map(self):
@@ -200,15 +205,55 @@ class Map:
         print(Style.RESET_ALL)
 
     def draw_background(self):
-        player_x, player_y = self.get_payer_map_pos()
-        # player_x += self.player.rect.center[0] / 50
-        # player_y += self.player.rect.center[1] / 50
-        # player_x = player_x * 50 + self.player.rect.center[0] / 50
-        print(player_x)
-        self.__surface.blit(self.__background_image, ((14 - player_x) * 50, 0))
+        self.__background_image = pygame.transform.scale(self.__background_image, (
+            max(self.map_size_x * self.block_size, settings.HEIGHT),
+            max(self.map_size_y * self.block_size, settings.WIDTH))
+        )
+
+        self.__surface.blit(self.__background_image, (min(self.t.rect.x, 0), min(self.t.rect.y, 0)))
 
     def update(self):
         player_pos = self.get_payer_map_pos()
+
+
+        if self.__player_render != EngineSettings.get_var("RENDER_DISTANCE"):
+            self.__player_render = EngineSettings.get_var("RENDER_DISTANCE")
+
+            self.__update_sprite_group.empty()
+            self.__no_update_sprite_group.empty()
+            
+            self.__update_sprite_group.add(self.player)
+            
+            for y in range(len(self.map_status)):
+                for x in range(len(self.map_status[y])):
+                    self.map_status[y][x] = False
+
+            for y in range(
+                max(player_pos[1] - self.__player_render[1], 0),
+                min(player_pos[1] + self.__player_render[1], self.map_size_y)
+            ):
+                for x in range(
+                    max(player_pos[0] - self.__player_render[0], 0),
+                    min(player_pos[0] + self.__player_render[0], self.map_size_x)
+                ):
+                    self.map_status[y][x] = True
+
+                    if self.in_render_zone(player_pos, (x, y)) and self.map_symbol[y][x] not in Map.NO_UPDATE_SYMBOL_DECODER:
+                        if self.map[y][x] and self.map[y][x] in self.__scene.sprite_group:
+                            self.__update_sprite_group.add(
+                                self.map[y][x]
+                            )
+                    
+                    if self.in_render_zone(player_pos, (x, y)) and self.map_symbol[y][x] in Map.NO_UPDATE_SYMBOL_DECODER:
+                        if self.map[y][x] and self.map[y][x] in self.__scene.sprite_group:
+                            self.__no_update_sprite_group.add(
+                                self.map[y][x]
+                            )
+            
+            self.__surface.fill(pygame.Color("#3C2A21"))
+            self.__no_update_sprite_group.draw(self.__surface)
+            self.__update_sprite_group.draw(self.__surface)
+
 
         if self.__last_player_pos != player_pos:
             player_shift = [
@@ -217,11 +262,11 @@ class Map:
             ]
 
             
-            old_left_x_render = self.__last_player_pos[0] + self.__x_player_render
-            old_right_x_render = self.__last_player_pos[0] - self.__x_player_render
+            old_left_x_render = self.__last_player_pos[0] + self.__player_render[0]
+            old_right_x_render = self.__last_player_pos[0] - self.__player_render[0]
             
-            new_left_x_render = self.__last_player_pos[0] + player_shift[0] + self.__x_player_render
-            new_right_x_render = self.__last_player_pos[0] + player_shift[0] - self.__x_player_render
+            new_left_x_render = self.__last_player_pos[0] + player_shift[0] + self.__player_render[0]
+            new_right_x_render = self.__last_player_pos[0] + player_shift[0] - self.__player_render[0]
             
             min_left_x_render, max_left_x_render = min(old_left_x_render, new_left_x_render), max(old_left_x_render, new_left_x_render)
             min_right_x_render, max_right_x_render = min(old_right_x_render, new_right_x_render), max(old_right_x_render, new_right_x_render)
@@ -230,11 +275,11 @@ class Map:
                 max(min(
                         player_pos[1],
                         self.__last_player_pos[1]
-                    ) - self.__y_player_render, 0),
+                    ) - self.__player_render[1], 0),
                 min(max(
                     player_pos[1],
                     self.__last_player_pos[1]
-                    )+ self.__y_player_render + 1, self.map_size_y)
+                    )+ self.__player_render[1] + 1, self.map_size_y)
                 ):
                 for x in (*range(max(min_left_x_render, 0), min(max_left_x_render + 1, self.map_size_x)), *range(max(min_right_x_render, 0), min(max_right_x_render + 1, self.map_size_x))):
                     if self.in_render_zone(player_pos, (x, y)) and not self.map_status[y][x] and self.map_symbol[y][x] not in Map.NO_UPDATE_SYMBOL_DECODER:
@@ -266,11 +311,11 @@ class Map:
                         self.map_status[y][x] = False
 
 
-            old_top_y_render = self.__last_player_pos[1] + self.__y_player_render
-            old_bottom_y_render = self.__last_player_pos[1] - self.__y_player_render
+            old_top_y_render = self.__last_player_pos[1] + self.__player_render[1]
+            old_bottom_y_render = self.__last_player_pos[1] - self.__player_render[1]
             
-            new_top_y_render = self.__last_player_pos[1] + player_shift[1] + self.__y_player_render
-            new_bottom_y_render = self.__last_player_pos[1] + player_shift[1] - self.__y_player_render
+            new_top_y_render = self.__last_player_pos[1] + player_shift[1] + self.__player_render[1]
+            new_bottom_y_render = self.__last_player_pos[1] + player_shift[1] - self.__player_render[1]
             
             min_top_y_render, max_top_y_render = min(old_top_y_render, new_top_y_render), max(old_top_y_render, new_top_y_render)
             min_bottom_y_render, max_bottom_y_render = min(old_bottom_y_render, new_bottom_y_render), max(old_bottom_y_render, new_bottom_y_render)
@@ -279,11 +324,11 @@ class Map:
                 max(min(
                         player_pos[0],
                         self.__last_player_pos[0]
-                    ) - self.__x_player_render, 0),
+                    ) - self.__player_render[0], 0),
                 min(max(
                         player_pos[0],
                         self.__last_player_pos[0]
-                    ) + self.__x_player_render + 1, self.map_size_x)
+                    ) + self.__player_render[0] + 1, self.map_size_x)
                 ):
                 for y in (*range(max(min_top_y_render, 0), min(max_top_y_render + 1, self.map_size_y)), *range(max(min_bottom_y_render, 0), min(max_bottom_y_render + 1, self.map_size_y))):
                     if self.in_render_zone(player_pos, (x, y)) and not self.map_status[y][x] and self.map_symbol[y][x] not in Map.NO_UPDATE_SYMBOL_DECODER:
@@ -324,59 +369,15 @@ class Map:
         for sprite in self.__update_sprite_group.sprites():
             sprite._update(True)
             
-        # self.draw_background()
+        self.__surface.fill(pygame.Color("#3C2A21"))
+        
+        if EngineSettings.get_var("DRAW_BACKGROUND"):
+            self.draw_background()
 
         self.__no_update_sprite_group.draw(self.__surface)
         self.__update_sprite_group.draw(self.__surface)
         
         self.render(self.player.rect.center)
-
-    def create_map(self, level_map):
-        player_pos = self.__preload_player(level_map)
-        offset = [
-            player_pos[0] - 10,
-            player_pos[1] - 5,
-        ]
-        
-        for y in range(len(level_map)):
-            for x in range(len(level_map[y])):
-                symbol = level_map[y][x]
-                
-                if symbol in Map.DECORATION_SYMBOL_DECODER:
-                    x_pos = self.block_size * (x - offset[0]) + self.block_size - Map.DECORATION_SYMBOL_DECODER[symbol]["size"][0]
-                    y_pos = self.block_size * (y - offset[1]) + self.block_size - Map.DECORATION_SYMBOL_DECODER[symbol]["size"][1]
-
-                    self.add_decorataion_sprite(
-                        (x_pos, y_pos),
-                        Map.DECORATION_SYMBOL_DECODER[symbol]
-                    )
-
-        for y in range(len(level_map)):
-            for x in range(len(level_map[y])):
-                symbol = level_map[y][x]
-
-                if symbol in Map.NO_UPDATE_SYMBOL_DECODER:
-                    self.add_env_sprite(
-                        Map.NO_UPDATE_SYMBOL_DECODER[symbol],
-                        [self.block_size * (x - offset[0]), self.block_size * (y - offset[1])]
-                    )
-
-                if symbol in Map.ENTITY_SYMBOL_DECODER:
-                    self.add_entity_sprite(
-                        Map.ENTITY_SYMBOL_DECODER[symbol],
-                        [self.block_size * (x - offset[0]), self.block_size * (y - offset[1])]
-                    )
-
-                if level_map[y][x] == "p":
-                    self.__player_pos = (x, y)
-    
-        self.__scene.player = self.__scene.load_sprite(
-            PlayerSprite,
-            coords=[
-                self.block_size * (self.__player_pos[0] - offset[0]),
-                self.block_size * (self.__player_pos[1] - offset[1])
-            ]
-        )
 
     def __preload_player(self, level_map):
         for y in range(len(level_map)):
@@ -410,30 +411,29 @@ class Map:
     def render(self, player_coords):
         self.__move_map_for_player(player_coords)
 
-        # self.__entity_sprite_group.update()
-        # self.__entity_sprite_group.draw(self.__scene._surface)
-
     def __move_map_for_player(self, player_coords):
         move_percent = 30
+        
+        WIDTH, HEIGHT = EngineSettings.get_var("SIZE")
 
         if (
-                settings.WIDTH * move_percent / 100 >= player_coords[0] or
-                player_coords[0] >= settings.WIDTH * (100 - move_percent) / 100 or
-                settings.HEIGHT * move_percent / 100 >= player_coords[1] or
-                player_coords[1] >= settings.HEIGHT * (100 - move_percent) / 100
+                WIDTH * move_percent / 100 >= player_coords[0] or
+                player_coords[0] >= WIDTH * (100 - move_percent) / 100 or
+                HEIGHT * move_percent / 100 >= player_coords[1] or
+                player_coords[1] >= HEIGHT * (100 - move_percent) / 100
         ):
 
             x, y = 0, 0
 
-            if settings.WIDTH * move_percent / 100 >= player_coords[0]:
-                x = settings.WIDTH * move_percent / 100 - player_coords[0]
-            elif player_coords[0] >= settings.WIDTH * (100 - move_percent) / 100:
-                x = settings.WIDTH * (100 - move_percent) / 100 - player_coords[0]
+            if WIDTH * move_percent / 100 >= player_coords[0]:
+                x = WIDTH * move_percent / 100 - player_coords[0]
+            elif player_coords[0] >= WIDTH * (100 - move_percent) / 100:
+                x = WIDTH * (100 - move_percent) / 100 - player_coords[0]
 
-            if settings.HEIGHT * move_percent / 100 >= player_coords[1]:
-                y = settings.HEIGHT * move_percent / 100 - player_coords[1]
-            elif player_coords[1] >= settings.HEIGHT * (100 - move_percent) / 100:
-                y = settings.HEIGHT * (100 - move_percent) / 100 - player_coords[1]
+            if HEIGHT * move_percent / 100 >= player_coords[1]:
+                y = HEIGHT * move_percent / 100 - player_coords[1]
+            elif player_coords[1] >= HEIGHT * (100 - move_percent) / 100:
+                y = HEIGHT * (100 - move_percent) / 100 - player_coords[1]
 
             self.move_map((int(x), int(y)))
 
@@ -443,7 +443,5 @@ class Map:
         self.start_player_pos[1] -= y / self.block_size
 
         self.__scene.move_all_sprites((x, y))
-
-        # self.__env_sprite_group.update()
-        # self.__env_sprite_group.draw(self.__scene._surface)
-
+        self.__background_pos[0] += x * self.block_size / 10
+        self.__background_pos[0] += x * self.block_size

@@ -4,11 +4,11 @@ import random
 from typing import Sequence
 from dataclasses import dataclass
 from engine.objects import BaseSprite
-from engine.core import EngineEvent, EventTypes
+from engine.core import EngineEvent, EventTypes, EngineSettings
 from engine.objects.sprite import SpriteTypes
-from engine.objects.enemy import BaseEnemy
+from .enemy import BaseEnemy
 
-from .obstacle import Obstacle
+from ..environment.obstacle import Obstacle
 
 
 class Kamikaze(BaseEnemy):
@@ -48,8 +48,8 @@ class Kamikaze(BaseEnemy):
 
     def attack(self):
         self.find_sprites(SpriteTypes.PLAYER)[0].change_health(-50)
-        pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/bomb.mp3"))
+        
+        if EngineSettings.get_var("PLAY_SOUNDS"):
+            pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/bomb.mp3"))
+
         self.kill()
-    
-    # def update(self):
-    #     print(f"Kamikaze: {self.rect.center}")

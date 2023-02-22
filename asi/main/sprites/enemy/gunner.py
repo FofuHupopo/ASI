@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from engine.objects import BaseSprite
 from engine.core import EngineEvent, EventTypes
 from engine.objects.sprite import SpriteTypes
-from engine.objects.enemy import BaseEnemy
+from .enemy import BaseEnemy
 from .projectile_enemy import Projectlie
 
 
