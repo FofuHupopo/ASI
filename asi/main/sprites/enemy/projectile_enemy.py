@@ -13,7 +13,6 @@ from asi import settings
 
 class Projectlie(BaseSprite):
     def init(self, coords, coords_player, damadge, speed, view):
-        self.set_type(SpriteTypes.ENEMY)
         if view == "fire_ball":
             self.load_image("projectly/fire_ball.jpg")
             if EngineSettings.get_var("PLAY_SOUNDS"):
@@ -43,7 +42,8 @@ class Projectlie(BaseSprite):
             self.kill()
         self.rect.x += self.speed_x
         if self.checking_touch_by_type(SpriteTypes.PLAYER):
-            self.find_sprites(SpriteTypes.PLAYER)[0].change_health(-self.damadge)
+            self.find_sprites(SpriteTypes.PLAYER)[0].change_health(
+                -self.damadge * self.find_sprites(SpriteTypes.PLAYER)[0].arms)
             self.kill()
         if self.checking_touch_by_type(SpriteTypes.OBSTACLE) or self.checking_touch_by_type(
                 SpriteTypes.NPC) or self.checking_touch_by_type(SpriteTypes.STORAGE):

@@ -47,7 +47,7 @@ class Kamikaze(BaseEnemy):
         super().init()
 
     def attack(self):
-        self.find_sprites(SpriteTypes.PLAYER)[0].change_health(-50)
+        self.find_sprites(SpriteTypes.PLAYER)[0].change_health(-50 * self.find_sprites(SpriteTypes.PLAYER)[0].arms)
         
         if EngineSettings.get_var("PLAY_SOUNDS"):
             pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/bomb.mp3"))

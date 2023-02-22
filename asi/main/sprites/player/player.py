@@ -91,6 +91,7 @@ class PlayerSprite(AnimatedSprite):
 
         self.__count_big_heal = 0
         self.__count_heal = 0
+        self.arms = 1
 
         self.__can_move = True
         self.__is_died = False
@@ -266,6 +267,7 @@ class PlayerSprite(AnimatedSprite):
             if self.time_attack == 10:
                 self.__throw_arm()
                 self.time_attack = 0
+
         if (
             (event.type == pygame.KEYDOWN and keys[pygame.K_1] and self.count_heal > 0) or
             (event.type == pygame.JOYBUTTONDOWN and event.button == 13)
@@ -312,7 +314,12 @@ class PlayerSprite(AnimatedSprite):
         ))
 
     def melee_attack(self):
-        self.start_animation("melee_attack", 1, 4, True)
+        self.start_animation("melee_attack", 1, 1, True)
+        for i in self.checking_touch_by_type(SpriteTypes.ENEMY):
+            i.health -= 100
+        for i in self.checking_touch_by_type(SpriteTypes.BOSS):
+            i.health -= 100
+            print(i.health)
 
 
     def __throw_arm(self):
