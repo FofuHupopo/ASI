@@ -35,12 +35,13 @@ class Trader(AnimatedSprite):
         
         if event.type == pygame.KEYDOWN and pressed[pygame.K_g]:
             self.start_animation("test")
-            
+
         if event.type == pygame.KEYDOWN and pressed[pygame.K_f]:
             self.stop_animation()
     
     def update(self) -> None:
-        self.create_dialog("Привет", (200, 200))
+        self.create_dialog("Привет странник\ndd",  (200, 200))
+
 
     def buy(self):
         pass

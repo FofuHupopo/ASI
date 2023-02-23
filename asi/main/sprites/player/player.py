@@ -119,7 +119,7 @@ class PlayerSprite(AnimatedSprite):
         self.list_musik = ["fon_horizon.mp3", "fon_inrestellar.mp3", "fon_original1.mp3", "fon_original2.mp3",
                            "fon_original3.mp3", "fon_original4.mp3", "fon_wither.mp3", "fon_detroit.mp3"]
         self.now_musik = -1
-        
+
         if EngineSettings.get_var("PLAY_SOUNDS"):
             self.musik()
 
@@ -182,7 +182,17 @@ class PlayerSprite(AnimatedSprite):
         return None
 
     def update(self):
+        if self.current_animation_frame == 4 and self.current_animation_name == "melee_attack" and self.time_attack == 10:
+            self.time_attack = 0
+            for i in self.checking_touch_by_type(SpriteTypes.ENEMY):
+                i.health -= 100
+            boss = self.find_sprites(SpriteTypes.BOSS)[0]
+            if self.rect.x > boss.rect.x - 50 and self.rect.x < boss.rect.x + 100 and self.rect.y > boss.rect.y - 50:
+                boss.health -= 100
+                print(boss.health)
+
         self.time_attack = min(10, self.time_attack + 1)
+
         for localevent in self.get_events():
             if localevent["type"] == "info" and localevent["name"] == "minus_hp":
                 self.change_health(-localevent["data"]["value"])
@@ -251,9 +261,9 @@ class PlayerSprite(AnimatedSprite):
         keys = pygame.key.get_pressed()
 
         if (
-            (event.type == pygame.KEYDOWN and keys[pygame.K_SPACE]) or
-            (event.type == pygame.JOYBUTTONDOWN and event.button == 3)
-            ):
+                (event.type == pygame.KEYDOWN and keys[pygame.K_SPACE]) or
+                (event.type == pygame.JOYBUTTONDOWN and event.button == 3)
+        ):
             if not self.is_fly():
                 self.speed_y = 10
 
@@ -261,17 +271,17 @@ class PlayerSprite(AnimatedSprite):
             self.melee_attack()
 
         if (
-            (event.type == pygame.KEYDOWN and keys[pygame.K_r]) or
-            (event.type == pygame.JOYBUTTONDOWN and event.button == 10)
-            ):
+                (event.type == pygame.KEYDOWN and keys[pygame.K_r]) or
+                (event.type == pygame.JOYBUTTONDOWN and event.button == 10)
+        ):
             if self.time_attack == 10:
                 self.__throw_arm()
                 self.time_attack = 0
 
         if (
-            (event.type == pygame.KEYDOWN and keys[pygame.K_1] and self.count_heal > 0) or
-            (event.type == pygame.JOYBUTTONDOWN and event.button == 13)
-            ):
+                (event.type == pygame.KEYDOWN and keys[pygame.K_1] and self.count_heal > 0) or
+                (event.type == pygame.JOYBUTTONDOWN and event.button == 13)
+        ):
             self.change_health(50)
             self.count_heal -= 1
             if EngineSettings.get_var("PLAY_SOUNDS"):
@@ -314,13 +324,7 @@ class PlayerSprite(AnimatedSprite):
         ))
 
     def melee_attack(self):
-        self.start_animation("melee_attack", 1, 1, True)
-        for i in self.checking_touch_by_type(SpriteTypes.ENEMY):
-            i.health -= 100
-        for i in self.checking_touch_by_type(SpriteTypes.BOSS):
-            i.health -= 100
-            print(i.health)
-
+        self.start_animation("melee_attack", 1, 4, True)
 
     def __throw_arm(self):
         if self.__throwing_arms_count > 0:
@@ -445,5 +449,3 @@ class PlayerSprite(AnimatedSprite):
         if EngineSettings.get_var("PLAY_SOUNDS"):
             pygame.mixer.Channel(0).play(pygame.mixer.Sound("asi/main/resources/musik/" + self.list_musik[id]))
             pygame.mixer.Channel(0).set_volume(0.2)
-
-

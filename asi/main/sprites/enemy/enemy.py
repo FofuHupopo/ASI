@@ -1,14 +1,14 @@
 import pygame
 import random
 
-from engine.objects import BaseSprite
+from engine.objects import AnimatedSprite
 from engine.objects.sprite import SpriteTypes
 from engine.core import EngineSettings
 from asi.main.sprites.player.HEAL import Heal
 from asi.main.sprites.player.money import Money
 
 
-class BaseEnemy(BaseSprite):
+class BaseEnemy(AnimatedSprite):
     def init(self):
         self.set_type(SpriteTypes.ENEMY)
 

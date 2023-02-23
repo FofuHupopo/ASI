@@ -3,7 +3,7 @@ import random
 
 from typing import Sequence
 from dataclasses import dataclass
-from engine.objects import BaseSprite
+from engine.objects import AnimatedSprite
 from engine.core import EngineEvent, EventTypes, EngineSettings
 from engine.objects.sprite import SpriteTypes
 from math import sqrt
@@ -11,7 +11,7 @@ from math import sqrt
 from asi import settings
 
 
-class Projectlie(BaseSprite):
+class Projectlie(AnimatedSprite):
     def init(self, coords, coords_player, damadge, speed, view):
         if view == "fire_ball":
             self.load_image("projectly/fire_ball.jpg")

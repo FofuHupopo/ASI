@@ -17,10 +17,10 @@ from ..player.money import Money
 class Boss(BaseSprite):
     def init(self, coords):
         self.set_type(SpriteTypes.BOSS)
-        self.load_image("boss/boss.jpg")
-        self.scale_image((100, 100))
-        self.rect.x = coords[0]
-        self.rect.y = coords[1]
+        self.load_image("boss/boss.png")
+        self.scale_image((150, 150))
+        self.rect.x = coords[0] - 50
+        self.rect.y = coords[1] - 50
 
         self.width = self.image.get_width()
         self.height = self.image.get_height()
@@ -55,7 +55,7 @@ class Boss(BaseSprite):
     def bombard(self):
         x = self.rect.x - 50 * 15
         for i in range(7):
-            self.load_sprite(Grad, coords=(x + i * 4 * 50 + random.randint(0, 3) * 50, self.rect.y - 50 * 8),
+            self.load_sprite(Grad, coords=(x + i * 4 * 50 + random.randint(0, 3) * 50, self.rect.y - 50 * 7),
                              speed=random.randint(8, 13))
 
     def dead(self):
@@ -82,6 +82,7 @@ class Boss(BaseSprite):
         self.time = min(self.time + 1, self.time_attack)
         if self.var:
             if self.time_attack == self.time:
+
                 if self.health > 750:
                     self.attack()
                     self.time = 0
