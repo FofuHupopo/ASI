@@ -142,6 +142,9 @@ class BaseSprite(pygame.sprite.Sprite):
                 self.dialog.__del__()
                 del self.__dict__["dialog"]
 
+    def is_dialog(self):
+        return hasattr(self, "dialog")
+
     def load_sprite(self, sprite_class, **kwargs):
         sprite = self.__scene.load_sprite(sprite_class, **kwargs)
         

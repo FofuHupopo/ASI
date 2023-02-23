@@ -9,13 +9,13 @@ from engine.objects.sprite import SpriteTypes
 
 
 class BoardSprite(BaseSprite):
-    def init(self, coords, text="Какой-то текст"):
+    def init(self, coords, text=["Какой-то текст\nи тут текст\nи тут", "asd", "123"]):
         self.load_image("map/board.png")
         self.set_type(SpriteTypes.BOARD)
         self.scale_image((100, 100))
         
         self.rect.x, self.rect.y = coords
         self.__text = text
-    
+
     def update(self) -> None:
         self.create_dialog(self.__text, (400, 200))

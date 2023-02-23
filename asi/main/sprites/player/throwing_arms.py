@@ -69,8 +69,10 @@ class Arms(BaseSprite):
             self.rect.x += 10 * self.direction
             if self.checking_touch_by_type(SpriteTypes.OBSTACLE) or self.checking_touch_by_type(SpriteTypes.STORAGE) \
                     or self.checking_touch_by_type(SpriteTypes.NPC):
+                        
                 if EngineSettings.get_var("PLAY_SOUNDS"):
                     pygame.mixer.Channel(1).play(pygame.mixer.Sound("asi/main/resources/sound/arms_in_floor.mp3"))
+
                 self.contact_x()
                 self.heat = True
                 self.damadge = 0
@@ -80,8 +82,10 @@ class Arms(BaseSprite):
                 self.damadge = max(0, self.damadge - 2)
                 if self.checking_touch_by_type(SpriteTypes.OBSTACLE) or self.checking_touch_by_type(SpriteTypes.STORAGE) \
                         or self.checking_touch_by_type(SpriteTypes.NPC):
+
                     if EngineSettings.get_var("PLAY_SOUNDS"):
                         pygame.mixer.Channel(1).play(pygame.mixer.Sound("asi/main/resources/sound/arms_in_floor.mp3"))
+
                     self.contact_y()
                     self.heat = True
                     self.damadge = 0

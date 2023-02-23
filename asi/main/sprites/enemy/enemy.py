@@ -58,8 +58,7 @@ class BaseEnemy(AnimatedSprite):
                 self.rect.y = self.main_coordsy + 50
             else:
                 break
-        # self.rect.y = self.main_coordsy
-        # self.rect.x = self.main_coordsx
+
         self.rect.x = old_rect[0]
         self.rect.y = old_rect[1]
         self.zone_x1 = self.zone_x1 - self.rect.x
