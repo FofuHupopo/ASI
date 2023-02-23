@@ -6,7 +6,7 @@ from engine.shortcuts.dialog import DialogObject, StartDialogObject
 
 from asi import settings
 from .map import Map, load_level
-from .ui import HPBar, StaminaBar, ImageAndTextField
+from .objects.ui import HPBar, StaminaBar, ImageAndTextField
 
 
 class MainScene(BaseScene):
