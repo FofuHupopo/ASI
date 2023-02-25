@@ -92,6 +92,7 @@ class PlayerSprite(AnimatedSprite):
         self.__count_big_heal = 0
         self.__count_heal = 0
         self.arms = 1
+        self.recharge = 30
 
         self.__can_move = True
         self.__is_died = False
@@ -124,7 +125,7 @@ class PlayerSprite(AnimatedSprite):
             self.musik()
 
         pygame.mixer.set_num_channels(15)
-        self.time_attack = 10
+        self.time_attack = self.recharge
 
     # ----------
     # self.create_map(self.load_level("map.txt"))
@@ -182,16 +183,18 @@ class PlayerSprite(AnimatedSprite):
         return None
 
     def update(self):
-        if self.current_animation_frame == 4 and self.current_animation_name == "melee_attack" and self.time_attack == 10:
+        if self.current_animation_frame == 4 and self.current_animation_name == "melee_attack" and self.time_attack == self.recharge:
             self.time_attack = 0
+            if EngineSettings.get_var("PLAY_SOUNDS"):
+                pygame.mixer.Channel(14).play(pygame.mixer.Sound("asi/main/resources/sound/player_attack.mp3"))
             for i in self.checking_touch_by_type(SpriteTypes.ENEMY):
                 i.health -= 100
-            boss = self.find_sprites(SpriteTypes.BOSS)[0]
-            if self.rect.x > boss.rect.x - 50 and self.rect.x < boss.rect.x + 100 and self.rect.y > boss.rect.y - 50:
-                boss.health -= 100
-                print(boss.health)
+            if len(self.find_sprites(SpriteTypes.BOSS)) > 0:
+                boss = self.find_sprites(SpriteTypes.BOSS)[0]
+                if self.rect.x > boss.rect.x - 50 and self.rect.x < boss.rect.x + 100 and self.rect.y > boss.rect.y - 50:
+                    boss.health -= 100
 
-        self.time_attack = min(10, self.time_attack + 1)
+        self.time_attack = min(self.recharge, self.time_attack + 1)
 
         for localevent in self.get_events():
             if localevent["type"] == "info" and localevent["name"] == "minus_hp":
@@ -274,7 +277,7 @@ class PlayerSprite(AnimatedSprite):
                 (event.type == pygame.KEYDOWN and keys[pygame.K_r]) or
                 (event.type == pygame.JOYBUTTONDOWN and event.button == 10)
         ):
-            if self.time_attack == 10:
+            if self.time_attack == self.recharge:
                 self.__throw_arm()
                 self.time_attack = 0
 
@@ -325,6 +328,8 @@ class PlayerSprite(AnimatedSprite):
 
     def melee_attack(self):
         self.start_animation("melee_attack", 1, 4, True)
+
+
 
     def __throw_arm(self):
         if self.__throwing_arms_count > 0:
