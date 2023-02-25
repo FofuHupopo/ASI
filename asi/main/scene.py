@@ -12,7 +12,7 @@ from asi.main.objects.ui import HPBar, StaminaBar, ImageAndTextField
 class MainScene(BaseScene):
     def init(self) -> None:
         self.map = Map(self, self._surface)
-        self.map.create_map_2(load_level("map.txt"))
+        self.map.create_map_2(load_level("map_test.txt"))
         
         self.load_object(HPBar)
         self.load_object(StaminaBar)
