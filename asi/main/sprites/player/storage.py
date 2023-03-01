@@ -39,6 +39,7 @@ class Storage(BaseSprite):
             
             if EngineSettings.get_var("PLAY_SOUNDS"):
                 pygame.mixer.Channel(5).play(pygame.mixer.Sound("asi/main/resources/sound/open_storage.mp3"))
+            self.kill()
 
     def update(self) -> None:
         if self.checking_touch_by_type(SpriteTypes.PLAYER):

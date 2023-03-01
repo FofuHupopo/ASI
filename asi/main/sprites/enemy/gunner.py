@@ -12,56 +12,37 @@ from .projectile_enemy import Projectlie
 
 class Gunner(BaseEnemy):
     def init(self, coords):
-        # self.register_animations(
-        #     r"enemy\gunner\inac\acon-1.png",  # стоит
-        #     {
-        #         "attack": (
-        #             "enemy/gunner/attack/atack-1.png",
-        #             "enemy/gunner/attack/atack-2.png",
-        #             "enemy/gunner/attack/atack-3.png",
-        #             "enemy/gunner/attack/atack-4.png",
-        #         ),  # атака
-        #         "bullet": (
-        #             r"enemy\gunner\bullet\bullet.png"
-        #         ),  # патрон
-        #         "death": (
-        #             r"enemy\gunner\death\death-1.png",
-        #             r"enemy\gunner\death\death-2.png",
-        #             r"enemy\gunner\death\death-3.png",
-        #             r"enemy\gunner\death\death-4.png",
-        #             r"enemy\gunner\death\death-5.png",
-        #             r"enemy\gunner\death\death-6.png",
-        #             r"enemy\gunner\death\death-7.png",
-        #             r"enemy\gunner\death\death-8.png",
-        #             r"enemy\gunner\death\death-9.png"
-        #         ),  # смерть
-        #         "hit": (
-        #             r"enemy\gunner\hit\hit.png"
-        #         ),  # удар по стрелку от игрока
-        #         "inac": (
-        #             r"enemy\gunner\inac\acon-1.png",
-        #             r"enemy\gunner\inac\acon-2.png",
-        #             r"enemy\gunner\inac\acon-3.png",
-        #             r"enemy\gunner\inac\acon-4.png",
-        #             r"enemy\gunner\inac\acon-5.png",
-        #             r"enemy\gunner\inac\acon-6.png",
-        #             r"enemy\gunner\inac\acon-7.png",
-        #             r"enemy\gunner\inac\acon-8.png",
-        #             r"enemy\gunner\inac\acon-9.png",
-        #             r"enemy\gunner\inac\acon-10.png",
-        #             r"enemy\gunner\inac\acon-9.png",
-        #             r"enemy\gunner\inac\acon-8.png",
-        #             r"enemy\gunner\inac\acon-7.png",
-        #             r"enemy\gunner\inac\acon-6.png",
-        #             r"enemy\gunner\inac\acon-5.png",
-        #             r"enemy\gunner\inac\acon-4.png",
-        #             r"enemy\gunner\inac\acon-3.png",
-        #             r"enemy\gunner\inac\acon-2.png",
-        #             r"enemy\gunner\inac\acon-1.png"
-        #         )
-        #     }
-        # )
-        self.load_image("enemy/kamikadze.jpg")
+        self.register_animations(
+             r"enemy\gunner\inac\acon-1.png",  # стоит
+             {
+                 "attack": (
+                     "enemy/gunner/attack/atack-1.png",
+                     "enemy/gunner/attack/atack-2.png",
+                     "enemy/gunner/attack/atack-3.png",
+                     "enemy/gunner/attack/atack-4.png",
+                 ),  # атака
+                 "bullet": (
+                     r"enemy\gunner\bullet\bullet.png"
+                 ),  # патрон
+                 "death": (
+                     r"enemy\gunner\death\death-1.png",
+                     r"enemy\gunner\death\death-2.png",
+                     r"enemy\gunner\death\death-3.png",
+                     r"enemy\gunner\death\death-4.png",
+                     r"enemy\gunner\death\death-5.png",
+                     r"enemy\gunner\death\death-6.png",
+                     r"enemy\gunner\death\death-7.png",
+                     r"enemy\gunner\death\death-8.png",
+                     r"enemy\gunner\death\death-9.png"
+                 ),  # смерть
+                 "hit": (
+                     r"enemy\gunner\hit\hit.png"
+                 ),  # удар по стрелку от игрока
+                 "inac": (
+                     r"enemy\gunner\inac\acon-1.png",
+                 )
+             }
+         )
         self.scale_image((100, 100))
         self.set_type(SpriteTypes.ENEMY)
 
@@ -92,13 +73,33 @@ class Gunner(BaseEnemy):
         self.speed_agra = 4
         self.time_attack = 50
         self.time = 0
+        self.atack = False
+
+
+    def update(self):
+        super().update()
+        if self.direction == 1:
+            self.mirror_image(by_x=True)
+        else:
+            self.mirror_image(by_x=False)
+        if self.current_animation_frame == 3 and self.current_animation_name == "attack" and self.atack:
+            self.atack = False
+            if self.find_sprites(SpriteTypes.PLAYER)[0].rect.x > self.rect.x:
+                self.load_sprite(Projectlie, coords=(self.rect.x + self.width, self.rect.y + 50),
+                                 coords_player=self.find_sprites(SpriteTypes.PLAYER)[
+                                     0].rect.x, damadge=25, speed=10, view="fire_ball")
+            else:
+                self.load_sprite(Projectlie, coords=(self.rect.x, self.rect.y + 50),
+                                 coords_player=self.find_sprites(SpriteTypes.PLAYER)[0].rect.x, damadge=25, speed=10,
+                                 view="fire_ball")
+
+
 
     def attack(self):
-        if self.find_sprites(SpriteTypes.PLAYER)[0].rect.x > self.rect.x:
-            self.load_sprite(Projectlie, coords=(self.rect.x + self.width, self.rect.y),
-                             coords_player=self.find_sprites(SpriteTypes.PLAYER)[
-                                 0].rect.x, damadge=25, speed=10, view="fire_ball")
+        if self.direction == 1:
+            self.mirror_image(by_x=True)
         else:
-            self.load_sprite(Projectlie, coords=self.rect,
-                             coords_player=self.find_sprites(SpriteTypes.PLAYER)[0].rect.x, damadge=25, speed=10,
-                             view="fire_ball")
+            self.mirror_image(by_x=False)
+        self.stop_animation()
+        self.atack = True
+        self.start_animation("attack", 1, 3, True)

@@ -183,7 +183,6 @@ class PlayerSprite(AnimatedSprite):
         return None
 
     def update(self):
-        self.create_dialog("eeee", (300,300))
         if self.current_animation_frame == 4 and self.current_animation_name == "melee_attack" and self.time_attack == self.recharge:
             self.time_attack = 0
             if EngineSettings.get_var("PLAY_SOUNDS"):
@@ -275,8 +274,7 @@ class PlayerSprite(AnimatedSprite):
             self.melee_attack()
 
         if (
-                (event.type == pygame.KEYDOWN and keys[pygame.K_r]) or
-                (event.type == pygame.JOYBUTTONDOWN and event.button == 10)
+                event.type == pygame.MOUSEBUTTONDOWN and event.button == pygame.BUTTON_LEFT
         ):
             if self.time_attack == self.recharge:
                 self.__throw_arm()
