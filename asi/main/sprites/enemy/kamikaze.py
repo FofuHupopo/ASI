@@ -15,6 +15,7 @@ class Kamikaze(BaseEnemy):
     def init(self, coords):
         self.load_image("enemy/kamikadze.jpg")
         self.scale_image((100, 100))
+        self.set_type(SpriteTypes.ENEMY)
 
         self.main_coordsx = coords[0]
         self.main_coordsy = coords[1]

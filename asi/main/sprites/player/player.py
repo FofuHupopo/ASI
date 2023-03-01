@@ -183,6 +183,7 @@ class PlayerSprite(AnimatedSprite):
         return None
 
     def update(self):
+        self.create_dialog("eeee", (300,300))
         if self.current_animation_frame == 4 and self.current_animation_name == "melee_attack" and self.time_attack == self.recharge:
             self.time_attack = 0
             if EngineSettings.get_var("PLAY_SOUNDS"):
