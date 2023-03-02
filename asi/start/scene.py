@@ -1,4 +1,6 @@
 import pygame
+import os
+
 from pathlib import Path
 
 from engine.objects import BaseScene
@@ -22,29 +24,31 @@ class StartScene(BaseScene):
     image_background = open_image("ui_start_components/back.jpg")
 
     def init(self) -> None:
+        EngineSettings.VARIABLES["continue_game"] = False
+
         self.play_button = self.load_sprite(
             ButtonSprite,
-            coordinates=(55, 200),
+            coordinates=(55, 270),
             size=(190, 66),
-            image_path="start/play.png",
+            image_path="start/play-btn.png",
             action="main",
             callback=lambda: self.__run_main_scene(),
         )
 
         self.setting_buttons = self.load_sprite(
             ButtonSprite,
-            coordinates=(55, 320),
-            size=(400, 66),
-            image_path="start/sett.png",
+            coordinates=(55, 390),
+            size=(360, 66),
+            image_path="start/settings-btn.png",
             action="settings",
             callback=lambda: self.pause("settings"),
         )
 
         self.exit_buttons = self.load_sprite(
             ButtonSprite,
-            coordinates=(55, 440),
+            coordinates=(55, 510),
             size=(170, 66),
-            image_path="start/exit.png",
+            image_path="start/exit-btn.png",
             action="exit",
             callback=lambda: exit_game(),
         )
@@ -52,6 +56,19 @@ class StartScene(BaseScene):
         self.__tutorial_finished = False
 
         self.buttons = [self.play_button, self.setting_buttons, self.exit_buttons]
+        
+        if self.can_continue():
+            self.continue_btn = self.load_sprite(
+                ButtonSprite,
+                coordinates=(55, 150),
+                size=(340, 66),
+                image_path="start/continue-btn.png",
+                action="continue",
+                callback=lambda: self.__continue_game(),
+            )
+
+            self.buttons.insert(0, self.continue_btn)
+        
         self.index_button = 0
 
     @staticmethod
@@ -105,6 +122,11 @@ class StartScene(BaseScene):
                     self.buttons[self.index_button].is_hover = False
                     self.index_button = i
                     button.is_hover = True
+    
+    def __continue_game(self):
+        EngineSettings.VARIABLES["continue_game"] = True
+        self.__tutorial_finished = True
+        self.pause("main")
                     
     def __run_main_scene(self):
         if self.__tutorial_finished:
@@ -115,6 +137,9 @@ class StartScene(BaseScene):
 
     def key_pressed_handler(self, pressed):
         ...
+    
+    def can_continue(self):
+        return os.path.exists("./dump.json")            
 
 
 class PauseScene(BaseScene):
@@ -265,7 +290,7 @@ class SettingsScene(BaseScene):
                         btn["size"][0] - 2, btn["size"][1] - 2
                     )
                 )
-            else:
+            elif btn["type"] == "select":
                 pygame.draw.rect(
                     surface, self.__on_color if btn["active"] else self.__off_color,
                     pygame.Rect(
@@ -331,11 +356,11 @@ class SettingsScene(BaseScene):
         width, height = tuple(map(int, self.settings_btns[ind]["title"].split("x")))
         width -= width_shift
         height -= height_shift
-        
+
         size = width, height
         
         pygame.display.set_mode(size)
-        
+
         settings.SIZE = size
         EngineSettings.VARIABLES["SIZE"] = size
         
@@ -350,7 +375,7 @@ class SettingsScene(BaseScene):
                 self.settings_btns[ind]["active"] = False
 
         self.settings_btns[ind]["active"] = True
-
+    
         render_distance = (
             width // EngineSettings.get_var("BLOCK_SIZE"),
             height // EngineSettings.get_var("BLOCK_SIZE")

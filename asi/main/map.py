@@ -2,6 +2,8 @@ import pygame
 
 from typing import Any, Tuple
 from colorama import Fore, Style
+import json
+import pickle
 
 from engine.core import EngineSettings
 
@@ -61,10 +63,9 @@ class Map:
     }
 
     def __init__(self, scene, surface):
-        self.__entity_sprite_group = pygame.sprite.Group()
-        self.__env_sprite_group = pygame.sprite.Group()
         self.__update_sprite_group = pygame.sprite.Group()
         self.__no_update_sprite_group = pygame.sprite.Group()
+        self.__player_sprite_group = pygame.sprite.Group()
         self.__scene = scene
         self.__surface = surface
         
@@ -152,8 +153,9 @@ class Map:
         self.__scene.player = self.player
         self.start_player_pos = [0, 0]
         self.__last_player_pos = self.get_payer_map_pos()
-
-        self.__update_sprite_group.add(self.player)
+        # self.__update_sprite_group.add(self.player)
+        
+        self.__player_sprite_group.add(self.player)
         
         self.__scene._game_stack.sprite_group.update()
         
@@ -178,7 +180,7 @@ class Map:
                     self.__no_update_sprite_group.add(
                         self.map[y][x]
                     )
-    
+                    
     def get_payer_map_pos(self):
         return [
             int(self.start_player_pos[0] + self.player.rect.center[0] // self.block_size),
@@ -222,7 +224,7 @@ class Map:
             self.__update_sprite_group.empty()
             self.__no_update_sprite_group.empty()
             
-            self.__update_sprite_group.add(self.player)
+            self.__player_sprite_group.add(self.player)
             
             for y in range(len(self.map_status)):
                 for x in range(len(self.map_status[y])):
@@ -359,23 +361,23 @@ class Map:
                         
                         self.map_status[y][x] = False
                 
-            # self.draw_debug_map()
-    
-            
             self.__last_player_pos = player_pos
                     
-
-        # self.__update_sprite_group.update()
         for sprite in self.__update_sprite_group.sprites():
             sprite._update(True)
             
-        self.__surface.fill(pygame.Color("#3C2A21"))
+        self.__surface.fill(pygame.Color(EngineSettings.get_var("GAME_BACKGROUND_COLOR")))
         
         if EngineSettings.get_var("DRAW_BACKGROUND"):
             self.draw_background()
 
         self.__no_update_sprite_group.draw(self.__surface)
         self.__update_sprite_group.draw(self.__surface)
+        
+        for sprite in self.__player_sprite_group.sprites():
+            sprite._update(True)
+        
+        self.__player_sprite_group.draw(self.__surface)
         
         self.render(self.player.rect.center)
 
@@ -387,23 +389,9 @@ class Map:
 
         raise ValueError("Игрок не обнаружен на карте")
 
-    def add_env_sprite(self, sprite_class, coords):
-        sprite = sprite_class(self.__scene, coords=coords)
-        self.__env_sprite_group.add(sprite)
-        self.__scene._game_stack.sprite_group.add(sprite)
-        
-        return sprite
-    
     def add_decorataion_sprite(self, coords, data):
         sprite = DecorationSprite(self.__scene, coords=coords, **data)
         self.__env_sprite_group.add(sprite)
-        self.__scene._game_stack.sprite_group.add(sprite)
-        
-        return sprite
-
-    def add_entity_sprite(self, sprite_class, coords):
-        sprite = sprite_class(self.__scene, coords=coords)
-        self.__entity_sprite_group.add(sprite)
         self.__scene._game_stack.sprite_group.add(sprite)
         
         return sprite
@@ -445,3 +433,118 @@ class Map:
         self.__scene.move_all_sprites((x, y))
         self.__background_pos[0] += x * self.block_size / 10
         self.__background_pos[0] += x * self.block_size
+
+    def save_map_dump(self):
+        from .sprites.player.player import PlayerСharacteristics
+
+        data = {
+            "map_data": [[None for x in range(len(self.map_symbol[y]))] for y in range(len(self.map_symbol))],
+            "player": {},
+            "player_characteristics": {key: PlayerСharacteristics.__dict__[key] for key in filter(lambda x: "__" not in x, PlayerСharacteristics.__dict__)},
+            "map_variables": {
+                "start_player_pos": list(self.start_player_pos)
+            }
+        }
+        
+        
+        for y in range(len(self.map_symbol)):
+            for x in range(len(self.map_symbol[y])):
+                if self.map[y][x] not in self.__scene.sprite_group:
+                    continue
+                
+                rect = self.map[y][x].rect
+                pre_data = {
+                    "rect": {
+                        "left": rect.x,
+                        "top": rect.y,
+                        "width": rect.width,
+                        "height": rect.height
+                    }
+                }
+
+                for key, value in self.map[y][x].__dict__.items():
+                    if key in NEED_VARS:
+                        pre_data[key] = value
+                
+                data["map_data"][y][x] = pre_data
+                
+
+        rect = self.player.rect
+
+        pre_data = {
+            "rect": {
+                "left": rect.x,
+                "top": rect.y,
+                "width": rect.width,
+                "height": rect.height
+            },
+        }
+
+        for key, value in self.player.__dict__.items():
+            if key in NEED_VARS:
+                pre_data[key] = value
+        
+        data["player"] = pre_data
+
+        with open("dump.json", "w") as dump_file:
+            dump_file.write(json.dumps(data))
+    
+    def load_map_dump(self, dump_path):
+        if "map_symbol" in self.__dict__:
+            for y in range(len(self.map_symbol)):
+                for x in range(len(self.map_symbol[y])):
+                    if self.map[y][x]:
+                        self.map[y][x].kill()
+            
+            self.player.kill()
+            
+            self.__player_sprite_group.empty()
+            self.__update_sprite_group.empty()
+            self.__no_update_sprite_group.empty()
+            self.__scene.sprite_group.empty()
+
+        self.create_map_2(load_level(EngineSettings.get_var("MAP_NAME")))        
+        
+        with open(dump_path, "r") as dump_file:
+            data = json.loads(dump_file.read())
+    
+        for y in range(len(self.map_symbol)):
+            for x in range(len(self.map_symbol[y])):
+                if self.map[y][x] not in self.__scene.sprite_group:
+                    continue
+
+                if self.map[y][x] and not data["map_data"][y][x]:
+                    self.map[y][x].kill()
+                    continue
+    
+                rect = data["map_data"][y][x]["rect"]
+                del data["map_data"][y][x]["rect"]
+                
+                self.map[y][x].__dict__.update(data["map_data"][y][x])
+                
+                self.map[y][x].rect.x = rect["left"]
+                self.map[y][x].rect.y = rect["top"]
+
+
+        rect = data["player"]["rect"]
+        del data["player"]["rect"]
+        
+        self.player.__dict__.update(data["player"])
+
+        self.player.rect.x = rect["left"]
+        self.player.rect.y = rect["top"]
+        
+        
+        from .sprites.player.player import PlayerСharacteristics
+        
+        
+        for key, value in data["player_characteristics"].items():
+            setattr(PlayerСharacteristics, key, value)
+            
+        for key, value in data["map_variables"].items():
+            setattr(self, key, value)
+        
+        self.player.update_ui()
+
+
+NEED_VARS = ('width', 'height', "_PlayerSprite__count_heal", "_PlayerSprite__count_big_heal", "health")

@@ -95,6 +95,9 @@ class PlayerSprite(AnimatedSprite):
 
         self.__can_move = True
         self.__is_died = False
+        self.__died_timer_mx = 60
+        self.__died_timer = 0
+        
         self.__throwing_arms_count = 6
         self.__throwing_arms_max_value = 6
         self.__throwing_arms_cd = 50
@@ -182,6 +185,14 @@ class PlayerSprite(AnimatedSprite):
         return None
 
     def update(self):
+        if self.__is_died:
+            self.__died_timer += 1
+            
+            if self.__died_timer >= self.__died_timer_mx:
+                self._BaseSprite__scene.respawn()
+            
+            return
+
         self.time_attack = min(10, self.time_attack + 1)
         for localevent in self.get_events():
             if localevent["type"] == "info" and localevent["name"] == "minus_hp":
@@ -293,16 +304,17 @@ class PlayerSprite(AnimatedSprite):
             "info", "hp", {"value": self.health}
         ))
 
-        if self.health == 0:
-            # self.dead()
+        if self.health <= 0 and not self.__is_died:
             self.start_animation(
                 "death", 1, 10, is_priority=True
             )
-            # self.set_normal_image("player/blank.png")
+            self.set_normal_image("player/blank.png")
+
             if EngineSettings.get_var("PLAY_SOUNDS"):
                 pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/dead_player.mp3"))
-            # self.__is_died = True
-            # self.__can_move = False
+
+            self.__is_died = True
+            self.__can_move = False
 
             self.change_health(PlayerСharacteristics.max_health)
 
@@ -343,8 +355,7 @@ class PlayerSprite(AnimatedSprite):
         )
 
     def dead(self):
-        if self.health != 0:
-            self.change_health(-100)
+        self.change_health(-self.health)
 
     @property
     def health(self):
@@ -393,6 +404,13 @@ class PlayerSprite(AnimatedSprite):
         return PlayerСharacteristics.money
 
     money = property(fset=set_money, fget=get_money)
+    
+    def update_ui(self):
+        self.change_health(0)
+        self.__change_stamina(0)
+        self.set_little_heal(self.get_little_heal())
+        self.set_big_heal(self.get_big_heal())
+        self.set_money(self.money)
 
     def key_pressed_handler(self, pressed: Sequence[bool]):
         additional_speed = self.stamina_boost * self.__shift_pressed * bool(self.stamina)

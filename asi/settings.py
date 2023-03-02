@@ -5,9 +5,11 @@ ALL_WINDOW_SIZES = (
     (3820, 2160),
     (3440, 1440),
     (2560, 1600),
+    (2560, 1600),
     (2560, 1440),
     (1920, 1080),
     (1920, 1200),
+    (1440, 900),
     (1600, 900),
     (1366, 768),
     (1000, 800),
@@ -30,15 +32,20 @@ for monitor in get_monitors():
 
 SIZE = WIDTH, HEIGHT = AVAILABLE_WINDOW_SIZES[-1]
 
-RENDER_DISTANCE = (20, 10)
+BLOCK_SIZE = 50
+RENDER_DISTANCE = (SIZE[0] // BLOCK_SIZE, SIZE[1] // BLOCK_SIZE)
 
 WINDOW_NAME = "ASI"
 BACKGROUND_COLOR = "black"
 
-BLOCK_SIZE = 50
+GAME_BACKGROUND_COLOR = "#3C2A21"
+
+MAP_NAME = "map.txt"
+DUMP_PATH = "./dump.json"
 
 DRAW_ANIMATIONS = True
 DRAW_BACKGROUND = False
 PLAY_SOUNDS = False
 
 FPS = 60
+AUTO_SAVE_SECONDS = 10

@@ -97,6 +97,3 @@ class Game:
 
     def __terminate(self):
         pygame.quit()
-
-        if self.__current_scene_name:
-            self.current_scene.stop()

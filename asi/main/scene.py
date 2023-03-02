@@ -2,7 +2,8 @@ import pygame
 import random
 
 from engine.objects import BaseScene
-from engine.shortcuts.dialog import DialogObject, StartDialogObject
+from engine.shortcuts.dialog import StartDialogObject
+from engine.core import EngineSettings
 
 from asi import settings
 from .map import Map, load_level
@@ -12,8 +13,13 @@ from .objects.ui import HPBar, StaminaBar, ImageAndTextField
 class MainScene(BaseScene):
     def init(self) -> None:
         self.map = Map(self, self._surface)
-        self.map.create_map_2(load_level("map.txt"))
         
+        if EngineSettings.VARIABLES["continue_game"]:
+            self.map.load_map_dump(EngineSettings.get_var("DUMP_PATH"))
+        else:
+            self.map.create_map_2(load_level(EngineSettings.get_var("MAP_NAME")))
+            self.map.save_map_dump()
+
         self.load_object(HPBar)
         self.load_object(StaminaBar)
 
@@ -43,13 +49,26 @@ class MainScene(BaseScene):
         )
         
         self.set_stack_sprite_update(False)
+        
+        self.auto_save_timer_mx = EngineSettings.get_var("FPS") * EngineSettings.get_var("AUTO_SAVE_SECONDS")
+        self.auto_save_timer = 0
+        self.is_auto_save = True
 
     def update(self) -> None:
-        # self.map.render(self.player.rect.center)
         self.map.update()
+        
+        if self.is_auto_save:
+            self.auto_save_timer += 1
+
+        if self.auto_save_timer >= self.auto_save_timer_mx:
+            self.auto_save_timer = 0
+            self.map.save_map_dump()
     
+    def respawn(self):
+        self.set_auto_save(True)
+        self.map.load_map_dump(EngineSettings.get_var("DUMP_PATH"))
+
     def render(self, surface: pygame.Surface):
-        # surface.blit(self.background, (0, 0))
         ...
 
     def events_handler(self, event: pygame.event.Event):
@@ -57,10 +76,12 @@ class MainScene(BaseScene):
 
         if event.type == pygame.KEYDOWN and pressed[pygame.K_ESCAPE]:
             self.pause("start")
-
-        if event.type == pygame.KEYDOWN and pressed[pygame.K_b]:
-            # self.load_object(DialogObject, text="Это какой-то текст в диалоговом окне", size=(500, 200))
-            self.load_object(StartDialogObject, dialog_text="Это какой-то текст в диалоговом окне", dialog_size=(500, 200))
+            
+        if event.type == pygame.KEYDOWN and pressed[pygame.K_g]:
+            self.map.save_map_dump()
+    
+    def set_auto_save(self, value: bool):
+        self.is_auto_save = value
 
     def key_pressed_handler(self, pressed):
         if pressed[pygame.K_UP]:

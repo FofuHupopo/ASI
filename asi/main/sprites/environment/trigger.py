@@ -33,3 +33,5 @@ class Trigger(Obstacle):
     def close_door(self):
         for i in self.find_sprites(SpriteTypes.PLAYER)[0].list_door:
             i.kill()
+        
+        self._BaseSprite__scene.set_auto_save(True)
