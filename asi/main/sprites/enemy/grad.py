@@ -1,14 +1,14 @@
 import pygame
 
 from typing import Sequence
-from engine.objects import BaseSprite
+from engine.objects import AnimatedSprite
 from engine.core import EngineEvent, EventTypes, EngineSettings
 from engine.objects.sprite import SpriteTypes
 
 from asi import settings
 
 
-class Grad(BaseSprite):
+class Grad(AnimatedSprite):
     def init(self, coords, speed):
         self.load_image("projectly/grad.jpg")
 

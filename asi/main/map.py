@@ -21,6 +21,17 @@ from .sprites.enemy.spike import Spike
 from .sprites.enemy.boss import Boss
 from .sprites.environment.trigger import Trigger
 from .sprites.environment.door import Door
+from asi.main.sprites.environment.platforms.platform_horizontally import PlatformHorizontally
+from asi.main.sprites.environment.platforms.platform_vertically import PlatformVertically
+from asi.main.sprites.environment.platforms.platform_block import PlatformBlock
+from asi.main.sprites.environment.platforms.platform_quarter1 import PlatformCornerFirst
+from asi.main.sprites.environment.platforms.platform_quarter2 import PlatformCornerSecond
+from asi.main.sprites.environment.platforms.platform_quarter3 import PlatformCornerThird
+from asi.main.sprites.environment.platforms.platform_quarter4 import PlatformCornerFourth
+from asi.main.sprites.environment.platforms.platform_upper import PlatformUpper
+from asi.main.sprites.environment.platforms.platform_bottom import PlatformBottom
+from asi.main.sprites.environment.platforms.platform_left import PlatformLeft
+from asi.main.sprites.environment.platforms.platform_right import PlatformRight
 
 
 def load_level(filename):  # загрузка уровня
@@ -48,17 +59,66 @@ class Map:
         "z": Door
     }
     NO_UPDATE_SYMBOL_DECODER = {
-        "#": Obstacle,
-        "-": Obstacle,
+        "-": PlatformHorizontally,
+        "|": PlatformVertically,
+        "<": PlatformLeft,
+        ">": PlatformRight,
+        "^": PlatformUpper,
+        "V": PlatformBottom,
+        "#": PlatformBlock,
+        "1": PlatformCornerFirst,
+        "2": PlatformCornerSecond,
+        "3": PlatformCornerThird,
+        "4": PlatformCornerFourth,
     }
     DECORATION_SYMBOL_DECODER = {
-        "G": {
-            "image_path": "map/grass-1.png",
-            "size": (50, 20)
+        # "G": {
+        #     "image_path": "map/grass-1.png",
+        #     "size": (50, 20)
+        # },
+        # "T": {
+        #     "image_path": "map/tree-1.png",
+        #     "size": (200, 200)
+        # },
+        "R": {
+            "image_path": "map/dicoration/rock_horizontally.png",
+            "size": (150, 100)
         },
-        "T": {
-            "image_path": "map/tree-1.png",
-            "size": (200, 200)
+        "O": {
+            "image_path": "map/dicoration/rock_vertically.png",
+            "size": (100, 150)
+        },
+        "S": {
+            "image_path": "map/dicoration/plant_spike.png",
+            "size": (100, 100)
+        },
+        "K": {
+            "image_path": "map/dicoration/plant_spike.png",
+            "size": (50, 50)
+        },
+        "Q": {
+            "image_path": "map/dicoration/plant-1.png",
+            "size": (50, 30)
+        },
+        "W": {
+            "image_path": "map/dicoration/plant-2.png",
+            "size": (50, 30)
+        },
+        "E": {
+            "image_path": "map/dicoration/plant-3.png",
+            "size": (50, 50)
+        },
+        "Y": {
+            "image_path": "map/dicoration/plant-4.png",
+            "size": (50, 75)
+        },
+        "U": {
+            "image_path": "map/dicoration/sprout_left.png",
+            "size": (30, 60)
+        },
+        "I": {
+            "image_path": "map/dicoration/sprout_right.png",
+            "size": (30, 60)
         },
     }
 
@@ -141,7 +201,6 @@ class Map:
                     self.map[y][x] = sprite
                     
                     self.map_symbol[y][x] = symbol
-                    
 
         self.player = self.__scene.load_sprite(
             PlayerSprite,

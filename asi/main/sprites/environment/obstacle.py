@@ -8,8 +8,11 @@ from engine.objects.sprite import SpriteTypes
 
 
 class Obstacle(BaseSprite):
-    def init(self, coords):
-        self.load_image("obstacle/box.png")
+    def init(self, coords, image="obstacle/box.png"):
+        # self.load_im(r"map\block2.png")
+        self.load_image(image)
+        # self.load_image(r"map\block2.png")
+
         self.set_type(SpriteTypes.OBSTACLE)
         self.rect.x = coords[0]
         self.rect.y = coords[1]

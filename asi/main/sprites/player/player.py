@@ -29,6 +29,61 @@ class PlayerСharacteristics:
     max_stamina = 100
 
     money = 0
+    dialog = [["Гг - Что это? Похоже на какую-то табличку, на ней надписи, значит я не первый кто сюда пришёл. ",
+               "О великий бог справедливости Якатекутли, я всю жизнь ждал этого момента, с тех пор как я в детстве\n"
+               " услышал легенду об этом волшебном месте созданном тобой, опасном лабиринте кишащими разными опасными\n"
+               " тварями, высокими обрывами, и смертельными копьями, но в конце: тот, кто пройдёт все испытания,\n"
+               " получит несметные богатства и вечную славу. Я сразу понял, что это моё предназначение.\n"
+               " Я тренировался всю свою жизнь ради этого момента, я научился в совершенстве владеть макуахутл.\n"
+               " Всевышней, молю, будь со мной милосерден. Только я не чествую свою силу, я ощущаю себя лишь \n"
+               "беспомощным духом, я.… я не понимаю, что со мной происходит. Ладно, надеюсь это скоро пройдёт, \n"
+               "главное, что со мной мой макуахутл. ",
+               "Гг - М-да, эти фанатики настолько верили в эти сказки, что тратили на это всю жизнь. Но, \n"
+               "всё что происходило со мной до этого, заставляет задуматься о реальности этого, главное,\n"
+               " чтобы концовка с золотом была реальна, остальное меня не волнует. "],
+              "О господи, я уже потерял всякий контроль над ситуацией, я шёл по этим джунглям, и тут на меня вылетел\n"
+              " какой-то злобный дух и запустил в меня какую-то штуку, я … я почувствовал адскую боль,\n"
+              " перестал чествовать своё тело, я начал растворятся в воздухе и взлетать, а дальше темнота.\n"
+              " Я же буквально умер... Но через какое-то время я снова появился там, откуда я начал, без единого\n"
+              " следа. Я благодарен тебе о великий Якатекутли, за то, что дал мне второй шанс, я обещаю тебе, в этот\n"
+              " раз я тебя не подведу. ", [
+                  "Похоже я начинаю понимать, что значила фраза ualchikauak semahsitika в легенде, это не означало \n"
+                  "какую-то волшебную мнимую душевную силу, это в прямом смысле значило силу твоей воли, благородство\n"
+                  " и великодушие твоей души. Теперь я все понимаю, здесь обнажается твоя душа, все твои физические \n"
+                  "качества становятся не важны, ты в прямом смысле становишься призраком, привязанным лишь \n"
+                  "к твоей душе. ",
+                  "Гг - Так, звучит это все конечно бредово, но это похоже это действительно правда. Это же\n"
+                  " даже лучше... Да, определённо это лучше! Я проделал такой путь из Испании до этого места,\n"
+                  " прошёл через такие опасности, которые этим индейцам даже снились, я столько всего преодолел \n"
+                  "ради славы и богатств. Наверняка же у меня очень сильная душа... "],
+              "О господи, я так хочу домой, я ничего не понимаю, мне уже не нужны эти богатства, я ничего не хочу, \n"
+              "хочу просто обратно к своим друзьям, я потерял счёт сколько я раз умирал, десятки, а может сотни раз,\n"
+              " сколько дней прошло уже, здесь всё время светит солнце. Я не вижу конца, я все иду и иду, сражаюсь \n"
+              "и сражаюсь, умираю и умираю, а конца так и не видно. Но самое странное, после того как я возрождаюсь,\n"
+              " вместе со мной оживают все враги, которых я убил.", [
+                  "Кажется, я понял, это вовсе не враги, это такие же люди как я, которые раньше пришли сюда. Страшно\n"
+                  " представить, что они вообще пережили, тысячи, а может миллион смертей и страдания, после того \n"
+                  "любой потеряет рассудок. У них на уме только одно, убивать, убивать и убивать, возрождаться и ещё \n"
+                  "раз убивать всё. Это уже не люди, от них мало что осталось. Через какое время я стану таким... ",
+                  "Гг - Господи, выходит среди них сейчас ходит один из этих индейцев, так, надо срочно выбираться, \n"
+                  "прошло уже много времени, всё равно на эти сокровища, главное найти выход отсюда. "],
+              "Но всё равно, одно не вписывается в мою идею, кто такие торговцы, вроде бы это тоже живые души, но они\n"
+              "только торгуют с тобой, на все вопросы они не отвечают, странно все это. ", [
+                  "Надо собраться, я обязан найти выход, даже если не для себя, то для моего народа, люди до сих пор\n"
+                  " верят в эту легенду, столько людей уходят и все тут остаются навсегда. Я должен вернуться и\n"
+                  " рассказать всю правду, чтобы больше люди не погибали. ",
+                  "Гг - Ну теперь всё понятно, похоже индейцы поняли, что это погибель для всех, кто сюда идёт, и\n"
+                  " отправили меня сюда, думали, что они самые умные, что избавятся от меня так, нет, я вернусь\n"
+                  " несмотря не на что, и отомщу им за это. "], [
+                  "Ура, наконец то спустя столько смертей, я нашёл его, я встретил какого-то каменного монстра,\n"
+                  " совсем не похожего на души и за мной захлопнулась дверь, хоть я и умер от его каменной руки,\n"
+                  " но ничего страшного, теперь я знаю, что у этого есть конец, осталось совсем немного",
+                  "Гг - Так, отлично, мне надо туда, осталось всего лишь убить какую ту груду камней, и я выберусь отсюда. "],
+              ["Нет, это невозможно, теперь я окончательно потерял надежду выбраться отсюда, хоть я и нашёл конец\n"
+               " этого места, невозможно победить этого монстра, он как будто бессмертен, он слишком силён, он \n"
+               "пуляет лазеры из своей головы, кидает в меня камни, бьёт по полу, и каждый раз все мои попытки\n"
+               " заканчиваются одинаково, я умираю... ",
+               "Гг - Жалкий слабак, сдался, ну ничего, я убью этого монстра и выйду от сюда с золотом "]]
 
 
 class PlayerSprite(AnimatedSprite):
@@ -92,6 +147,7 @@ class PlayerSprite(AnimatedSprite):
         self.__count_big_heal = 0
         self.__count_heal = 0
         self.arms = 1
+        self.recharge = 30
 
         self.__can_move = True
         self.__is_died = False
@@ -122,12 +178,13 @@ class PlayerSprite(AnimatedSprite):
         self.list_musik = ["fon_horizon.mp3", "fon_inrestellar.mp3", "fon_original1.mp3", "fon_original2.mp3",
                            "fon_original3.mp3", "fon_original4.mp3", "fon_wither.mp3", "fon_detroit.mp3"]
         self.now_musik = -1
-        
+
         if EngineSettings.get_var("PLAY_SOUNDS"):
             self.musik()
 
         pygame.mixer.set_num_channels(15)
-        self.time_attack = 10
+        self.time_attack = self.recharge
+        self.flag_dialog = True
 
     # ----------
     # self.create_map(self.load_level("map.txt"))
@@ -193,7 +250,19 @@ class PlayerSprite(AnimatedSprite):
             
             return
 
-        self.time_attack = min(10, self.time_attack + 1)
+        if self.current_animation_frame == 4 and self.current_animation_name == "melee_attack" and self.time_attack == self.recharge:
+            self.time_attack = 0
+            if EngineSettings.get_var("PLAY_SOUNDS"):
+                pygame.mixer.Channel(14).play(pygame.mixer.Sound("asi/main/resources/sound/player_attack.mp3"))
+            for i in self.checking_touch_by_type(SpriteTypes.ENEMY):
+                i.health -= 100
+            if len(self.find_sprites(SpriteTypes.BOSS)) > 0:
+                boss = self.find_sprites(SpriteTypes.BOSS)[0]
+                if self.rect.x > boss.rect.x - 50 and self.rect.x < boss.rect.x + 100 and self.rect.y > boss.rect.y - 50:
+                    boss.health -= 100
+
+        self.time_attack = min(self.recharge, self.time_attack + 1)
+
         for localevent in self.get_events():
             if localevent["type"] == "info" and localevent["name"] == "minus_hp":
                 self.change_health(-localevent["data"]["value"])
@@ -260,11 +329,10 @@ class PlayerSprite(AnimatedSprite):
 
     def events_handler(self, event: pygame.event.Event):
         keys = pygame.key.get_pressed()
-
         if (
-            (event.type == pygame.KEYDOWN and keys[pygame.K_SPACE]) or
-            (event.type == pygame.JOYBUTTONDOWN and event.button == 3)
-            ):
+                (event.type == pygame.KEYDOWN and keys[pygame.K_SPACE]) or
+                (event.type == pygame.JOYBUTTONDOWN and event.button == 3)
+        ):
             if not self.is_fly():
                 self.speed_y = 10
 
@@ -272,17 +340,16 @@ class PlayerSprite(AnimatedSprite):
             self.melee_attack()
 
         if (
-            (event.type == pygame.KEYDOWN and keys[pygame.K_r]) or
-            (event.type == pygame.JOYBUTTONDOWN and event.button == 10)
-            ):
-            if self.time_attack == 10:
+                event.type == pygame.MOUSEBUTTONDOWN and event.button == pygame.BUTTON_LEFT
+        ):
+            if self.time_attack == self.recharge:
                 self.__throw_arm()
                 self.time_attack = 0
 
         if (
-            (event.type == pygame.KEYDOWN and keys[pygame.K_1] and self.count_heal > 0) or
-            (event.type == pygame.JOYBUTTONDOWN and event.button == 13)
-            ):
+                (event.type == pygame.KEYDOWN and keys[pygame.K_1] and self.count_heal > 0) or
+                (event.type == pygame.JOYBUTTONDOWN and event.button == 13)
+        ):
             self.change_health(50)
             self.count_heal -= 1
             if EngineSettings.get_var("PLAY_SOUNDS"):
@@ -297,6 +364,21 @@ class PlayerSprite(AnimatedSprite):
             self.count_heal += 1
         if event.type == pygame.KEYDOWN and keys[pygame.K_4]:
             self.count_big_heal += 1
+        if self.flag_dialog:
+            self.create_dialog("О господи, что со мной стало, где я... \n"
+                               "Грёбанные индейцы сказали мне что в этой пещере по легенде лежит много много золота,\n "
+                               "зачем я им поверил в эти глупости, лучше бы обыскал их ещё раз и забрал бы остатки.\n"
+                               "Ну ничего, вот как выберусь я им это просто так не оставлю.Так, ладно, \n"
+                               "главное не паниковать, надо найти выход из этой места, а если их слова о богатстве \n"
+                               "окажутся правдой, то я обязан его найти, и тогда стану самым богатым человеком в\n"
+                               "Южной Америке, пока остальные испанцы будут отбирать жалкие гроши у индейцев. В\n"
+                               "конце концов, я же тоже не абы кто, не зря же я приехал из Испании в такие края.\n"
+                               "Надо постараться вспомнить, что вообще произошло … Странно, я помню, как зашёл в эту\n"
+                               "пещеру, а дальше только пустота, и вот я оказываюсь здесь. Но что стало с моим телом.\n"
+                               "Его практически нет, я превратился в какой-то дух ",
+                               (700, 400))
+            if event.type == pygame.KEYDOWN and keys[pygame.K_f]:
+                self.flag_dialog = False
 
     def change_health(self, value):
         PlayerСharacteristics.health = max(0, min(self.health + value, PlayerСharacteristics.max_health))
@@ -326,13 +408,7 @@ class PlayerSprite(AnimatedSprite):
         ))
 
     def melee_attack(self):
-        self.start_animation("melee_attack", 1, 1, True)
-        for i in self.checking_touch_by_type(SpriteTypes.ENEMY):
-            i.health -= 100
-        for i in self.checking_touch_by_type(SpriteTypes.BOSS):
-            i.health -= 100
-            print(i.health)
-
+        self.start_animation("melee_attack", 1, 4, True)
 
     def __throw_arm(self):
         if self.__throwing_arms_count > 0:
@@ -463,5 +539,3 @@ class PlayerSprite(AnimatedSprite):
         if EngineSettings.get_var("PLAY_SOUNDS"):
             pygame.mixer.Channel(0).play(pygame.mixer.Sound("asi/main/resources/musik/" + self.list_musik[id]))
             pygame.mixer.Channel(0).set_volume(0.2)
-
-

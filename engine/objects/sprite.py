@@ -250,6 +250,10 @@ class AnimatedSprite(BaseSprite):
 
         self.__load_base_image()
 
+    @property
+    def current_animation_frame(self):
+        return self.__current_animation_frame
+
     def start_animation(self, animation_name: str, count: int=1, waiting_ticks: int=10, is_priority: bool=False):
         """Метод начала анимации
 

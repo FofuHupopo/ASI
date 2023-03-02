@@ -1,14 +1,14 @@
 import pygame
 import random
 
-from engine.objects import BaseSprite
+from engine.objects import AnimatedSprite
 from engine.objects.sprite import SpriteTypes
 from engine.core import EngineSettings
 from asi.main.sprites.player.HEAL import Heal
 from asi.main.sprites.player.money import Money
 
 
-class BaseEnemy(BaseSprite):
+class BaseEnemy(AnimatedSprite):
     def init(self):
         self.set_type(SpriteTypes.ENEMY)
 
@@ -74,17 +74,14 @@ class BaseEnemy(BaseSprite):
             for i in range(random.randint(self.max_prize // 2, self.max_prize)):
                 self.load_sprite(Money, coords=(random.randint(self.rect.x - 20, self.rect.x + self.width),
                                                 random.randint(self.rect.y - 20, self.rect.y + self.height - 25)))
-                
-        if EngineSettings.get_var("PLAY_SOUNDS"):
-            pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/dead_enemy.mp3"))
-            pygame.mixer.Channel(0).set_volume(0.05)
 
         self.kill()
 
     def update(self):
+        self.start_animation("inac", 1, 5, True)
         if self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON):
             self.health -= self.checking_touch_by_type(SpriteTypes.THROWING_WEAPON)[0].damadge
-            
+
             if EngineSettings.get_var("PLAY_SOUNDS"):
                 pygame.mixer.Channel(2).play(pygame.mixer.Sound("asi/main/resources/sound/arms_in_enemy.mp3"))
 
@@ -101,6 +98,10 @@ class BaseEnemy(BaseSprite):
             if abs(self.coords_player.x - self.rect.x) < self.attack_radius_x and \
                     abs(self.coords_player.y - self.rect.y < self.attack_radius_y):
                 if self.time_attack <= self.time:
+                    if self.coords_player.x < self.rect.x:
+                        self.direction = -1
+                    else:
+                        self.direction = 1
                     self.time = 0
                     self.attack()
 
@@ -108,19 +109,23 @@ class BaseEnemy(BaseSprite):
                 self.rect.x += self.speed_agra
                 self.relacetion_x += self.speed_agra
                 self.direction = 1
+                self.mirror_image(by_x=False)
             else:
                 self.rect.x -= self.speed_agra
                 self.relacetion_x -= self.speed_agra
                 self.direction = -1
+                self.mirror_image(by_x=True)
         elif self.direction == 1:
             if self.relacetion_x < self.zone_x2 - self.width:
                 self.rect.x += self.speed
                 self.relacetion_x += self.speed
             else:
                 self.direction = -1
+                self.mirror_image(by_x=True)
         else:
             if self.relacetion_x > self.zone_x1 + self.width:
                 self.rect.x -= self.speed
                 self.relacetion_x -= self.speed
             else:
                 self.direction = 1
+                self.mirror_image(by_x=False)

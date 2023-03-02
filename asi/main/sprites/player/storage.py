@@ -44,4 +44,3 @@ class Storage(BaseSprite):
     def update(self) -> None:
         if self.checking_touch_by_type(SpriteTypes.PLAYER):
             pressed = pygame.key.get_pressed()
-            print(self.__storage)

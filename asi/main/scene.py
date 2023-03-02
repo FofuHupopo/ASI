@@ -7,7 +7,7 @@ from engine.core import EngineSettings
 
 from asi import settings
 from .map import Map, load_level
-from .objects.ui import HPBar, StaminaBar, ImageAndTextField
+from asi.main.objects.ui import HPBar, StaminaBar, ImageAndTextField
 
 
 class MainScene(BaseScene):
