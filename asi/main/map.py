@@ -310,10 +310,15 @@ class Map:
                             self.__no_update_sprite_group.add(
                                 self.map[y][x]
                             )
+
+            self.__surface.fill(pygame.Color(EngineSettings.get_var("GAME_BACKGROUND_COLOR")))
             
-            self.__surface.fill(pygame.Color("#3C2A21"))
+            if EngineSettings.get_var("DRAW_BACKGROUND"):
+                self.draw_background()
+
             self.__no_update_sprite_group.draw(self.__surface)
             self.__update_sprite_group.draw(self.__surface)
+            self.__player_sprite_group.draw(self.__surface)
 
 
         if self.__last_player_pos != player_pos:

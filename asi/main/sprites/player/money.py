@@ -21,7 +21,7 @@ class Money(BaseSprite):
 
     def update(self):
         if self.fly:
-            self.rect.y += 7
+            self.rect.y += 3
             if self.checking_touch_by_type(SpriteTypes.OBSTACLE):
                 for i in self.checking_touch_by_type(SpriteTypes.OBSTACLE):
                     self.rect.y = min(i.rect.y - self.height, self.rect.y)

@@ -13,7 +13,7 @@ from .projectile_enemy import Projectlie
 class Gunner(BaseEnemy):
     def init(self, coords):
         self.register_animations(
-             r"enemy\gunner\inac\acon-1.png",  # стоит
+             "enemy/gunner/inac/acon-1.png",  # стоит
              {
                  "attack": (
                      "enemy/gunner/attack/atack-1.png",
@@ -22,24 +22,24 @@ class Gunner(BaseEnemy):
                      "enemy/gunner/attack/atack-4.png",
                  ),  # атака
                  "bullet": (
-                     r"enemy\gunner\bullet\bullet.png"
+                     "enemy/gunner/bullet/bullet.png"
                  ),  # патрон
                  "death": (
-                     r"enemy\gunner\death\death-1.png",
-                     r"enemy\gunner\death\death-2.png",
-                     r"enemy\gunner\death\death-3.png",
-                     r"enemy\gunner\death\death-4.png",
-                     r"enemy\gunner\death\death-5.png",
-                     r"enemy\gunner\death\death-6.png",
-                     r"enemy\gunner\death\death-7.png",
-                     r"enemy\gunner\death\death-8.png",
-                     r"enemy\gunner\death\death-9.png"
+                     "enemy/gunner/death/death-1.png",
+                     "enemy/gunner/death/death-2.png",
+                     "enemy/gunner/death/death-3.png",
+                     "enemy/gunner/death/death-4.png",
+                     "enemy/gunner/death/death-5.png",
+                     "enemy/gunner/death/death-6.png",
+                     "enemy/gunner/death/death-7.png",
+                     "enemy/gunner/death/death-8.png",
+                     "enemy/gunner/death/death-9.png"
                  ),  # смерть
                  "hit": (
-                     r"enemy\gunner\hit\hit.png"
+                     "enemy/gunner/hit/hit.png"
                  ),  # удар по стрелку от игрока
                  "inac": (
-                     r"enemy\gunner\inac\acon-1.png",
+                     "enemy/gunner/inac/acon-1.png",
                  )
              }
          )
