@@ -5,6 +5,7 @@ from typing import Sequence
 
 from engine.objects import BaseSprite, AnimatedSprite
 from engine.objects.sprite import SpriteTypes
+from engine.core import EngineEvent
 
 
 class Trader(AnimatedSprite):
@@ -52,22 +53,37 @@ class Trader(AnimatedSprite):
             self.find_sprites(SpriteTypes.PLAYER)[0].money >= 12 and self.find_sprites(SpriteTypes.PLAYER)[0].arms >= 1:
             self.find_sprites(SpriteTypes.PLAYER)[0].money -= 12
             self.find_sprites(SpriteTypes.PLAYER)[0].arms = 0.9
+            self.add_event(EngineEvent(
+                "info", "arms_count", {"value": 1}
+            ))
         if self.checking_touch_by_type(SpriteTypes.PLAYER) and event.type == pygame.KEYDOWN and pressed[pygame.K_y] and \
             self.find_sprites(SpriteTypes.PLAYER)[0].money >= 15 and self.find_sprites(SpriteTypes.PLAYER)[0].arms >= 0.9:
             self.find_sprites(SpriteTypes.PLAYER)[0].money -= 15
             self.find_sprites(SpriteTypes.PLAYER)[0].arms = 0.8
+            self.add_event(EngineEvent(
+                "info", "arms_count", {"value": 2}
+            ))
         if self.checking_touch_by_type(SpriteTypes.PLAYER) and event.type == pygame.KEYDOWN and pressed[pygame.K_u] and \
             self.find_sprites(SpriteTypes.PLAYER)[0].money >= 12 and self.find_sprites(SpriteTypes.PLAYER)[0].arms >= 0.8:
             self.find_sprites(SpriteTypes.PLAYER)[0].money -= 20
             self.find_sprites(SpriteTypes.PLAYER)[0].arms = 0.7
+            self.add_event(EngineEvent(
+                "info", "arms_count", {"value": 3}
+            ))
         if self.checking_touch_by_type(SpriteTypes.PLAYER) and event.type == pygame.KEYDOWN and pressed[pygame.K_i] and \
             self.find_sprites(SpriteTypes.PLAYER)[0].money >= 25 and self.find_sprites(SpriteTypes.PLAYER)[0].arms >= 0.7:
             self.find_sprites(SpriteTypes.PLAYER)[0].money -= 25
             self.find_sprites(SpriteTypes.PLAYER)[0].arms = 0.6
+            self.add_event(EngineEvent(
+                "info", "arms_count", {"value": 4}
+            ))
         if self.checking_touch_by_type(SpriteTypes.PLAYER) and event.type == pygame.KEYDOWN and pressed[pygame.K_o] and \
                 self.find_sprites(SpriteTypes.PLAYER)[0].money >= 30 and self.find_sprites(SpriteTypes.PLAYER)[0].arms >= 0.6:
             self.find_sprites(SpriteTypes.PLAYER)[0].money -= 30
             self.find_sprites(SpriteTypes.PLAYER)[0].arms = 0.5
+            self.add_event(EngineEvent(
+                "info", "arms_count", {"value": 5}
+            ))
 
     def update(self) -> None:
         print(self)

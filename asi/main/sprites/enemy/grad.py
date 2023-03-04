@@ -10,7 +10,7 @@ from asi import settings
 
 class Grad(AnimatedSprite):
     def init(self, coords, speed):
-        self.load_image("projectly/grad.jpg")
+        self.load_image("projectly/grad.png")
 
         self.scale_image((50, 50))
         self.rect.x = coords[0]
@@ -26,7 +26,7 @@ class Grad(AnimatedSprite):
             self.find_sprites(SpriteTypes.PLAYER)[0].change_health(-30 * self.find_sprites(SpriteTypes.PLAYER)[0].arms)
             
             if EngineSettings.get_var("PLAY_SOUNDS"):
-                pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/bomb.mp3"))
+                pygame.mixer.Channel(9).play(pygame.mixer.Sound("asi/main/resources/sound/arms_kill.mp3"))
 
             self.kill()
 

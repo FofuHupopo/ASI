@@ -10,7 +10,7 @@ from engine.core import EngineEvent, EventTypes
 
 class Spike(AnimatedSprite):
     def init(self, coords):
-        self.load_image("spike/spike.jpg")
+        self.load_image("spike/spike.png")
         self.scale_image((50, 50))
         self.rect.x = coords[0]
         self.rect.y = coords[1]

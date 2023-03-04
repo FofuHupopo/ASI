@@ -18,4 +18,4 @@ class BoardSprite(BaseSprite):
         self.__text = text
 
     def update(self) -> None:
-        self.create_dialog(self.__text, (400, 200))
+        self.create_dialog(self.__text, (850, 400))
