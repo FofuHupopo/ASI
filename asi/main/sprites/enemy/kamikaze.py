@@ -14,25 +14,25 @@ from ..environment.obstacle import Obstacle
 class Kamikaze(BaseEnemy):
     def init(self, coords):
         self.register_animations(
-             "enemy\kamicadze\inac\inac-1.png", {
+             "enemy/kamicadze/inac/inac-1.png", {
                  "boom": (
-                     r"enemy\kamicadze\boom\boom-1.png",
-                     r"enemy\kamicadze\boom\boom-2.png",
-                     r"enemy\kamicadze\boom\boom-3.png",
-                     r"enemy\kamicadze\boom\boom-4.png",
-                     r"enemy\kamicadze\boom\boom-5.png",
-                     r"enemy\kamicadze\boom\boom-6.png",
-                     r"enemy\kamicadze\boom\boom-7.png",
+                     "enemy/kamicadze/boom/boom-1.png",
+                     "enemy/kamicadze/boom/boom-2.png",
+                     "enemy/kamicadze/boom/boom-3.png",
+                     "enemy/kamicadze/boom/boom-4.png",
+                     "enemy/kamicadze/boom/boom-5.png",
+                     "enemy/kamicadze/boom/boom-6.png",
+                     "enemy/kamicadze/boom/boom-7.png",
                  ),
                  "inac": (
-                     r"enemy\kamicadze\inac\inac-1.png",
-                     r"enemy\kamicadze\inac\inac-2.png",
-                     r"enemy\kamicadze\inac\inac-3.png",
-                     r"enemy\kamicadze\inac\inac-4.png",
-                     r"enemy\kamicadze\inac\inac-5.png",
-                     r"enemy\kamicadze\inac\inac-6.png",
-                     r"enemy\kamicadze\inac\inac-7.png",
-                     r"enemy\kamicadze\inac\inac-8.png",
+                     "enemy/kamicadze/inac/inac-1.png",
+                     "enemy/kamicadze/inac/inac-2.png",
+                     "enemy/kamicadze/inac/inac-3.png",
+                     "enemy/kamicadze/inac/inac-4.png",
+                     "enemy/kamicadze/inac/inac-5.png",
+                     "enemy/kamicadze/inac/inac-6.png",
+                     "enemy/kamicadze/inac/inac-7.png",
+                     "enemy/kamicadze/inac/inac-8.png",
                  )
 
              }

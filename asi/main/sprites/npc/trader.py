@@ -39,7 +39,6 @@ class Trader(AnimatedSprite):
 
         if event.type == pygame.KEYDOWN and pressed[pygame.K_f]:
             self.stop_animation()
-            print('YES')
 
         if self.checking_touch_by_type(SpriteTypes.PLAYER) and event.type == pygame.KEYDOWN and pressed[pygame.K_5] and\
                 self.find_sprites(SpriteTypes.PLAYER)[0].money >= 10:
@@ -86,7 +85,6 @@ class Trader(AnimatedSprite):
             ))
 
     def update(self) -> None:
-        print(self)
         self.create_dialog(
             "Привет странник, ты можешь купить у меня всё,\nчто тебе надо:\n"
             "маленькое сердце жизни: 10 монет (нажмите'5')\nбольшое сердце жизни: 18 монет (нажмите'6')\n"

@@ -7,11 +7,12 @@ from engine.objects import BaseSprite
 from engine.objects.sprite import SpriteTypes
 from engine.core import EngineEvent, EventTypes, EngineSettings
 from .obstacle import Obstacle
+from .platforms.platform_horizontally import PlatformHorizontally
 
 from asi import settings
 
 
-class Trigger(Obstacle):
+class Trigger(PlatformHorizontally):
     def init(self, coords):
         super(Trigger, self).init(coords)
         self.flag = True
