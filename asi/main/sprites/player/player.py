@@ -329,32 +329,49 @@ class PlayerSprite(AnimatedSprite):
 
     def events_handler(self, event: pygame.event.Event):
         keys = pygame.key.get_pressed()
+        joystick = None
+
+        if pygame.joystick.get_count():
+            joystick = pygame.joystick.Joystick(0)
+
         if (
-                (event.type == pygame.KEYDOWN and keys[pygame.K_SPACE]) or
-                (event.type == pygame.JOYBUTTONDOWN and event.button == 3)
+            (event.type == pygame.KEYDOWN and keys[pygame.K_SPACE]) or
+            (event.type == pygame.JOYBUTTONDOWN and event.button == 3)
         ):
             if not self.is_fly():
                 self.speed_y = 10
 
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == pygame.BUTTON_RIGHT:
+        if (
+            (event.type == pygame.MOUSEBUTTONDOWN and event.button == pygame.BUTTON_RIGHT) or
+            (event.type == pygame.JOYBUTTONDOWN and event.button == 9)
+        ):
             self.melee_attack()
 
         if (
-                event.type == pygame.MOUSEBUTTONDOWN and event.button == pygame.BUTTON_LEFT
+            (event.type == pygame.MOUSEBUTTONDOWN and event.button == pygame.BUTTON_LEFT) or
+            (event.type == pygame.JOYBUTTONDOWN and event.button == 10)
         ):
             if self.time_attack == self.recharge:
                 self.__throw_arm()
                 self.time_attack = 0
 
         if (
-                (event.type == pygame.KEYDOWN and keys[pygame.K_1] and self.count_heal > 0) or
-                (event.type == pygame.JOYBUTTONDOWN and event.button == 13)
+                (
+                    (event.type == pygame.KEYDOWN and keys[pygame.K_1]) or
+                    (event.type == pygame.JOYBUTTONDOWN and event.button == 13)
+                ) and self.count_heal > 0
         ):
             self.change_health(50)
             self.count_heal -= 1
             if EngineSettings.get_var("PLAY_SOUNDS"):
                 pygame.mixer.Channel(7).play(pygame.mixer.Sound("asi/main/resources/sound/little_heal.mp3"))
-        if event.type == pygame.KEYDOWN and keys[pygame.K_2] and self.count_big_heal > 0:
+
+        if (
+            (
+                (event.type == pygame.KEYDOWN and keys[pygame.K_2]) or
+                (event.type == pygame.JOYBUTTONDOWN and event.button == 11)
+            ) and self.count_big_heal > 0
+        ):
             self.change_health(100)
             if EngineSettings.get_var("PLAY_SOUNDS"):
                 pygame.mixer.Channel(7).play(pygame.mixer.Sound("asi/main/resources/sound/big_heal.mp3"))
@@ -377,7 +394,12 @@ class PlayerSprite(AnimatedSprite):
                                "пещеру, а дальше только пустота, и вот я оказываюсь здесь. Но что стало с моим телом.\n"
                                "Его практически нет, я превратился в какой-то дух ",
                                (700, 400))
-            if event.type == pygame.KEYDOWN and keys[pygame.K_f]:
+
+        
+            if (
+                    (event.type == pygame.KEYDOWN and keys[pygame.K_f]) or
+                    (event.type == pygame.JOYBUTTONDOWN and event.button == 1)
+                ):
                 self.flag_dialog = False
 
     def change_health(self, value):
@@ -490,10 +512,12 @@ class PlayerSprite(AnimatedSprite):
 
     def key_pressed_handler(self, pressed: Sequence[bool]):
         additional_speed = self.stamina_boost * self.__shift_pressed * bool(self.stamina)
-        # joy_axis = pygame.joystick.Joystick(0).get_axis(0)
         joy_axis = 0
 
-        if (pressed[pygame.K_a] or joy_axis < -0.3) and self.__can_move:
+        if pygame.joystick.get_count():
+            joy_axis = pygame.joystick.Joystick(0).get_axis(0)
+
+        if (pressed[pygame.K_a] or (joy_axis and joy_axis < -0.3)) and self.__can_move:
             self.direction = -1
             self.speed_x = 5 * self.direction + additional_speed * self.direction
             self.time_x = 8
@@ -501,7 +525,7 @@ class PlayerSprite(AnimatedSprite):
             self.mirror_image(by_x=True)
             if self.current_animation_name != "walk":
                 self.start_animation("walk", 1, 7)
-        elif (pressed[pygame.K_d] or joy_axis > 0.3) and self.__can_move:
+        elif (pressed[pygame.K_d] or (joy_axis and joy_axis > 0.3)) and self.__can_move:
             self.direction = 1
             self.speed_x = 5 * self.direction + additional_speed * self.direction
             self.time_x = 8
