@@ -3,7 +3,7 @@
 |                                                                                 ^
 |                                                                                 |
 |                                                                                 |
-|h                                               g                             p  |
+|h                                               g                            p   |
 31                           t  B           IYUK  O S   WIE                   Y Y 2
  |       WRY$            EKTS O  E EEU R   W2--------------1KE W             2----4
  |EI R W2---1WSYSURE    2-------------------4              |--->             |
@@ -85,8 +85,8 @@
 |                       2---1                  YY  Y          YE   OW|
 |                       3---4                  <---->        <-------4
 |      #                                                             ^
-|            QU   S            Y                  K  S R U Q     B   |
-|            <-------1YU  E    21U I  SO    hU  U 2--------1 I t   I |
+|            QU   S            Y                  K  S R U Q   t B   |
+|            <-------1YU  E    21U I  SO    hU  U 2--------1 I    I |
 |   h                3---------34-----------------4        3---------4
 |KEK                               ^
 3-----1  UIK                       |
