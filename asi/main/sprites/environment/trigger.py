@@ -21,7 +21,7 @@ class Trigger(PlatformHorizontally):
     def update(self):
         if self.find_sprites(SpriteTypes.PLAYER)[0].rect.x >= self.rect.x and 0 <= self.rect.y - \
                 self.find_sprites(SpriteTypes.PLAYER)[0].rect.y <= 120:
-            if self.flag:
+            if self.flag and len(self.find_sprites(SpriteTypes.BOSS)) > 0:
                 self.flag = False
                 for i in self.find_sprites(SpriteTypes.PLAYER)[0].list_door:
                     i.open()

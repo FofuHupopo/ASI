@@ -43,8 +43,14 @@ class MainScene(BaseScene):
         )
         self.load_object(
             ImageAndTextField,
-            image_path="asi/main/resources/player/weapons/shuriken.png",
+            image_path="asi/main/resources/player/arms.png",
             index=3,
+            event_name="arms_count"
+        )
+        self.load_object(
+            ImageAndTextField,
+            image_path="asi/main/resources/player/weapons/shuriken.png",
+            index=4,
             event_name="shuriken_count"
         )
         
